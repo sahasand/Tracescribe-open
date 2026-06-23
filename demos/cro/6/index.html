@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tracescribe Research · Capabilities Overview</title>
+<meta name="description" content="Tracescribe Research: a cardiovascular clinical research organization. In-house adjudication, core lab imaging, biometrics, and senior cardiologists from protocol concept through database lock. Founded 1997." />
+<meta name="theme-color" content="#040D1D" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  /* ============================================================
+     Tracescribe · HOLOGRAPHIC CAPABILITIES DECK
+     A dark instrument-room rebuild of the Tracescribe capabilities site.
+     WebGL scene behind frosted-glass content panels.
+     ============================================================ */
+  :root {
+    --bg0: #02060F;
+    --bg1: #040D1D;
+    --navy: #0A2A5E;
+    --navy-mid: #1E4180;
+    --blue: #9FB6DA;
+    --blue-dim: #8AA0C4;
+    --red: #E63946;
+    --red-dark: #C42A37;
+    --white: #F4F7FC;
+    --text: #C6D4EA;
+    --dim: #7E94B8;
+    --line: rgba(159,182,218,0.15);
+    --line-strong: rgba(159,182,218,0.32);
+    --glass: linear-gradient(165deg, rgba(14,33,66,0.58), rgba(6,15,33,0.40));
+    --glass-card: linear-gradient(165deg, rgba(20,42,80,0.45), rgba(8,19,40,0.35));
+    --radius: 18px;
+    --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+    --sans: "Plus Jakarta Sans", sans-serif;
+    --mono: "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    background: var(--bg0);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--red); color: #fff; }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3, h4 { color: var(--white); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 4px; }
+
+  /* custom scrollbar — part of the instrument chrome */
+  ::-webkit-scrollbar { width: 11px; }
+  ::-webkit-scrollbar-track { background: #030911; }
+  ::-webkit-scrollbar-thumb { background: #16304f; border-radius: 6px; border: 3px solid #030911; }
+  ::-webkit-scrollbar-thumb:hover { background: #2a4a78; }
+
+  /* ---------- atmosphere layers ---------- */
+  .bg-veil {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(70% 55% at 72% 16%, rgba(30,65,128,0.34), transparent 64%),
+      radial-gradient(50% 42% at 12% 88%, rgba(230,57,70,0.10), transparent 66%),
+      radial-gradient(40% 36% at 50% 110%, rgba(30,65,128,0.22), transparent 70%),
+      linear-gradient(180deg, #030A16 0%, #02060F 52%, #040D1D 100%);
+  }
+  #webgl {
+    position: fixed; inset: 0; z-index: 1;
+    width: 100%; height: 100%; display: block;
+    pointer-events: none;
+  }
+  body.no3d #webgl { display: none; }
+
+  /* film grain above everything */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 200; pointer-events: none;
+    mix-blend-mode: overlay; opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 168px 168px;
+  }
+
+  /* scroll progress */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0;
+    background: linear-gradient(90deg, var(--navy-mid), var(--red));
+    z-index: 90; box-shadow: 0 0 12px rgba(230,57,70,0.55);
+  }
+
+  /* ---------- HUD instrument frame ---------- */
+  #hud { position: fixed; inset: 80px 14px 14px; z-index: 80; pointer-events: none; font-family: var(--mono); }
+  #hud .corner { position: absolute; width: 26px; height: 26px; border: 1px solid rgba(159,182,218,0.34); }
+  #hud .c-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  #hud .c-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+  #hud .c-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+  #hud .c-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+  #hud .ro {
+    position: absolute; font-size: 9px; font-weight: 500; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(159,182,218,0.55); white-space: nowrap;
+  }
+  #hud .ro-tl { top: 5px; left: 38px; }
+  #hud .ro-tr { top: 5px; right: 38px; }
+  #hud .ro-bl { bottom: 5px; left: 38px; display: flex; align-items: center; gap: 8px; }
+  #hud .ro-br { bottom: 5px; right: 38px; }
+  #hud .beat-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+    box-shadow: 0 0 10px rgba(230,57,70,0.9);
+    animation: beatDot 0.968s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+  }
+  @keyframes beatDot {
+    0%, 100% { transform: scale(0.75); opacity: 0.65; }
+    12% { transform: scale(1.35); opacity: 1; }
+    24% { transform: scale(0.85); opacity: 0.8; }
+    34% { transform: scale(1.15); opacity: 0.95; }
+    50% { transform: scale(0.78); opacity: 0.7; }
+  }
+  @media (max-width: 1080px) { #hud { display: none; } }
+
+  /* ---------- typographic atoms ---------- */
+  .mono { font-family: var(--mono); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--red);
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--red); display: inline-block; }
+  .kicker {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .h-display {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(2.5rem, 5.6vw, 4.4rem); line-height: 1.05; letter-spacing: -0.012em;
+  }
+  .h-section {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(1.65rem, 3.3vw, 2.55rem); line-height: 1.14; letter-spacing: -0.012em;
+  }
+  .h-display em, .h-section em { font-style: italic; font-weight: 600; }
+  em { color: var(--red); font-style: normal; }
+  em.b { color: var(--blue); }
+  .lede { font-size: clamp(1rem, 1.4vw, 1.16rem); line-height: 1.65; color: var(--text); font-weight: 300; }
+  .lede strong { color: var(--white); font-weight: 600; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--sans); font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em;
+    padding: 13px 24px; border-radius: 10px; cursor: pointer;
+    transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s, background .25s, border-color .25s, color .25s;
+    border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--red-dark)); color: #fff;
+    box-shadow: 0 10px 30px rgba(230,57,70,0.32), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(230,57,70,0.45), inset 0 1px 0 rgba(255,255,255,0.22); }
+  .btn-ghost { background: rgba(159,182,218,0.04); color: var(--white); border-color: var(--line-strong); }
+  .btn-ghost:hover { transform: translateY(-2px); border-color: var(--red); color: #ff8d96; }
+
+  /* ---------- layout ---------- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; position: relative; }
+  main { position: relative; z-index: 2; }
+  section { position: relative; }
+  .sec { padding: 13vh 0; }
+  @media (max-width: 700px) { .sec { padding: 9vh 0; } }
+
+  /* section header rule */
+  .sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+  .sec-head .no { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--red); letter-spacing: 0.12em; }
+  .sec-head .ttl {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--blue-dim); white-space: nowrap;
+  }
+  .sec-head .ln { height: 1px; flex: 1; background: linear-gradient(90deg, var(--line-strong), transparent); }
+
+  /* ---------- frosted panels ---------- */
+  .panel {
+    position: relative;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(28px, 4.5vw, 56px);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .panel::before {
+    content: ""; position: absolute; top: -1px; left: 24px; right: 24px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(159,182,218,0.45), transparent);
+    pointer-events: none;
+  }
+  .panel--l { max-width: 780px; margin-right: auto; }
+  .panel--r { max-width: 780px; margin-left: auto; }
+  .panel--c { max-width: 760px; margin: 0 auto; }
+
+  /* ---------- cards ---------- */
+  .card {
+    background: var(--glass-card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 24px;
+    transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s, border-color .35s;
+    position: relative; overflow: hidden;
+  }
+  .card-hover:hover {
+    transform: translateY(-5px);
+    border-color: rgba(230,57,70,0.38);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,57,70,0.16), 0 0 44px rgba(230,57,70,0.10);
+  }
+  .card .idx {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700;
+    color: var(--red); letter-spacing: 0.1em; margin-bottom: 13px; display: block;
+  }
+  .card h3 { font-size: 1.12rem; margin-bottom: 9px; letter-spacing: -0.015em; }
+  .card p { font-size: 0.92rem; line-height: 1.62; color: var(--text); margin: 0; font-weight: 300; }
+  .card--num { overflow: hidden; }
+  .card--num > * { position: relative; z-index: 1; }
+  .card--num .ghost {
+    position: absolute; right: 4px; bottom: -28px; z-index: 0;
+    font-family: var(--mono); font-weight: 700; font-size: 118px; line-height: 1;
+    color: var(--blue); opacity: 0.06; pointer-events: none; user-select: none;
+  }
+
+  /* ---------- stats ---------- */
+  .stat .num {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(2rem, 3.8vw, 2.9rem); letter-spacing: -0.04em; color: var(--white);
+    line-height: 1; font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 24px rgba(159,182,218,0.25);
+  }
+  .stat .num .u { color: var(--red); }
+  .stat .lbl {
+    font-family: var(--mono); font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
+    margin-top: 11px; line-height: 1.5;
+  }
+  .stat { padding-left: 14px; border-left: 1px solid var(--line); }
+
+  /* ---------- pills ---------- */
+  .pill {
+    font-family: var(--mono); font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 6px;
+    background: rgba(159,182,218,0.09); color: #CDDDF5; display: inline-block;
+    border: 1px solid rgba(159,182,218,0.14);
+  }
+  .pill--red { background: rgba(230,57,70,0.16); color: #FF98A0; border-color: rgba(230,57,70,0.36); }
+
+  /* ---------- monogram avatar ---------- */
+  .mono-av {
+    width: 62px; height: 62px; border-radius: 50%; flex: none;
+    display: grid; place-items: center;
+    font-family: var(--mono); font-weight: 700; font-size: 16px;
+    color: var(--white); background: rgba(159,182,218,0.08);
+    border: 1px solid var(--line-strong); position: relative;
+  }
+  .mono-av.has-photo { background: none; }
+  .mono-av .av-img {
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; object-position: center top; display: block;
+    filter: saturate(0.88) contrast(1.04);
+  }
+  .mono-av.has-photo::after {
+    content: ""; position: absolute; inset: -4px; border-radius: 50%;
+    border: 1px solid rgba(230,57,70,0.35); pointer-events: none;
+  }
+
+  /* ---------- nav ---------- */
+  header.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    background: rgba(3,9,20,0.55);
+    backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid rgba(159,182,218,0.12);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand svg { display: block; }
+  .brand .mk {
+    font-family: var(--serif); font-weight: 700; font-size: 21px;
+    letter-spacing: 0.01em; color: var(--white); line-height: 1;
+  }
+  .brand .div { width: 1px; height: 24px; background: rgba(230,57,70,0.6); }
+  .brand .sub {
+    font-family: var(--mono); font-size: 8.5px; font-weight: 500; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--blue-dim); line-height: 1.5;
+  }
+  .nav-links { display: flex; align-items: center; gap: 26px; }
+  .nav-links a.lnk { font-size: 12.5px; font-weight: 500; color: var(--text); position: relative; transition: color .2s; }
+  .nav-links a.lnk::after {
+    content: ""; position: absolute; left: 0; bottom: -6px; height: 1.5px; width: 0;
+    background: var(--red); transition: width .25s; box-shadow: 0 0 8px rgba(230,57,70,0.8);
+  }
+  .nav-links a.lnk:hover { color: var(--white); }
+  .nav-links a.lnk:hover::after { width: 100%; }
+  .hamb { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamb span { width: 22px; height: 2px; background: var(--white); transition: .3s; display: block; }
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 55; background: rgba(3,8,18,0.97);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    transform: translateX(100%); transition: transform .4s cubic-bezier(.7,0,.3,1);
+    display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 44px;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .mobile-menu a {
+    font-family: var(--serif); font-size: 1.7rem; font-weight: 600; color: var(--white);
+    padding: 13px 0; border-bottom: 1px solid var(--line);
+  }
+  .mobile-menu a:hover { color: #ff8d96; }
+  @media (max-width: 920px) {
+    .nav-links { display: none; }
+    .hamb { display: flex; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 140px 0 110px; }
+  .hero-content { max-width: 700px; }
+  .hero .lede { max-width: 580px; }
+  .holo-tag {
+    position: absolute; right: 4vw; bottom: 16vh; z-index: 2;
+    font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(159,182,218,0.62);
+    padding: 11px 15px; border: 1px solid rgba(159,182,218,0.2); border-radius: 3px;
+    background: rgba(4,12,26,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    line-height: 1.9; pointer-events: none;
+  }
+  .holo-tag::before, .holo-tag::after {
+    content: ""; position: absolute; width: 9px; height: 9px; border-color: rgba(230,57,70,0.85); border-style: solid;
+  }
+  .holo-tag::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+  .holo-tag::after { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+  .holo-tag .rec { color: var(--red); }
+  @media (max-width: 1180px) { .holo-tag { display: none; } }
+
+  .scroll-cue {
+    position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 11px; z-index: 2;
+    font-family: var(--mono); font-size: 8.5px; font-weight: 600; letter-spacing: 0.32em;
+    text-transform: uppercase; color: rgba(159,182,218,0.6);
+  }
+  .scroll-cue .ln { width: 1px; height: 48px; background: linear-gradient(180deg, transparent, var(--red)); position: relative; overflow: hidden; }
+  .scroll-cue .ln::after {
+    content: ""; position: absolute; left: 0; top: -50%; width: 100%; height: 50%;
+    background: linear-gradient(180deg, transparent, #fff);
+    animation: cueDrop 2.2s cubic-bezier(.6,.1,.3,1) infinite;
+  }
+  @keyframes cueDrop { 0% { top: -50%; } 70%, 100% { top: 110%; } }
+
+  /* ---------- thesis quote ---------- */
+  .quote-panel { position: relative; overflow: hidden; }
+  .quote-panel::after {
+    content: "\201C"; position: absolute; top: -34px; left: 16px;
+    font-family: var(--serif); font-size: 160px; line-height: 1;
+    color: var(--red); opacity: 0.14; pointer-events: none;
+  }
+  .quote-panel blockquote { margin: 0; position: relative; z-index: 1; }
+  .quote-panel .q {
+    font-family: var(--serif); font-size: clamp(1.45rem, 2.9vw, 2.1rem);
+    line-height: 1.32; font-weight: 600; color: var(--white); letter-spacing: -0.012em; margin: 0;
+  }
+  .quote-panel .q em { font-style: italic; }
+
+  /* ---------- synthesis diagram ---------- */
+  .synth { display: grid; grid-template-columns: 1fr minmax(220px, 280px) 1fr; gap: 28px; align-items: center; margin-top: 44px; }
+  .synth-tag { margin-bottom: 14px; }
+  .synth-panel--cro .synth-tag { color: #FF8D96; }
+  .synth-panel--aro .synth-tag { color: var(--blue); }
+  .synth-panel--aro { text-align: right; }
+  .synth-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+  .synth-panel--aro .synth-list { align-items: flex-end; }
+  .synth-chip {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.03em; line-height: 1.4; color: var(--white); max-width: min(100%, 320px);
+    background: rgba(159,182,218,0.06); border: 1px solid var(--line);
+    padding: 11px 14px; border-radius: 9px;
+  }
+  .synth-panel--cro .synth-chip { border-left: 3px solid var(--red); }
+  .synth-panel--aro .synth-chip { border-right: 3px solid var(--navy-mid); }
+  .synth-core {
+    position: relative; justify-self: center; text-align: center;
+    width: 100%; max-width: 280px; padding: 32px 26px; border-radius: 20px;
+    background: linear-gradient(150deg, rgba(10,42,94,0.85), rgba(196,42,55,0.45));
+    border: 1px solid rgba(255,255,255,0.22);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5), 0 0 36px rgba(230,57,70,0.2);
+    animation: coreGlow 6s ease-in-out infinite;
+  }
+  @keyframes coreGlow {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5), 0 0 36px rgba(230,57,70,0.18); }
+    50%      { box-shadow: 0 0 0 1px rgba(255,255,255,0.1),  0 20px 50px rgba(0,0,0,0.5), 0 0 54px rgba(230,57,70,0.34); }
+  }
+  .synth-core-mk { display: block; font-family: var(--serif); font-weight: 700; font-size: 2.5rem; line-height: 1; color: #fff; }
+  .synth-core-eq {
+    display: block; margin-top: 10px; font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.24em; text-transform: uppercase; color: #F3D3D7;
+  }
+  .synth-core-eq::after {
+    content: ""; display: block; height: 2px; width: 66px; margin: 11px auto 0;
+    border-radius: 3px; background: linear-gradient(90deg, var(--navy-mid), var(--red));
+  }
+  .synth-core-tag { margin: 14px 0 0; font-size: 0.9rem; line-height: 1.55; color: #EAF0FB; font-weight: 400; }
+  @media (max-width: 760px) {
+    .synth { grid-template-columns: 1fr; gap: 16px; }
+    .synth-panel--aro, .synth-panel--aro .synth-list { text-align: left; align-items: flex-start; }
+    .synth-panel--aro .synth-chip { border-right: none; border-left: 3px solid var(--navy-mid); }
+    .synth-chip, .synth-core { max-width: none; }
+  }
+
+  /* ---------- chain of custody ---------- */
+  .chain { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .chain .node {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 12px 16px; border-radius: 8px;
+    background: rgba(159,182,218,0.07); border: 1px solid var(--line-strong);
+    color: var(--white); white-space: nowrap;
+  }
+  .chain.bad .node { border-style: dashed; border-color: var(--line); color: var(--dim); }
+  .chain .arr { color: var(--dim); padding: 0 12px; font-weight: 700; }
+  .chain.bad .arr { color: var(--red); }
+  .chain .node.db {
+    background: linear-gradient(135deg, var(--red), var(--red-dark)); color: #fff;
+    border-color: rgba(255,255,255,0.25); box-shadow: 0 0 22px rgba(230,57,70,0.35);
+  }
+  .chain.bad .node.db { background: rgba(126,148,184,0.18); color: var(--dim); box-shadow: none; border-style: dashed; }
+  @media (max-width: 620px) {
+    .chain { flex-direction: column; align-items: center; gap: 9px; }
+    .chain .arr { transform: rotate(90deg); padding: 2px 0; }
+  }
+
+  /* ---------- timeline ---------- */
+  .tl-track { position: relative; height: 2px; background: rgba(159,182,218,0.18); border-radius: 3px; margin: 64px 0 56px; }
+  .tl-fill {
+    position: absolute; left: 0; top: 0; height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--navy-mid), var(--red)); border-radius: 3px;
+    box-shadow: 0 0 14px rgba(230,57,70,0.5);
+    transition: width 1.6s cubic-bezier(.4,0,.2,1);
+  }
+  .tl-track.on .tl-fill { width: 100%; }
+  .tl-node { position: absolute; top: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .tl-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--bg1); border: 2.5px solid var(--blue-dim); margin: 0 auto; }
+  .tl-node.end .tl-dot { background: var(--red); border-color: var(--red); box-shadow: 0 0 0 5px rgba(230,57,70,0.18), 0 0 18px rgba(230,57,70,0.8); }
+  .tl-cap {
+    position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .tl-cap.top { bottom: 22px; color: var(--white); font-weight: 700; }
+  .tl-cap.bot { top: 22px; color: var(--dim); }
+  .tl-node.end .tl-cap { left: auto; right: 0; transform: none; text-align: right; }
+
+  /* ---------- modality bars ---------- */
+  .mbars { margin-top: 42px; display: flex; flex-direction: column; gap: 14px; }
+  .mbar { display: grid; grid-template-columns: 138px 1fr 40px; align-items: center; gap: 16px; }
+  .mbar .mlbl { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  .mbar .mtrack { height: 9px; border-radius: 6px; background: rgba(159,182,218,0.08); border: 1px solid var(--line); overflow: hidden; }
+  .mbar .mfill {
+    height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--navy-mid), var(--blue-dim));
+    width: var(--w, 0%); transform: scaleX(0); transform-origin: left;
+    transition: transform 1.1s cubic-bezier(.3,.6,.2,1) .15s;
+  }
+  .mbar.is-accent .mfill { background: linear-gradient(90deg, var(--red-dark), var(--red)); box-shadow: 0 0 12px rgba(230,57,70,0.5); }
+  .reveal.vis .mfill, .no-anim .mfill { transform: scaleX(1); }
+  .mbar .mval { font-family: var(--mono); font-weight: 700; font-size: 15px; color: var(--white); text-align: right; font-variant-numeric: tabular-nums; }
+  .mbar.is-accent .mval { color: var(--red); }
+  @media (max-width: 520px) { .mbar { grid-template-columns: 96px 1fr 30px; gap: 10px; } }
+
+  /* ---------- tabs ---------- */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+  .tab {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 10px 17px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line);
+    background: rgba(159,182,218,0.04); color: var(--dim); transition: .2s;
+  }
+  .tab:hover { color: var(--text); border-color: var(--line-strong); }
+  .tab.active {
+    background: rgba(230,57,70,0.14); color: var(--white); border-color: rgba(230,57,70,0.5);
+    box-shadow: 0 0 18px rgba(230,57,70,0.16);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn .4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- sponsors ---------- */
+  .sponsor {
+    border: 1px solid var(--line); border-radius: 14px; padding: 20px;
+    background: var(--glass-card); transition: .3s; min-height: 118px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
+  }
+  .sponsor:hover { border-color: rgba(230,57,70,0.4); transform: translateY(-3px); box-shadow: 0 18px 40px rgba(0,0,0,0.45), 0 0 30px rgba(230,57,70,0.08); }
+  .sponsor .nm { font-weight: 700; font-size: 1.0rem; color: var(--white); letter-spacing: -0.015em; }
+
+  /* ---------- events ---------- */
+  .events-month { margin-top: 34px; }
+  .events-month:first-child { margin-top: 0; }
+  .events-month-label {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--white);
+    display: flex; align-items: center; gap: 16px; margin-bottom: 4px;
+  }
+  .events-month-label::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+  .event-row {
+    display: grid; grid-template-columns: 132px 1fr auto; align-items: baseline; gap: 20px;
+    padding: 18px 6px; border-bottom: 1px solid var(--line);
+    transition: background .2s;
+  }
+  .event-row:hover { background: rgba(159,182,218,0.05); }
+  .event-date {
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    color: var(--red); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .event-name { font-weight: 600; color: var(--white); font-size: 1.02rem; letter-spacing: -0.01em; }
+  .event-name a { color: inherit; transition: color .2s; }
+  .event-name a::after { content: " \2197"; font-size: 0.78em; color: var(--dim); font-weight: 600; }
+  .event-name a:hover { color: #ff8d96; text-decoration: underline; text-underline-offset: 3px; }
+  .event-name a:hover::after { color: #ff8d96; }
+  .event-loc { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.04em; white-space: nowrap; text-align: right; }
+  .events-empty { color: var(--dim); font-family: var(--mono); font-size: 13px; }
+  @media (max-width: 600px) {
+    .event-row { grid-template-columns: 1fr; gap: 5px; padding: 16px 2px; }
+    .event-loc { text-align: left; }
+  }
+
+  /* ---------- form ---------- */
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+  .field input, .field textarea {
+    background: rgba(4,12,26,0.55); border: 1px solid var(--line); border-radius: 9px;
+    padding: 13px 14px; font-family: inherit; font-size: 14px; color: var(--white);
+    transition: border-color .2s, box-shadow .2s; resize: vertical;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none; border-color: rgba(230,57,70,0.65); box-shadow: 0 0 0 3px rgba(230,57,70,0.16);
+  }
+
+  /* ---------- footer ---------- */
+  footer { position: relative; z-index: 2; background: rgba(2,6,15,0.82); border-top: 1px solid var(--line); padding: 56px 0 32px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  footer .ft-name { font-family: var(--serif); font-weight: 700; font-size: 21px; color: var(--white); letter-spacing: 0; }
+  footer a:hover { color: var(--white); }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
+  .reveal.vis { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; } .reveal.d2 { transition-delay: .16s; }
+  .reveal.d3 { transition-delay: .24s; } .reveal.d4 { transition-delay: .32s; }
+  .reveal.d5 { transition-delay: .40s; }
+
+  /* ---------- responsive grids ---------- */
+  .g2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: end; }
+  @media (max-width: 760px) { .g2 { grid-template-columns: 1fr; gap: 18px; } }
+
+  /* ---------- motion preferences / no-JS ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none; }
+    .scroll-cue .ln::after, #hud .beat-dot, .synth-core { animation: none; }
+    .mbar .mfill { transform: scaleX(1); transition: none; }
+    .tl-fill { transition: none; }
+    .tl-track.on .tl-fill, .tl-track .tl-fill { width: 100%; }
+  }
+
+  /* ---------- theme switcher ---------- */
+  #themeSwitcher{position:fixed;right:1.25rem;top:50%;transform:translateY(-50%);z-index:10001;display:flex;flex-direction:column;align-items:center;gap:0.4rem;padding:0.75rem 0.5rem;background:rgba(4,13,29,0.78);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);border:1px solid rgba(230,57,70,0.18);border-radius:100px;box-shadow:0 8px 36px rgba(0,0,0,0.5)}
+  #themeSwitcher a{text-decoration:none;display:flex;align-items:center;justify-content:center}
+  #themeSwitcher .ts-home{width:28px;height:28px;color:rgba(159,182,218,0.55);transition:color .3s ease,transform .3s cubic-bezier(0.34,1.56,0.64,1)}
+  #themeSwitcher .ts-home:hover{color:#E63946;transform:scale(1.1)}
+  #themeSwitcher .ts-home svg{width:14px;height:14px}
+  #themeSwitcher .ts-sep{width:14px;height:1px;background:rgba(230,57,70,0.28)}
+  #themeSwitcher .ts-dot{width:28px;height:28px;position:relative;transition:transform .3s cubic-bezier(0.34,1.56,0.64,1)}
+  #themeSwitcher .ts-dot:hover{transform:scale(1.15)}
+  #themeSwitcher .ts-dot-inner{width:10px;height:10px;border-radius:50%;border:1px solid rgba(159,182,218,0.18);transition:transform .3s cubic-bezier(0.34,1.56,0.64,1),box-shadow .3s}
+  #themeSwitcher .ts-dot:hover .ts-dot-inner{transform:scale(1.4)}
+  #themeSwitcher .ts-dot.active .ts-dot-inner{transform:scale(1.5);box-shadow:0 0 0 3px rgba(230,57,70,0.5),0 0 14px rgba(230,57,70,0.6)}
+  #themeSwitcher .ts-tip{position:absolute;right:38px;top:50%;transform:translateY(-50%) translateX(6px);white-space:nowrap;background:rgba(4,13,29,0.95);color:#E9EEF7;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;border-radius:7px;border:1px solid rgba(230,57,70,0.25);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease}
+  #themeSwitcher .ts-dot:hover .ts-tip{opacity:1;transform:translateY(-50%) translateX(0)}
+  @media (max-width:768px){#themeSwitcher{right:0.6rem;padding:0.55rem 0.4rem;gap:0.3rem}#themeSwitcher .ts-tip{display:none}}
+</style>
+<noscript>
+<style>
+  .reveal { opacity: 1; transform: none; }
+  #webgl, #hud { display: none; }
+  .mbar .mfill { transform: scaleX(1); }
+  .tl-fill { width: 100%; }
+</style>
+</noscript>
+</head>
+<body>
+<div class="bg-veil" aria-hidden="true"></div>
+<canvas id="webgl" aria-hidden="true"></canvas>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- theme switcher -->
+<nav id="themeSwitcher" aria-label="Theme navigation">
+  <a href="../index.html" class="ts-home" title="Gallery" aria-label="Back to gallery">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+  </a>
+  <div class="ts-sep"></div>
+  <a href="../6/index.html" class="ts-dot active" aria-label="Holographic Deck" aria-current="page"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#02060F 50%,#E63946 50%)"></span><span class="ts-tip">01 — Holographic Deck</span></a>
+  <a href="../theme3-warm.html" class="ts-dot" aria-label="Organic Flow"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#faf8f5 50%,#e8634a 50%)"></span><span class="ts-tip">02 — Organic Flow</span></a>
+  <a href="../5/index.html" class="ts-dot" aria-label="Natural Authority"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#f3efe5 50%,#0a8d80 50%)"></span><span class="ts-tip">03 — Natural Authority</span></a>
+  <a href="../2/index.html" class="ts-dot" aria-label="Clinical Evidence"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#0A1628 50%,#C41E3A 50%)"></span><span class="ts-tip">04 — Clinical Evidence</span></a>
+</nav>
+
+<!-- HUD instrument frame -->
+<div id="hud" aria-hidden="true">
+  <span class="corner c-tl"></span><span class="corner c-tr"></span>
+  <span class="corner c-bl"></span><span class="corner c-br"></span>
+  <span class="ro ro-tl">Tracescribe · Holographic Capabilities Deck</span>
+  <span class="ro ro-tr">Cardiovascular Clinical Research · Est. 1997</span>
+  <span class="ro ro-bl"><span class="beat-dot"></span><span id="hudBpm">62 BPM · Normal Sinus</span></span>
+  <span class="ro ro-br" id="hudPos">Scroll 000% · 01 / Hero</span>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand" aria-label="Tracescribe Research home">
+      <svg width="30" height="28" viewBox="0 0 32 30" fill="none" aria-hidden="true">
+        <path d="M16 28.5C16 28.5 1.5 19.5 1.5 9.8C1.5 4.9 5.4 1.5 9.7 1.5C12.4 1.5 14.8 2.9 16 5.1C17.2 2.9 19.6 1.5 22.3 1.5C26.6 1.5 30.5 4.9 30.5 9.8C30.5 19.5 16 28.5 16 28.5Z" fill="#E63946"/>
+        <path d="M16 28.5C16 28.5 1.5 19.5 1.5 9.8C1.5 4.9 5.4 1.5 9.7 1.5C12.4 1.5 14.8 2.9 16 5.1L16 28.5Z" fill="#C42A37"/>
+      </svg>
+      <span class="mk">Tracescribe</span>
+      <span class="div" aria-hidden="true"></span>
+      <span class="sub">Cardiovascular<br />Research</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="lnk" href="#glance">At a Glance</a>
+      <a class="lnk" href="#why">Why Tracescribe</a>
+      <a class="lnk" href="#model">Operating Model</a>
+      <a class="lnk" href="#diff">Differentiators</a>
+      <a class="lnk" href="#experience">Experience</a>
+      <a class="lnk" href="#team">Team</a>
+      <a class="lnk" href="#events">Events</a>
+      <a class="btn btn-primary" style="padding:9px 16px;" href="#contact">Get in touch</a>
+    </nav>
+    <button class="hamb" id="hamb" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#glance">At a Glance</a>
+  <a href="#why">Why Tracescribe</a>
+  <a href="#model">Operating Model</a>
+  <a href="#diff">Differentiators</a>
+  <a href="#experience">Experience</a>
+  <a href="#team">Team</a>
+  <a href="#events">Events</a>
+  <a href="#contact">Get in touch</a>
+</div>
+
+<main>
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top" data-scene="top">
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="eyebrow reveal" style="margin-bottom:26px;">Cardiovascular Only · Commercial CRO + Academic ARO</div>
+      <h1 class="h-display reveal d1">Driven by <em class="b">Science</em>.<br />Dedicated to <em>Heart</em>.</h1>
+      <p class="lede reveal d2" style="margin-top:28px;">
+        <strong>The team that wins your trial is the team that runs it.</strong> A physician-led cardiovascular CRO across drug and device. The same senior cardiologists on every protocol from concept through database lock.
+      </p>
+      <div class="reveal d3" style="display:flex; gap:14px; flex-wrap:wrap; margin-top:36px;">
+        <a href="#diff" class="btn btn-primary">Explore capabilities</a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+      <div class="reveal d4 mono" style="margin-top:48px; font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--dim);">
+        Founded 1997 &nbsp;·&nbsp; Cardiovascular Clinical Research &nbsp;·&nbsp; Drug, Device &amp; Combination
+      </div>
+    </div>
+  </div>
+  <div class="holo-tag" id="holoTag" aria-hidden="true">
+    Fig. 01 — Myocardial point volume<br />
+    <span id="holoSamples">24,000 samples</span> · 62 BPM<br />
+    <span class="rec">● scan · conduction · perfusion</span>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><span class="ln"></span></div>
+</section>
+
+<!-- ===================== AT A GLANCE ===================== -->
+<section class="sec" id="glance" data-scene="glance">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">01</span><span class="ttl">Tracescribe at a Glance</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:860px;">Six decades of cardiovascular research. Forty-five trials. Nine thousand endpoints. <em>One focus. Drug, device, and combination.</em></h2>
+      <p class="lede reveal d1" style="margin-top:18px; max-width:680px;">Most specialist CROs run drug or device. Tracescribe runs both, in cardiovascular only.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:34px 28px; margin-top:52px;">
+        <div class="stat reveal"><div class="num" data-target="60" data-suffix="+">60<span class="u">+</span></div><div class="lbl">Combined years<br />founder CV research</div></div>
+        <div class="stat reveal d1"><div class="num" data-target="45" data-suffix="+">45<span class="u">+</span></div><div class="lbl">Heart failure trials<br />in the last 20 years</div></div>
+        <div class="stat reveal d2"><div class="num" data-target="9000" data-suffix="+">9,000<span class="u">+</span></div><div class="lbl">Adjudicated endpoints<br />across named CV trials</div></div>
+        <div class="stat reveal d3"><div class="num" data-target="12" data-suffix="+">12<span class="u">+</span></div><div class="lbl">Core-lab echo studies<br />read in-house</div></div>
+        <div class="stat reveal d4"><div class="num" data-target="13" data-suffix="">13</div><div class="lbl">DSMB engagements<br />CV trial oversight</div></div>
+        <div class="stat reveal d5"><div class="num" data-nocount="1">1997</div><div class="lbl">Founded<br />Cardiovascular CRO</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE THESIS ===================== -->
+<section class="sec" id="thesis" data-scene="thesis">
+  <div class="wrap">
+    <div class="panel panel--l quote-panel reveal">
+      <div class="sec-head"><span class="no">02</span><span class="ttl">The Thesis · Tracescribe Operating Philosophy</span><span class="ln"></span></div>
+      <blockquote class="reveal d1">
+        <p class="q">Cardiovascular trials fail at <em>execution</em>, not science. The people who win your trial should be the ones who run it, all the way through database lock.</p>
+      </blockquote>
+      <p class="reveal d2" style="margin-top:22px; line-height:1.65; color:var(--text); max-width:600px; font-weight:300;">
+        After thirty years in this field, we built Tracescribe because no one else was doing it this way.
+      </p>
+      <div class="reveal d2 kicker" style="margin-top:26px;">Founders · Tracescribe Research</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY Tracescribe EXISTS ===================== -->
+<section class="sec" id="why" data-scene="why">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">03</span><span class="ttl">Why Tracescribe Exists · The Execution Gap</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:760px;">Every year, promising cardiac therapies fail. Not because the science was wrong, but because the <em>execution</em> was.</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin-top:46px;">
+        <div class="card card-hover reveal card--num"><span class="ghost" aria-hidden="true">01</span><span class="idx">01 / Team Rotation</span><h3>The A-team vanishes.</h3><p>The scientists who win your business disappear after kickoff, replaced by junior associates learning your protocol on the fly.</p></div>
+        <div class="card card-hover reveal d1 card--num"><span class="ghost" aria-hidden="true">02</span><span class="idx">02 / Late Biostats</span><h3>Statistics arrive too late.</h3><p>Biostatisticians join at database lock rather than protocol concept, spending months untangling what should have been designed correctly from the start.</p></div>
+        <div class="card card-hover reveal d2 card--num"><span class="ghost" aria-hidden="true">03</span><span class="idx">03 / Scope Creep</span><h3>Budgets become change orders.</h3><p>Conservative budgets turn into change orders. Timelines slip. Your PDUFA date moves.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SYNTHESIS · ARO + CRO ===================== -->
+<section class="sec" id="synthesis" data-scene="synthesis">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">04</span><span class="ttl">Positioning · ARO + CRO</span><span class="ln"></span></div>
+      <div class="g2">
+        <h2 class="h-section reveal d1">The thought leaders and site relationships of an ARO, with the client focus and scale of a commercial CRO. <em>One team.</em></h2>
+        <p class="reveal d2" style="line-height:1.65; color:var(--text); font-weight:300;">A commercial CRO gives you speed, technology, and scale. An academic research organization gives you thought leaders who are the actual principal investigators, plus the site relationships that come with them. Tracescribe gives you both.</p>
+      </div>
+      <div class="synth" role="group" aria-label="Tracescribe combines the strengths of a commercial CRO and an academic ARO">
+        <div class="synth-panel synth-panel--cro reveal">
+          <div class="synth-tag kicker">Commercial CRO</div>
+          <ul class="synth-list">
+            <li class="synth-chip reveal d1">Responsiveness &amp; innovation</li>
+            <li class="synth-chip reveal d2">Technology &amp; data integrity</li>
+            <li class="synth-chip reveal d3">Client focus &amp; scale</li>
+          </ul>
+        </div>
+        <div class="synth-core reveal d2">
+          <span class="synth-core-mk" style="font-size:1.6rem;">Tracescribe</span>
+          <span class="synth-core-eq">ARO + CRO</span>
+          <p class="synth-core-tag">Our mission = your goals.<br />No rotation. No handoffs.</p>
+        </div>
+        <div class="synth-panel synth-panel--aro reveal">
+          <div class="synth-tag kicker">Academic ARO</div>
+          <ul class="synth-list">
+            <li class="synth-chip reveal d1">Thought leaders = principals</li>
+            <li class="synth-chip reveal d2">Site &amp; investigator relationships</li>
+            <li class="synth-chip reveal d3">Academic rigor</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OPERATING MODEL ===================== -->
+<section class="sec" id="model" data-scene="model">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">05</span><span class="ttl">The Tracescribe Operating Model</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:760px;">What changes when cardiovascular work stays in-house. <em>Four principles. No exceptions.</em></h2>
+      <p class="lede reveal d1" style="margin-top:18px; max-width:680px;">No layers between you and the people doing the work. Fast, and shaped around your program.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:20px; margin-top:46px;">
+        <div class="card card-hover reveal"><span class="idx">01</span><h3>Cardiologists on Every Protocol</h3><p>Senior cardiologists engage from protocol concept through database lock. Not as advisors, as decision-makers.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">02</span><h3>Biometrics Built In</h3><p>Data management, medical coding, and SAP and mock-shell development in-house, with statistical programming delivered to support sponsor needs.</p></div>
+        <div class="card card-hover reveal d2"><span class="idx">03</span><h3>Adjudication In-House</h3><p>Blinded independent CEC adjudication performed by Tracescribe cardiologists. Chain of custody from CRF to database stays inside Tracescribe. No subcontractors.</p></div>
+        <div class="card card-hover reveal d3"><span class="idx">04</span><h3>Core Lab Reads Images</h3><p>Echo, hemodynamic, MRI, SPECT, and PET read in-house by Tracescribe. Not stored. Not shipped to a vendor. Read by people Tracescribe employs.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SERVICES ===================== -->
+<section class="sec" id="services" data-scene="services">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">06</span><span class="ttl">Full-Service Capabilities</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:760px;">From development strategy to database lock, the full scope of a cardiovascular trial. <em>All in-house.</em></h2>
+      <p class="lede reveal d1" style="margin-top:18px; max-width:680px;">Eight capability areas, delivered by one cardiovascular team. No subcontractors between you and the work.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:20px; margin-top:46px;">
+        <div class="card card-hover reveal"><span class="idx">01</span><h3>Clinical Development Strategy</h3><p>Endpoints and protocol concept set with cardiologists who have served on FDA advisory panels.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">02</span><h3>Trial Planning &amp; Design</h3><p>Adaptive and Bayesian designs, dual-region strategy, and mock shells built before first patient in.</p></div>
+        <div class="card card-hover reveal d2"><span class="idx">03</span><h3>Clinical Operations</h3><p>Monitoring and conduct led by directors, with the same senior team from first visit to last.</p></div>
+        <div class="card card-hover reveal d3"><span class="idx">04</span><h3>Data Management</h3><p>Database build, medical coding, and external data streams reconciled in-house through lock.</p></div>
+        <div class="card card-hover reveal"><span class="idx">05</span><h3>Pharmacovigilance &amp; Safety</h3><p>Case processing and safety surveillance, coordinated with DSMB oversight and blinded event adjudication.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">06</span><h3>Trial Analytics</h3><p>Interim analyses and DSMB data packages, plus milestone reporting sponsors can act on.</p></div>
+        <div class="card card-hover reveal d2"><span class="idx">07</span><h3>Biostatistics</h3><p>SAP locked before database lock. Programming specs, QC, and timelines stay inside Tracescribe.</p></div>
+        <div class="card card-hover reveal d3"><span class="idx">08</span><h3>Core Laboratory Services</h3><p>Echo, hemodynamic, MRI, SPECT, and PET, with intra- and inter-reader variability in every read.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DIFFERENTIATORS ===================== -->
+<div id="diff">
+
+  <!-- 07 · Adjudication -->
+  <section class="sec" id="adjudication" data-scene="adjudication">
+    <div class="wrap">
+      <div class="panel panel--l reveal" style="max-width:820px;">
+        <div class="sec-head"><span class="no">07</span><span class="ttl">Differentiator · Adjudication</span><span class="ln"></span></div>
+        <h2 class="h-section reveal d1">Blinded. Adjudicated. <em>Defensible.</em></h2>
+        <p class="reveal d2" style="line-height:1.65; color:var(--text); margin-top:16px; font-weight:300;">Most CROs subcontract cardiovascular endpoint adjudication to external CEC vendors. Tracescribe does not. The firm sponsors trust to deliver the data also stands behind the adjudication of its events.</p>
+
+        <div class="stat reveal d2" style="margin-top:40px;">
+          <div class="num" data-target="9000" data-suffix="+">9,000<span class="u">+</span></div>
+          <div class="lbl">CV endpoints adjudicated in-house · across named CV trials</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr; gap:30px; margin-top:44px;">
+          <div class="reveal">
+            <div class="kicker" style="color:#FF8D96; margin-bottom:14px;">Tracescribe · In-House</div>
+            <div class="chain good">
+              <span class="node">CRF</span><span class="arr">→</span>
+              <span class="node">CEC Review</span><span class="arr">→</span>
+              <span class="node db">Database</span>
+            </div>
+            <p style="margin-top:14px; font-size:0.88rem; color:var(--dim);">Single chain of custody. Same team. No handoffs.</p>
+          </div>
+          <div class="reveal d1">
+            <div class="kicker" style="margin-bottom:14px;">Typical CRO · Subcontracted</div>
+            <div class="chain bad">
+              <span class="node">CRF</span><span class="arr">→</span>
+              <span class="node">External CEC Vendor</span><span class="arr">→</span>
+              <span class="node">CRO</span><span class="arr">→</span>
+              <span class="node db">Database</span>
+            </div>
+            <p style="margin-top:14px; font-size:0.88rem; color:var(--dim);">Handoffs. Vendor disputes. Chain of custody breaks.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:42px;">
+          <div class="card reveal" style="padding:17px;"><span class="idx" style="margin-bottom:8px;">01</span><h3 style="font-size:0.95rem;">Event triggered</h3><p style="font-size:0.84rem;">Flagged case routed for adjudication.</p></div>
+          <div class="card reveal d1" style="padding:17px;"><span class="idx" style="margin-bottom:8px;">02</span><h3 style="font-size:0.95rem;">Package built</h3><p style="font-size:0.84rem;">De-identified. Treatment blinded.</p></div>
+          <div class="card reveal d2" style="padding:17px;"><span class="idx" style="margin-bottom:8px;">03</span><h3 style="font-size:0.95rem;">Blinded review</h3><p style="font-size:0.84rem;">Two-reviewer minimum, third for disagreement.</p></div>
+          <div class="card reveal d3" style="padding:17px;"><span class="idx" style="margin-bottom:8px;">04</span><h3 style="font-size:0.95rem;">Classified</h3><p style="font-size:0.84rem;">Coded to endpoint definitions. Audit trail preserved.</p></div>
+          <div class="card reveal d4" style="padding:17px;"><span class="idx" style="margin-bottom:8px;">05</span><h3 style="font-size:0.95rem;">Locked</h3><p style="font-size:0.84rem;">Transmitted to biostats. Reopened only by amendment.</p></div>
+        </div>
+
+        <div class="reveal" style="margin-top:32px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <span class="pill pill--red">Recent</span>
+          <span class="pill">Cardiac amyloidosis · CEC · 250+ events</span>
+          <span class="pill">Federally-funded program · CEC · ~2,300 patient pool</span>
+          <span class="pill">HFpEF · DSMB</span>
+          <span class="pill">Refractory angina · DSMB</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · Time to decision -->
+  <section class="sec" id="time" data-scene="time">
+    <div class="wrap">
+      <div class="panel panel--r reveal" style="max-width:820px;">
+        <div class="sec-head"><span class="no">08</span><span class="ttl">Differentiator · Time-to-Decision</span><span class="ln"></span></div>
+        <h2 class="h-section reveal d1">From last patient to topline. <em>35 days.</em></h2>
+        <p class="reveal d2" style="line-height:1.65; color:var(--text); margin-top:16px; font-weight:300;">Three workstreams. One coordinated team. CRA, data management, and biostatistics run concurrently from LPLV. Programming coordination begins five days before lock.</p>
+
+        <div class="tl-track reveal d2" id="tlTrack">
+          <div class="tl-fill"></div>
+          <div class="tl-node" style="left:0%;"><div class="tl-cap top">LPLV</div><div class="tl-dot"></div></div>
+          <div class="tl-node" style="left:28%;"><div class="tl-cap bot">Day 10</div><div class="tl-dot"></div></div>
+          <div class="tl-node" style="left:56%;"><div class="tl-cap bot">Day 20</div><div class="tl-dot"></div></div>
+          <div class="tl-node" style="left:85%;"><div class="tl-cap top">DBL · Day 30</div><div class="tl-dot"></div></div>
+          <div class="tl-node end" style="left:100%;"><div class="tl-cap bot">Topline · Day 35</div><div class="tl-dot"></div></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:14px;">
+          <div class="card reveal"><h3 style="font-size:1.02rem;">Parallel, not sequential</h3><p>CRA, DM, and biostats workstreams run concurrently from LPLV. Programming coordination begins five days before lock.</p></div>
+          <div class="card reveal d1"><h3 style="font-size:1.02rem;">Senior PM in the room</h3><p>Directors review every milestone. No junior project manager translating between sponsor, sites, and biostats.</p></div>
+          <div class="card reveal d2"><h3 style="font-size:1.02rem;">Vendor coordination owned by Tracescribe</h3><p>Statistical programming vendor managed by Tracescribe biometrics. Specs, QC, and timeline accountability stay inside Tracescribe.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · Core lab -->
+  <section class="sec" id="corelab" data-scene="corelab">
+    <div class="wrap">
+      <div class="panel panel--l reveal" style="max-width:820px;">
+        <div class="sec-head"><span class="no">09</span><span class="ttl">Differentiator · Core Laboratory</span><span class="ln"></span></div>
+        <h2 class="h-section reveal d1">Five modalities. <em>One core lab.</em></h2>
+        <p class="reveal d2" style="line-height:1.65; color:var(--text); margin-top:16px; font-weight:300;">Echo, hemodynamic catheterization, MRI, SPECT, and PET. Operated as a central core lab, in-house, for a decade. Not stored. Not subcontracted. Read by people Tracescribe employs.</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:28px; margin-top:42px;">
+          <div class="stat reveal"><div class="num" data-target="13" data-suffix="">13</div><div class="lbl">Imaging-led trials</div></div>
+          <div class="stat reveal d1"><div class="num" data-target="5" data-suffix="">5</div><div class="lbl">Modalities operated</div></div>
+          <div class="stat reveal d2"><div class="num" data-target="1750" data-prefix="~">~1,750</div><div class="lbl">Patients imaged</div></div>
+          <div class="stat reveal d3"><div class="num" data-target="10" data-suffix="y">10<span class="u">y</span></div><div class="lbl">Continuous core-lab work</div></div>
+        </div>
+
+        <div class="mbars reveal">
+          <div class="mbar" style="--w:100%;"><span class="mlbl">Echo</span><div class="mtrack"><div class="mfill"></div></div><span class="mval">10</span></div>
+          <div class="mbar" style="--w:40%;"><span class="mlbl">Hemodynamic</span><div class="mtrack"><div class="mfill"></div></div><span class="mval">4</span></div>
+          <div class="mbar" style="--w:40%;"><span class="mlbl">MRI</span><div class="mtrack"><div class="mfill"></div></div><span class="mval">4</span></div>
+          <div class="mbar" style="--w:30%;"><span class="mlbl">SPECT</span><div class="mtrack"><div class="mfill"></div></div><span class="mval">3</span></div>
+          <div class="mbar is-accent" style="--w:10%;"><span class="mlbl">PET · ¹⁵O-H₂O</span><div class="mtrack"><div class="mfill"></div></div><span class="mval">1</span></div>
+        </div>
+
+        <div class="card reveal" style="margin-top:30px; display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center;">
+          <div class="mono-av" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div>
+          <div>
+            <div class="kicker" style="margin-bottom:6px;">Marquee Engagement · Multi-Modality Core Lab</div>
+            <p style="margin:0; color:var(--text); font-size:0.93rem; line-height:1.62;">In a Phase 2 cell-therapy program, Tracescribe ran echo, MRI, and SPECT on the same <strong style="color:var(--white);">220 patients across 20 sites</strong>, capturing function, structure, and perfusion together. Core Lab Operations are led by our <strong style="color:var(--white);">Director of Core Laboratory Operations</strong>. Cardiac PET reads are underway on an active multi-region CAD program.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== FOUNDERS ===================== -->
+<section class="sec" id="founders" data-scene="founders">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">10</span><span class="ttl">Founders · Founded 1997</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:760px;">Two physicians. Six decades of cardiovascular research, academic medicine, and <em>FDA collaboration.</em></h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; margin-top:46px;">
+        <div class="card reveal">
+          <div style="display:flex; gap:18px; align-items:center; margin-bottom:20px;">
+            <div class="mono-av" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div>
+            <div><h3 style="font-size:1.18rem;">Founder &amp; Chief Scientific Officer, M.D.</h3><div class="kicker" style="color:#FF8D96; margin-top:5px;">Heart Failure &amp; Cardiorenal</div></div>
+          </div>
+          <p style="margin:0 0 14px; color:var(--dim); font-size:0.82rem; font-family:var(--mono); letter-spacing:0.04em;">30+ YEARS · HEART FAILURE &amp; CARDIORENAL</p>
+          <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:11px; font-size:0.9rem; line-height:1.55; font-weight:300;">
+            <li><span class="pill">Leadership</span> &nbsp;Senior cardiology leadership at an academic medical center · Heart-failure society leadership</li>
+            <li><span class="pill">Academic</span> &nbsp;Professor of Medicine &amp; Radiology at an academic medical center</li>
+            <li><span class="pill">Regulatory</span> &nbsp;Multiple FDA advisory panels · Close work with CDER &amp; CDRH</li>
+          </ul>
+        </div>
+        <div class="card reveal d1">
+          <div style="display:flex; gap:18px; align-items:center; margin-bottom:20px;">
+            <div class="mono-av" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div>
+            <div><h3 style="font-size:1.18rem;">Founder &amp; Chief Medical Officer, M.D.</h3><div class="kicker" style="color:#FF8D96; margin-top:5px;">Nuclear Cardiology &amp; Imaging</div></div>
+          </div>
+          <p style="margin:0 0 14px; color:var(--dim); font-size:0.82rem; font-family:var(--mono); letter-spacing:0.04em;">30+ YEARS · NUCLEAR CARDIOLOGY &amp; IMAGING</p>
+          <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:11px; font-size:0.9rem; line-height:1.55; font-weight:300;">
+            <li><span class="pill">Leadership</span> &nbsp;Chief of Cardiology &amp; Director of Nuclear Cardiology at an academic medical center · Nuclear cardiology society leadership</li>
+            <li><span class="pill">Academic</span> &nbsp;Professor of Medicine &amp; Radiology · Associate Editor, a leading cardiology journal</li>
+            <li><span class="pill">Regulatory</span> &nbsp;Former member, FDA medical imaging advisory committee · Ad-hoc cardio-renal panels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CASE STUDY ===================== -->
+<section class="sec" id="case" data-scene="case">
+  <div class="wrap">
+    <div class="panel panel--r reveal" style="max-width:860px;">
+      <div class="sec-head"><span class="no">11</span><span class="ttl">Case Study · Rare Cardiomyopathy · Phase 2</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:680px;">Phase 2 cardiology. <em>Delivered through COVID.</em></h2>
+      <p class="lede reveal d2" style="margin-top:18px; max-width:680px;">A first-in-population Phase 2 in a rare cardiomyopathy, run through the pandemic. A tightly defined population. Four external data streams. A protocol run like a pivotal.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:28px; margin-top:42px;">
+        <div class="stat reveal"><div class="num" data-target="90" data-suffix="%+">90<span class="u">%+</span></div><div class="lbl">Study completion</div></div>
+        <div class="stat reveal d1"><div class="num" data-target="30" data-suffix="d">30<span class="u">d</span></div><div class="lbl">Database-lock target met</div></div>
+        <div class="stat reveal d2"><div class="num" data-target="4" data-suffix="">4</div><div class="lbl">External data streams</div></div>
+        <div class="stat reveal d3"><div class="num" data-target="100" data-suffix="%">100<span class="u">%</span></div><div class="lbl">Source data verification</div></div>
+      </div>
+
+      <div class="reveal" style="margin-top:42px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="pill">Protocol locked</span>
+        <span style="color:var(--dim);">→</span>
+        <span class="pill">Enrolled through COVID</span>
+        <span style="color:var(--dim);">→</span>
+        <span class="pill">Through Omicron</span>
+        <span style="color:var(--dim);">→</span>
+        <span class="pill">Last subject in</span>
+        <span style="color:var(--dim);">→</span>
+        <span class="pill pill--red">SAP lock → DBL</span>
+      </div>
+      <p class="reveal" style="margin-top:24px; color:var(--dim); font-size:0.9rem; max-width:680px; line-height:1.6;">Multiple blinded core labs plus central biomarker and PK, all in on time. 100% SDV. A Phase 2 run like a pivotal: dual-region regulatory engagement, 1:1 randomization, SAP locked before database lock.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SPONSORS ===================== -->
+<section class="sec" id="sponsors" data-scene="sponsors">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">12</span><span class="ttl">Selected Engagements · By Therapeutic Area</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:720px;">Trusted across the <em>cardiovascular landscape.</em></h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:44px;">
+        <div class="sponsor reveal"><div class="nm">Heart Failure · HFrEF</div><div><div class="kicker">Pivotal device program</div><span class="pill" style="margin-top:8px;">Full Service · Ph3</span></div></div>
+        <div class="sponsor reveal d1"><div class="nm">Cardiac Amyloidosis</div><div><div class="kicker">Endpoint adjudication</div><span class="pill pill--red" style="margin-top:8px;">CEC · 250+ events</span></div></div>
+        <div class="sponsor reveal d2"><div class="nm">Circulatory Support</div><div><div class="kicker">Post-approval</div><span class="pill" style="margin-top:8px;">Device · Registry</span></div></div>
+        <div class="sponsor reveal d3"><div class="nm">Heart Failure · HFpEF</div><div><div class="kicker">Trial design &amp; oversight</div><span class="pill" style="margin-top:8px;">DSMB</span></div></div>
+        <div class="sponsor reveal"><div class="nm">Hypertrophic Cardiomyopathy</div><div><div class="kicker">Phase 2</div><span class="pill" style="margin-top:8px;">Core Lab · Full Service</span></div></div>
+        <div class="sponsor reveal d1"><div class="nm">Structural Heart · Shunt</div><div><div class="kicker">Interatrial shunt</div><span class="pill" style="margin-top:8px;">Core Lab · Echo + MRI</span></div></div>
+        <div class="sponsor reveal d2"><div class="nm">Structural Heart · HFpEF</div><div><div class="kicker">Interatrial shunt</div><span class="pill" style="margin-top:8px;">Core Lab · Echo + Hemo</span></div></div>
+        <div class="sponsor reveal d3"><div class="nm">Heart Failure · Device</div><div><div class="kicker">Phase 3</div><span class="pill" style="margin-top:8px;">Device · Monitoring</span></div></div>
+        <div class="sponsor reveal"><div class="nm">Acute &amp; Chronic HF</div><div><div class="kicker">Multi-year, 8-study program</div><span class="pill pill--red" style="margin-top:8px;">Repeat Client · Full Service</span></div></div>
+      </div>
+      <p class="reveal kicker" style="margin-top:26px;">Drug, device, biologic, and diagnostic programs · Phase I through pivotal · Single engagements through multi-year partnerships.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section class="sec" id="experience" data-scene="experience">
+  <div class="wrap">
+    <div class="panel panel--l reveal" style="max-width:880px;">
+      <div class="sec-head"><span class="no">13</span><span class="ttl">Experience · Cardiovascular Trial Portfolio</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:720px;">Heart failure is half of everything Tracescribe has done. <em>Every subtype. Every phase.</em></h2>
+
+      <div class="tabs reveal d2" style="margin-top:38px;" role="tablist" aria-label="Trial portfolio by category">
+        <button class="tab active" data-tab="drug" id="tab-drug" role="tab" aria-selected="true" aria-controls="panel-drug">HF Drug</button>
+        <button class="tab" data-tab="device" id="tab-device" role="tab" aria-selected="false" aria-controls="panel-device" tabindex="-1">HF Device</button>
+        <button class="tab" data-tab="cec" id="tab-cec" role="tab" aria-selected="false" aria-controls="panel-cec" tabindex="-1">CEC &amp; DSMB</button>
+      </div>
+
+      <div class="tab-panel active reveal" data-panel="drug" id="panel-drug" role="tabpanel" aria-labelledby="tab-drug" tabindex="0">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:24px;">
+          <div class="stat"><div class="num">9</div><div class="lbl">HF drug programs · Phase I–IV</div></div>
+          <div class="stat"><div class="num">6,200<span class="u">+</span></div><div class="lbl">Patients enrolled</div></div>
+          <div class="stat"><div class="num">250</div><div class="lbl">Sites · largest single trial</div></div>
+        </div>
+        <div style="margin-top:22px; display:flex; flex-wrap:wrap; gap:8px;">
+          <span class="pill">Vasopressin antagonists</span><span class="pill">Beta-blockers</span><span class="pill">Aldosterone antagonists</span><span class="pill">SC diuretics</span><span class="pill">Interatrial shunt</span>
+        </div>
+        <p class="kicker" style="margin-top:18px;">Among them, one of the largest heart failure trials in Tracescribe history: 4,000+ patients across 250 global sites.</p>
+      </div>
+
+      <div class="tab-panel reveal" data-panel="device" id="panel-device" role="tabpanel" aria-labelledby="tab-device" tabindex="0">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:24px;">
+          <div class="stat"><div class="num">7</div><div class="lbl">HF device programs · pivotal–Ph IV</div></div>
+          <div class="stat"><div class="num">5<span class="u">yr</span></div><div class="lbl">Longest continuous conduct</div></div>
+          <div class="stat"><div class="num">NA + EU</div><div class="lbl">Multi-region implant trials</div></div>
+        </div>
+        <div style="margin-top:22px; display:flex; flex-wrap:wrap; gap:8px;">
+          <span class="pill">Implantable neurostimulation</span><span class="pill">Interatrial shunt</span><span class="pill">Cardiac restraint</span><span class="pill">Fluid management</span><span class="pill">Implantable monitoring</span>
+        </div>
+        <p class="kicker" style="margin-top:18px;">Including a Phase 3 pivotal implant trial: adaptive Bayesian design, NA + EU, run for five years through COVID with no conduct issues.</p>
+      </div>
+
+      <div class="tab-panel reveal" data-panel="cec" id="panel-cec" role="tabpanel" aria-labelledby="tab-cec" tabindex="0">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:24px;">
+          <div class="stat"><div class="num">11</div><div class="lbl">CEC trials adjudicated</div></div>
+          <div class="stat"><div class="num">9,000<span class="u">+</span></div><div class="lbl">Endpoints adjudicated in-house</div></div>
+          <div class="stat"><div class="num">13</div><div class="lbl">DSMB engagements</div></div>
+        </div>
+        <div style="margin-top:22px; display:flex; flex-wrap:wrap; gap:8px;">
+          <span class="pill">Heart failure</span><span class="pill">Cardiac amyloidosis</span><span class="pill">Post-MI</span><span class="pill">Women's CV health</span><span class="pill">Cell therapy</span><span class="pill">Cardiorenal</span>
+        </div>
+        <p style="margin-top:18px; color:var(--text); font-size:0.95rem; line-height:1.6; max-width:680px; font-weight:300;"><strong style="color:var(--white);">9,000+ cardiovascular endpoints adjudicated in-house</strong> across legacy pivotal trials and current programs. Single chain of custody, blinded, defensible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TEAM ===================== -->
+<section class="sec" id="team" data-scene="team">
+  <div class="wrap">
+    <div class="panel reveal">
+      <div class="sec-head"><span class="no">14</span><span class="ttl">How to Engage · The People in the Room</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:720px;">From first conversation through database lock. <em>The people in the room.</em></h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; margin-top:46px;">
+        <div class="card card-hover reveal" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Founder &amp; Chief Scientific Officer, M.D.</h3><div class="kicker" style="margin-top:6px;">Heart Failure &amp; Cardiorenal</div></div>
+        <div class="card card-hover reveal d1" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Founder &amp; Chief Medical Officer, M.D.</h3><div class="kicker" style="margin-top:6px;">Nuclear Cardiology &amp; Imaging</div></div>
+        <div class="card card-hover reveal d2" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Chief Executive Officer, Ph.D.</h3><div class="kicker" style="margin-top:6px;">Operations &amp; Delivery</div></div>
+        <div class="card card-hover reveal d3" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Medical Director, M.D.</h3><div class="kicker" style="margin-top:6px;">Clinical &amp; Core Lab</div></div>
+        <div class="card card-hover reveal d4" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Director, Project Delivery</h3><div class="kicker" style="margin-top:6px;">Clinical Operations</div></div>
+        <div class="card card-hover reveal d5" style="text-align:center; padding:30px 22px;"><div class="mono-av" style="margin:0 auto 16px;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6Zm0 1.7c-4.4 0-8 2.2-8 5.2V21h16v-1.5c0-3-3.6-5.2-8-5.2Z"/></svg></div><h3 style="font-size:1.03rem;">Director, Core Laboratory Operations</h3><div class="kicker" style="margin-top:6px;">Imaging &amp; Core Lab</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EVENTS ===================== -->
+<section class="sec" id="events" data-scene="events">
+  <div class="wrap">
+    <div class="panel panel--l reveal" style="max-width:880px;">
+      <div class="sec-head"><span class="no">15</span><span class="ttl">Where to Find Us · 2026</span><span class="ln"></span></div>
+      <h2 class="h-section reveal d1" style="max-width:760px;">You'll find the senior team at the year's <em>major cardiovascular meetings.</em></h2>
+      <p class="lede reveal d1" style="margin-top:18px; max-width:640px;">From Frankfurt to San Diego, we're at the congresses where cardiovascular research gets presented and debated. If you'll be there, let's meet.</p>
+      <div id="eventsList" class="events-list" style="margin-top:46px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section class="sec" id="contact" data-scene="contact" style="padding-bottom:16vh;">
+  <div class="wrap">
+    <div class="panel panel--c reveal" style="text-align:center;">
+      <div class="eyebrow reveal" style="justify-content:center;">How to Engage</div>
+      <h2 class="h-section reveal d1" style="margin-top:18px;">Let's talk about your <em>cardiovascular trial.</em></h2>
+      <p class="lede reveal d2" style="margin:18px auto 0; max-width:560px;">From first conversation through database lock. Tell us about your program and we'll get the right people in the room.</p>
+
+      <form id="contactForm" class="reveal d2" style="margin-top:40px; text-align:left;" novalidate>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+        </div>
+        <div class="field" style="margin-top:18px;"><label for="f-org">Organization</label><input id="f-org" name="org" type="text" autocomplete="organization" /></div>
+        <div class="field" style="margin-top:18px;"><label for="f-msg">About your program</label><textarea id="f-msg" name="message" rows="4" required></textarea></div>
+        <div style="display:flex; align-items:center; gap:18px; margin-top:24px; flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">Send message</button>
+          <span id="formMsg" class="mono" role="status" aria-live="polite" style="font-size:12px; color:#FF8D96; opacity:0; transition:opacity .3s;"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div style="display:flex; justify-content:space-between; gap:30px; flex-wrap:wrap; align-items:flex-start;">
+      <div>
+        <div class="ft-name">Tracescribe Research</div>
+        <div class="mono" style="font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--dim); margin-top:9px;">Founded 1997 · Cardiovascular Clinical Research</div>
+      </div>
+      <nav style="display:flex; gap:26px; flex-wrap:wrap; font-size:13px; color:var(--text);" aria-label="Footer">
+        <a href="#glance">At a Glance</a>
+        <a href="#model">Operating Model</a>
+        <a href="#diff">Differentiators</a>
+        <a href="#experience">Experience</a>
+        <a href="#events">Events</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+    <div style="border-top:1px solid var(--line); margin-top:34px; padding-top:22px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+      <span class="mono" style="font-size:11px; color:var(--dim);">© 2026 Tracescribe Research. All rights reserved.</span>
+      <span class="mono" style="font-size:11px; color:var(--red); letter-spacing:0.1em;">tracescribe.com</span>
+    </div>
+  </div>
+</footer>
+<script>
+/* ============================================================
+   LAYER 1 · DOM interactivity (no dependencies — always runs,
+   even if the WebGL module or CDN fails)
+   ============================================================ */
+(function () {
+  'use strict';
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- scroll progress ---------- */
+  var progress = document.getElementById('progress');
+  var onScroll = function () {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    progress.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- reveal on scroll ---------- */
+  var revealObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('vis'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+  /* the hero is above the fold: reveal it on the first frame rather than
+     waiting for observer dispatch behind the heavy 3D boot */
+  requestAnimationFrame(function () {
+    document.querySelectorAll('#top .reveal').forEach(function (el) {
+      el.classList.add('vis'); revealObs.unobserve(el);
+    });
+  });
+
+  /* ---------- upcoming events (past events drop off automatically) ---------- */
+  (function () {
+    var list = document.getElementById('eventsList');
+    if (!list) return;
+    var events = [
+      { name: "Cardiovascular Clinical Research Forum",     start: "2026-07-15", end: "2026-07-17", loc: "Chicago, IL" },
+      { name: "Heart Failure Therapeutics Summit",          start: "2026-08-26", end: "2026-08-29", loc: "Berlin, Germany" },
+      { name: "Structural Heart & Imaging Symposium",       start: "2026-09-18", end: "2026-09-20", loc: "Denver, CO" },
+      { name: "Global Cardiology Trials Congress",          start: "2026-10-08", end: "2026-10-11", loc: "Madrid, Spain" },
+      { name: "Interventional Cardiovascular Meeting",      start: "2026-10-30", end: "2026-11-02", loc: "San Francisco, CA" },
+      { name: "Cardiac Endpoints & Adjudication Workshop",  start: "2026-11-12", end: "2026-11-13", loc: "London, UK" },
+      { name: "Cardiovascular Innovation Sessions",         start: "2026-12-04", end: "2026-12-06", loc: "Singapore" }
+    ];
+
+    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var parse = function (s) { var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+
+    var upcoming = events
+      .map(function (e) { return Object.assign({}, e, { s: parse(e.start), x: parse(e.end) }); })
+      .filter(function (e) { return e.x >= today; })
+      .sort(function (a, b) { return a.s - b.s; });
+
+    if (!upcoming.length) {
+      list.innerHTML = '<p class="events-empty">New dates are being confirmed. Check back soon.</p>';
+      return;
+    }
+
+    var fmtRange = function (s, x) {
+      return s.getMonth() === x.getMonth()
+        ? s.getDate() + '–' + x.getDate()
+        : MON[s.getMonth()] + ' ' + s.getDate() + '–' + MON[x.getMonth()] + ' ' + x.getDate();
+    };
+    var esc = function (str) { return str.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); };
+
+    var frag = document.createDocumentFragment();
+    var curKey = '', monthBox = null;
+    upcoming.forEach(function (ev, i) {
+      var key = ev.s.getFullYear() + '-' + ev.s.getMonth();
+      if (key !== curKey) {
+        curKey = key;
+        monthBox = document.createElement('div');
+        monthBox.className = 'events-month reveal';
+        monthBox.innerHTML = '<div class="events-month-label">' + MONTHS[ev.s.getMonth()] + ' ' + ev.s.getFullYear() + '</div>';
+        frag.appendChild(monthBox);
+      }
+      var next = i === 0 ? ' <span class="pill pill--red" style="margin-left:10px; vertical-align:middle;">Next</span>' : '';
+      var nm = ev.url
+        ? '<a href="' + ev.url + '" target="_blank" rel="noopener">' + esc(ev.name) + '</a>'
+        : esc(ev.name);
+      var row = document.createElement('div');
+      row.className = 'event-row';
+      row.innerHTML =
+        '<span class="event-date">' + fmtRange(ev.s, ev.x) + '</span>' +
+        '<span class="event-name">' + nm + next + '</span>' +
+        '<span class="event-loc">' + esc(ev.loc) + '</span>';
+      monthBox.appendChild(row);
+    });
+    list.appendChild(frag);
+    list.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+  })();
+
+  /* ---------- counters ---------- */
+  function animateCount(el) {
+    if (el.dataset.nocount) return;
+    var target = parseFloat(el.dataset.target);
+    var prefix = el.dataset.prefix || '';
+    var suffix = el.dataset.suffix || '';
+    var dur = 1800, start = performance.now();
+    function tick(now) {
+      var p = Math.min((now - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 4);
+      var val = Math.floor(eased * target);
+      el.innerHTML = prefix + val.toLocaleString() + '<span class="u">' + suffix + '</span>';
+      if (p < 1) requestAnimationFrame(tick);
+      else el.innerHTML = prefix + target.toLocaleString() + '<span class="u">' + suffix + '</span>';
+    }
+    requestAnimationFrame(tick);
+  }
+  if (!REDUCED) {
+    var countObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { animateCount(e.target); countObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat .num[data-target]').forEach(function (el) {
+      el.innerHTML = (el.dataset.prefix || '') + '0<span class="u">' + (el.dataset.suffix || '') + '</span>';
+      countObs.observe(el);
+    });
+  }
+
+  /* ---------- timeline fill ---------- */
+  var tlTrack = document.getElementById('tlTrack');
+  if (tlTrack && !REDUCED) {
+    var tlObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { tlTrack.classList.add('on'); tlObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    tlObs.observe(tlTrack);
+  } else if (tlTrack) {
+    tlTrack.classList.add('on');
+  }
+
+  /* ---------- tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function selectTab(tab, focus) {
+    var key = tab.dataset.tab;
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+    });
+    document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.toggle('active', p.dataset.panel === key); });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { selectTab(tab); });
+    tab.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') next = tabs[0];
+      else if (e.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); selectTab(next, true); }
+    });
+  });
+
+  /* ---------- mobile menu ---------- */
+  var hamb = document.getElementById('hamb');
+  var mobileMenu = document.getElementById('mobileMenu');
+  hamb.addEventListener('click', function () {
+    var open = mobileMenu.classList.toggle('open');
+    hamb.setAttribute('aria-expanded', open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      mobileMenu.classList.remove('open');
+      hamb.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---------- contact form ---------- */
+  var form = document.getElementById('contactForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.name.value.trim(), email = form.email.value.trim(), msg = form.message.value.trim();
+    var ok = name && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) && msg;
+    var fm = document.getElementById('formMsg');
+    if (ok) {
+      fm.textContent = "Thank you. We'll be in touch shortly.";
+      fm.style.opacity = '1';
+      form.reset();
+      setTimeout(function () { fm.style.opacity = '0'; }, 5000);
+    } else {
+      fm.textContent = 'Please complete name, a valid email, and a message.';
+      fm.style.opacity = '1';
+    }
+  });
+
+  /* ---------- 3D watchdog: hide canvas if the module never boots ---------- */
+  setTimeout(function () {
+    if (!window.__ts3dReady) document.body.classList.add('no3d');
+  }, 6000);
+})();
+</script>
+
+<script type="module">
+/* ============================================================
+   LAYER 2 · The holographic scene (three.js)
+   A single persistent WebGL world choreographed by scroll:
+     · particle heart (Taubin implicit surface) — hero & finale
+     · 3D ECG ribbon with a travelling pulse
+     · CRO/ARO data streams converging into a fused core
+     · capability lattice · chain-of-custody nodes
+     · 35-day topline rail · five-modality orbit
+   ============================================================ */
+import * as THREE from 'three';
+
+try {
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FINE_PTR = matchMedia('(pointer: fine)').matches;
+  const LOWPOWER = matchMedia('(max-width: 880px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+
+  const COUNT = {
+    heart:  LOWPOWER ? 9000 : 24000,
+    stars:  LOWPOWER ? 900  : 1700,
+    dust:   LOWPOWER ? 160  : 320,
+    tube:   LOWPOWER ? 800  : 1400,
+  };
+
+  const canvas = document.getElementById('webgl');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, LOWPOWER ? 1.75 : 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
+  camera.position.set(0, 0.5, 44);
+
+  /* ---------- shared textures ---------- */
+  function glowTexture(inner, outer) {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const x = c.getContext('2d');
+    const g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+    g.addColorStop(0, inner); g.addColorStop(0.35, outer); g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }
+  const TEX_RED  = glowTexture('rgba(255,235,236,0.95)', 'rgba(230,57,70,0.42)');
+  const TEX_DOT  = glowTexture('rgba(255,255,255,1)', 'rgba(255,255,255,0.28)');
+  const TEX_BLUE = glowTexture('rgba(235,243,255,0.95)', 'rgba(70,110,190,0.40)');
+
+  function makeGlowSprite(tex, scale, opacity) {
+    const m = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending });
+    const s = new THREE.Sprite(m);
+    s.scale.set(scale, scale, 1);
+    return s;
+  }
+
+  /* mono text label rendered to a canvas sprite */
+  const labelJobs = [];
+  function makeLabel(text, color, width) {
+    const holder = new THREE.Object3D();
+    labelJobs.push(() => {
+      const c = document.createElement('canvas'); c.width = 512; c.height = 96;
+      const x = c.getContext('2d');
+      x.font = '600 40px "JetBrains Mono", monospace';
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.shadowColor = color; x.shadowBlur = 18;
+      x.fillStyle = color;
+      // manual letterspacing
+      const chars = text.split(''); const sp = 8;
+      let total = 0;
+      chars.forEach(ch => total += x.measureText(ch).width + sp);
+      let cx = 256 - total / 2;
+      chars.forEach(ch => {
+        const w = x.measureText(ch).width;
+        x.fillText(ch, cx + w / 2, 50);
+        cx += w + sp;
+      });
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+      const m = new THREE.SpriteMaterial({ map: t, transparent: true, opacity: 0, depthWrite: false });
+      const s = new THREE.Sprite(m);
+      const w = width || 7;
+      s.scale.set(w, w * 96 / 512, 1);
+      holder.add(s);
+      holder.userData.mat = m;
+    });
+    return holder;
+  }
+
+  /* ============================================================
+     MOTIF 1 · Particle heart — Taubin implicit surface
+     (x² + 9/4·y² + z² − 1)³ − x²z³ − 9/80·y²z³ = 0
+     Three layers in one draw call:
+       aKind 0 · lit myocardial surface shell (rim + diffuse)
+       aKind 1 · interior ember volume
+       aKind 2 · coronary vessels grown over the surface
+     Per beat: a depolarization wave sweeps from the SA node,
+     a perfusion pulse runs the coronaries, then the chambers
+     contract with ventricular torsion.
+     ============================================================ */
+  function buildHeart() {
+    const group = new THREE.Group();
+    const S = 8.2;
+
+    /* implicit field + analytic gradient (equation space: z = up, y = depth) */
+    const F = (x, y, z) => {
+      const a = x * x + 2.25 * y * y + z * z - 1;
+      return a * a * a - x * x * z * z * z - 0.1125 * y * y * z * z * z;
+    };
+    const GRAD = (x, y, z) => {
+      const a = x * x + 2.25 * y * y + z * z - 1;
+      const a2 = 3 * a * a;
+      return [
+        a2 * 2 * x - 2 * x * z * z * z,
+        a2 * 4.5 * y - 0.225 * y * z * z * z,
+        a2 * 2 * z - 3 * x * x * z * z - 0.3375 * y * y * z * z,
+      ];
+    };
+    /* pull a nearby point back onto the f = 0 shell (Newton steps) */
+    const project = (p) => {
+      for (let k = 0; k < 3; k++) {
+        const v = F(p[0], p[1], p[2]);
+        const g = GRAD(p[0], p[1], p[2]);
+        const g2 = g[0] * g[0] + g[1] * g[1] + g[2] * g[2] || 1e-6;
+        const s = v / g2;
+        p[0] -= s * g[0]; p[1] -= s * g[1]; p[2] -= s * g[2];
+      }
+      return p;
+    };
+
+    const N_SURF = LOWPOWER ? 16000 : 42000;
+    const N_CORE = LOWPOWER ? 3000 : 8000;
+
+    /* ---- grow coronary vessel traces over the shell ---- */
+    const vess = [];
+    (function growCoronaries() {
+      const paths = [];
+      let maxT = 0.0001;
+      function grow(start, dir0, steps, t0, depth) {
+        let p = project(start.slice());
+        let dir = dir0.slice();
+        let t = t0;
+        const pts = [{ p: p.slice(), t }];
+        for (let i = 0; i < steps; i++) {
+          const g = GRAD(p[0], p[1], p[2]);
+          const gl = Math.hypot(g[0], g[1], g[2]) || 1e-6;
+          const n = [g[0] / gl, g[1] / gl, g[2] / gl];
+          const dn = dir[0] * n[0] + dir[1] * n[1] + dir[2] * n[2];
+          dir = [dir[0] - dn * n[0], dir[1] - dn * n[1], dir[2] - dn * n[2]];
+          dir[2] -= 0.17;                          /* drift toward the apex */
+          dir[0] += (Math.random() - 0.5) * 0.34;
+          dir[1] += (Math.random() - 0.5) * 0.34;
+          const dl = Math.hypot(dir[0], dir[1], dir[2]) || 1e-6;
+          dir = [dir[0] / dl, dir[1] / dl, dir[2] / dl];
+          const step = 0.055;
+          p = project([p[0] + dir[0] * step, p[1] + dir[1] * step, p[2] + dir[2] * step]);
+          t += step;
+          pts.push({ p: p.slice(), t });
+          if (p[2] < -0.92) break;                 /* reached the apex */
+          if (depth < 2 && i > 3 && Math.random() < 0.16) {
+            const ang = (Math.random() < 0.5 ? 1 : -1) * (0.6 + Math.random() * 0.55);
+            const c = Math.cos(ang), s2 = Math.sin(ang);
+            const cr = [n[1] * dir[2] - n[2] * dir[1], n[2] * dir[0] - n[0] * dir[2], n[0] * dir[1] - n[1] * dir[0]];
+            const dt = n[0] * dir[0] + n[1] * dir[1] + n[2] * dir[2];
+            const bd = [
+              dir[0] * c + cr[0] * s2 + n[0] * dt * (1 - c),
+              dir[1] * c + cr[1] * s2 + n[1] * dt * (1 - c),
+              dir[2] * c + cr[2] * s2 + n[2] * dt * (1 - c),
+            ];
+            grow(p.slice(), bd, 9 + Math.floor(Math.random() * 10), t, depth + 1);
+          }
+        }
+        paths.push(pts);
+        maxT = Math.max(maxT, t);
+      }
+      grow([-0.30, 0.55, 0.92], [-0.75, 0.10, -0.60], 27, 0, 0);  /* left coronary, front  */
+      grow([ 0.32, 0.50, 0.95], [ 0.78, 0.15, -0.55], 25, 0, 0);  /* right coronary, front */
+      grow([ 0.05, -0.55, 0.90], [ 0.10, -0.60, -0.75], 23, 0, 0);/* posterior descending  */
+
+      const SEG = LOWPOWER ? 4 : 7;
+      const DUP = LOWPOWER ? 1 : 2;
+      paths.forEach(pts => {
+        for (let i = 0; i + 1 < pts.length; i++) {
+          const Aq = pts[i], Bq = pts[i + 1];
+          for (let k = 0; k < SEG; k++) {
+            const u = k / SEG;
+            const t = (Aq.t + (Bq.t - Aq.t) * u) / maxT;
+            const base = [
+              Aq.p[0] + (Bq.p[0] - Aq.p[0]) * u,
+              Aq.p[1] + (Bq.p[1] - Aq.p[1]) * u,
+              Aq.p[2] + (Bq.p[2] - Aq.p[2]) * u,
+            ];
+            const g = GRAD(base[0], base[1], base[2]);
+            const gl = Math.hypot(g[0], g[1], g[2]) || 1e-6;
+            for (let d = 0; d < DUP; d++) {
+              const j = 0.014 * (1 - 0.5 * t);
+              vess.push({
+                p: [
+                  base[0] + g[0] / gl * 0.020 + (Math.random() - 0.5) * j,
+                  base[1] + g[1] / gl * 0.020 + (Math.random() - 0.5) * j,
+                  base[2] + g[2] / gl * 0.020 + (Math.random() - 0.5) * j,
+                ],
+                t, taper: 1 - 0.62 * t,
+              });
+            }
+          }
+        }
+      });
+    })();
+
+    const TOTAL = N_SURF + N_CORE + vess.length;
+    const pos  = new Float32Array(TOTAL * 3);
+    const nrm  = new Float32Array(TOTAL * 3);
+    const seed = new Float32Array(TOTAL);
+    const kind = new Float32Array(TOTAL);
+    const misc = new Float32Array(TOTAL);   /* surface: blue-shimmer flag · vessel: taper */
+    const wav  = new Float32Array(TOTAL);   /* conduction distance from the SA node, 0..1 */
+    const vts  = new Float32Array(TOTAL);   /* vessel flow parameter, 0 root → 1 tip      */
+
+    /* SA node sits high on the right atrium (local, scaled coords) */
+    const SA = [4.5, 7.8, 1.5];
+    const WAVE_MAX = 17.5;
+    const setPoint = (i, ex, ey, ez, kd, ms, vt) => {
+      const x = ex * S, y = ez * S, z = ey * S;        /* equation z = anatomical up */
+      pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z;
+      const g = GRAD(ex, ey, ez);
+      const gl = Math.hypot(g[0], g[1], g[2]) || 1e-6;
+      nrm[i * 3] = g[0] / gl; nrm[i * 3 + 1] = g[2] / gl; nrm[i * 3 + 2] = g[1] / gl;
+      seed[i] = Math.random();
+      kind[i] = kd; misc[i] = ms; vts[i] = vt;
+      const dx = x - SA[0], dy = y - SA[1], dz = z - SA[2];
+      wav[i] = Math.min(Math.sqrt(dx * dx + dy * dy + dz * dz) / WAVE_MAX, 1);
+    };
+
+    let i = 0, guard = 0;
+    while (i < N_SURF && guard < N_SURF * 120) {       /* myocardial shell */
+      guard++;
+      const x = (Math.random() * 2 - 1) * 1.25;
+      const y = (Math.random() * 2 - 1) * 0.85;
+      const z = Math.random() * 2.55 - 1.2;
+      const v = F(x, y, z);
+      if (v < 0 && v > -0.05) { setPoint(i, x, y, z, 0, Math.random() < 0.10 ? 1 : 0, 0); i++; }
+    }
+    guard = 0;
+    while (i < N_SURF + N_CORE && guard < N_CORE * 120) {   /* interior embers */
+      guard++;
+      const x = (Math.random() * 2 - 1) * 1.1;
+      const y = (Math.random() * 2 - 1) * 0.75;
+      const z = Math.random() * 2.3 - 1.1;
+      if (F(x, y, z) < -0.07) { setPoint(i, x, y, z, 1, 0, 0); i++; }
+    }
+    vess.forEach(vp => { setPoint(i, vp.p[0], vp.p[1], vp.p[2], 2, vp.taper, vp.t); i++; });
+    const actual = i;
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos.subarray(0, actual * 3), 3));
+    geo.setAttribute('aNrm', new THREE.BufferAttribute(nrm.subarray(0, actual * 3), 3));
+    geo.setAttribute('aSeed', new THREE.BufferAttribute(seed.subarray(0, actual), 1));
+    geo.setAttribute('aKind', new THREE.BufferAttribute(kind.subarray(0, actual), 1));
+    geo.setAttribute('aMisc', new THREE.BufferAttribute(misc.subarray(0, actual), 1));
+    geo.setAttribute('aWave', new THREE.BufferAttribute(wav.subarray(0, actual), 1));
+    geo.setAttribute('aVt',   new THREE.BufferAttribute(vts.subarray(0, actual), 1));
+
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 }, uBeat: { value: 0 }, uScanY: { value: -20 },
+        uWave: { value: -0.6 }, uPerf: { value: -0.6 },
+        uIntensity: { value: 0 }, uSize: { value: (LOWPOWER ? 1.45 : 0.95) * renderer.getPixelRatio() },
+      },
+      vertexShader: `
+        attribute float aSeed, aKind, aMisc, aWave, aVt;
+        attribute vec3 aNrm;
+        uniform float uTime, uBeat, uSize, uScanY, uWave, uPerf;
+        varying float vTw, vKind, vMisc, vScan, vWaveG, vPerfG, vRim, vDiff;
+        void main() {
+          vec3 p = position;
+          /* systolic squeeze with ventricular torsion (stronger toward the apex) */
+          float apex = clamp((6.0 - p.y) / 14.0, 0.0, 1.0);
+          float ang = uBeat * 0.16 * apex;
+          float cs = cos(ang), sn = sin(ang);
+          p = vec3(p.x * cs - p.z * sn, p.y, p.x * sn + p.z * cs);
+          p.xz *= 1.0 - uBeat * (0.045 + 0.03 * apex);
+          p.y  *= 1.0 - uBeat * 0.02;
+          /* breathing shimmer */
+          p += 0.05 * vec3(
+            sin(uTime * 0.8 + aSeed * 17.0),
+            sin(uTime * 0.7 + aSeed * 29.0),
+            sin(uTime * 0.9 + aSeed * 23.0));
+
+          vec4 mv = modelViewMatrix * vec4(p, 1.0);
+          /* volumetric shading: diffuse + silhouette rim from the field gradient */
+          vec3 n = normalize(normalMatrix * aNrm);
+          vec3 vdir = normalize(-mv.xyz);
+          vRim = pow(1.0 - abs(dot(n, vdir)), 2.2);
+          vec3 ldir = normalize(vec3(sin(uTime * 0.2) * 0.8, 0.55, 0.85));
+          vDiff = max(dot(n, ldir), 0.0);
+
+          float twk = 0.62 + 0.38 * sin(uTime * (1.4 + aSeed * 2.2) + aSeed * 43.0);
+          vTw = twk; vKind = aKind; vMisc = aMisc;
+          /* depolarization wavefront + coronary perfusion pulse */
+          vWaveG = exp(-pow((aWave - uWave) * 7.0, 2.0));
+          vPerfG = exp(-pow((aVt - uPerf) * 5.0, 2.0)) * step(1.5, aKind);
+          vScan = exp(-pow((position.y - uScanY) * 0.85, 2.0));
+
+          float base = uSize;
+          if (aKind > 1.5)      base *= (1.2 + 1.0 * vPerfG) * max(aMisc, 0.35);
+          else if (aKind > 0.5) base *= 0.72;
+          gl_PointSize = base * twk * (1.0 + uBeat * 0.18 + vWaveG * 0.6) * (150.0 / -mv.z);
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `
+        uniform float uIntensity, uBeat;
+        varying float vTw, vKind, vMisc, vScan, vWaveG, vPerfG, vRim, vDiff;
+        void main() {
+          vec2 c = gl_PointCoord - 0.5;
+          float d = length(c);
+          float disc = smoothstep(0.5, 0.06, d);
+          float core = smoothstep(0.16, 0.0, d);
+          vec3 col; float a;
+          if (vKind > 1.5) {
+            /* coronary vessels — scarlet threads, white-hot under perfusion */
+            col = vec3(1.0, 0.30, 0.34) * (0.6 + 0.4 * vTw)
+                + vec3(1.0, 0.92, 0.85) * vPerfG * 1.5
+                + vec3(1.0, 0.62, 0.62) * core * 0.7;
+            a = disc * (0.55 + 0.45 * vPerfG);
+          } else if (vKind > 0.5) {
+            /* interior embers */
+            col = vec3(0.55, 0.10, 0.13) * (0.5 + 0.5 * vTw)
+                + vec3(1.0, 0.74, 0.52) * vWaveG * 0.8;
+            a = disc * 0.28 * (0.5 + 0.5 * vTw);
+          } else {
+            /* lit myocardium + golden depolarization wash */
+            vec3 deep = vec3(0.30, 0.05, 0.09);
+            vec3 lit  = vec3(0.98, 0.27, 0.31);
+            col = mix(deep, lit, 0.22 + 0.58 * vDiff + 0.12 * vTw);
+            col += vec3(1.0, 0.55, 0.62) * vRim * 0.9;
+            col += vec3(1.0, 0.85, 0.58) * vWaveG * 1.15;
+            col = mix(col, vec3(0.45, 0.62, 0.95), vMisc * 0.9);
+            col += core * 0.35 * vTw;
+            a = disc * (0.36 + 0.34 * vTw + 0.5 * vWaveG + 0.35 * vRim);
+          }
+          col += vec3(0.30, 0.72, 0.95) * vScan * 0.8;
+          a *= uIntensity;
+          gl_FragColor = vec4(col * a, a);
+        }`,
+    });
+
+    const points = new THREE.Points(geo, mat);
+    group.add(points);
+    const glow = makeGlowSprite(TEX_RED, 17, 0);
+    group.add(glow);
+    scene.add(group);
+
+    const tag = document.getElementById('holoSamples');
+    if (tag) tag.textContent = actual.toLocaleString() + ' samples';
+
+    return {
+      group,
+      update(t, beat, k) {
+        const u = mat.uniforms;
+        u.uTime.value = t;
+        u.uBeat.value = beat * k;
+        u.uScanY.value = -11 + 23 * ((t / 4.6) % 1);
+        u.uIntensity.value = k;
+        /* cycle phase drives electrophysiology: depolarize → perfuse → contract */
+        const p = (t % T_BEAT) / T_BEAT;
+        u.uWave.value = (p > 0.02 && p < 0.34) ? ((p - 0.02) / 0.32) * 1.3 - 0.12 : -0.6;
+        u.uPerf.value = (p > 0.12 && p < 0.62) ? ((p - 0.12) / 0.50) * 1.3 - 0.12 : -0.6;
+        glow.material.opacity = 0.26 * k * (0.7 + 0.55 * beat);
+        group.rotation.y = t * 0.11;
+        group.position.y += Math.sin(t * 0.5) * 0.002;
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 2 · ECG ribbon with travelling pulse
+     ============================================================ */
+  function buildECG() {
+    const group = new THREE.Group();
+    const gauss = (u, c, w, h) => h * Math.exp(-((u - c) * (u - c)) / (w * w));
+    const wave = (u) =>
+      gauss(u, 0.20, 0.030, 0.20) + gauss(u, 0.315, 0.010, -0.16) +
+      gauss(u, 0.335, 0.011, 1.30) + gauss(u, 0.357, 0.010, -0.34) +
+      gauss(u, 0.55, 0.050, 0.34);
+    const pts = [];
+    const CYCLES = 6, LEN = 175, M = 900;
+    for (let i = 0; i < M; i++) {
+      const fx = i / (M - 1);
+      pts.push(new THREE.Vector3(-LEN / 2 + LEN * fx, wave((fx * CYCLES) % 1) * 3.4, 0));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const geo = new THREE.TubeGeometry(curve, COUNT.tube, 0.085, 7, false);
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+      uniforms: { uTime: { value: 0 }, uIntensity: { value: 0 } },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform float uTime, uIntensity;
+        varying vec2 vUv;
+        void main() {
+          float d = fract(vUv.x - uTime * 0.052);
+          float head = exp(-d * 95.0);
+          float trail = exp(-d * 8.5) * 0.5;
+          float base = 0.105;
+          vec3 col = vec3(0.95, 0.24, 0.30) * (base + trail) + vec3(1.0, 0.85, 0.86) * head;
+          float a = (base + trail + head) * uIntensity;
+          gl_FragColor = vec4(col, a);
+        }`,
+    });
+    const tube = new THREE.Mesh(geo, mat);
+    group.add(tube);
+    group.position.set(0, -7.6, -12);
+    scene.add(group);
+    return {
+      group,
+      update(t, beat, k) { mat.uniforms.uTime.value = t; mat.uniforms.uIntensity.value = k; },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 3 · CRO + ARO FUSION RAIL — the brand story in 3D
+     A red commercial-CRO conduit (fast, many packets) and a navy
+     academic-ARO conduit (slow, deliberate pulses) run an arced
+     rail and fuse at the Tracescribe core every 5.4s cycle: core flash,
+     expanding shockwave ring, spark burst, then an ignition wash
+     that runs the fused rail outward to both ends. The group's
+     position/scale lerp per section via the `fp` scene params
+     (hero band → above the ARO+CRO panel).
+     ============================================================ */
+  function buildFusion() {
+    const group = new THREE.Group();
+    const T_F = 5.4;
+    const HALF = 34;
+    const easeS = (x) => { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); };
+    const easeO = (x) => { x = Math.min(Math.max(x, 0), 1); return 1 - Math.pow(1 - x, 3); };
+
+    /* arced rail bulging toward the camera */
+    const railCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-HALF, 0, 0),
+      new THREE.Vector3(-HALF * 0.5, 0.3, 1.6),
+      new THREE.Vector3(0, 0.55, 2.6),
+      new THREE.Vector3(HALF * 0.5, 0.3, 1.6),
+      new THREE.Vector3(HALF, 0, 0),
+    ]);
+    const railMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+      uniforms: { uTime: { value: 0 }, uIntensity: { value: 0 }, uFuse: { value: 0 } },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform float uTime, uIntensity, uFuse;
+        varying vec2 vUv;
+        void main() {
+          float u = vUv.x;
+          vec3 red = vec3(0.95, 0.23, 0.29), blu = vec3(0.42, 0.58, 0.88);
+          vec3 col = mix(red, blu, smoothstep(0.46, 0.54, u));
+          /* directional energy stripes flowing toward the core */
+          float dir = u < 0.5 ? 1.0 : -1.0;
+          float stripe = smoothstep(0.55, 1.0, 0.5 + 0.5 * sin(u * 150.0 - uTime * 9.0 * dir));
+          col += col * stripe * 0.7;
+          /* white-hot fusion midpoint */
+          col = mix(col, vec3(1.0, 0.9, 0.92), exp(-pow((u - 0.5) * 9.0, 2.0)));
+          /* ignition wash expanding from the core after each fusion */
+          float dc = abs(u - 0.5);
+          float wash = exp(-pow((dc - uFuse * 0.55) * 10.0, 2.0)) * max(0.0, 1.0 - uFuse * 0.8);
+          col += vec3(1.0, 0.86, 0.82) * wash * 1.3;
+          float a = (0.30 + stripe * 0.28 + wash * 0.9) * uIntensity
+                  * smoothstep(0.0, 0.03, u) * smoothstep(1.0, 0.97, u);
+          gl_FragColor = vec4(col * a, a);
+        }`,
+    });
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(railCurve, LOWPOWER ? 220 : 360, 0.10, 6, false), railMat));
+
+    /* pooled light under each conduit */
+    const poolL = makeGlowSprite(TEX_RED, 1, 0);  poolL.scale.set(34, 4.5, 1); poolL.position.set(-13, 0.2, 1.2); group.add(poolL);
+    const poolR = makeGlowSprite(TEX_BLUE, 1, 0); poolR.scale.set(34, 4.5, 1); poolR.position.set(13, 0.2, 1.2);  group.add(poolR);
+
+    /* CRO packet convoy (left → core) and ARO pulses (right → core) */
+    const N_PKT = LOWPOWER ? 8 : 12, N_PLS = 4;
+    const pktMat = new THREE.MeshBasicMaterial({ color: 0xFF6671, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const pkts = new THREE.InstancedMesh(new THREE.SphereGeometry(0.22, 8, 8), pktMat, N_PKT);
+    group.add(pkts);
+    const plsMat = new THREE.MeshBasicMaterial({ color: 0xA8C4EE, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const plss = new THREE.InstancedMesh(new THREE.SphereGeometry(0.34, 10, 10), plsMat, N_PLS);
+    group.add(plss);
+    const dummy = new THREE.Object3D();
+
+    /* Tracescribe core assembly at the fusion point */
+    const core = new THREE.Group();
+    const icosa = new THREE.LineSegments(
+      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.9, 1)),
+      new THREE.LineBasicMaterial({ color: 0xFFC2C8, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    core.add(icosa);
+    const octa = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.85, 0),
+      new THREE.MeshBasicMaterial({ color: 0xFF8D96, wireframe: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    core.add(octa);
+    const halo = new THREE.Mesh(
+      new THREE.TorusGeometry(2.7, 0.03, 6, 80),
+      new THREE.MeshBasicMaterial({ color: 0x9FB6DA, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    halo.rotation.x = 1.1;
+    core.add(halo);
+    const coreGlow = makeGlowSprite(TEX_RED, 8, 0);   core.add(coreGlow);
+    const coreDot  = makeGlowSprite(TEX_DOT, 2.2, 0); core.add(coreDot);
+    core.position.set(0, 0.55, 2.6);
+    group.add(core);
+
+    /* fusion shockwave ring */
+    const ringTex = (() => {
+      const c = document.createElement('canvas'); c.width = c.height = 128;
+      const x = c.getContext('2d');
+      [[46, 5, 0.9], [46, 10, 0.35], [46, 16, 0.14]].forEach(([r, w, al]) => {
+        x.strokeStyle = 'rgba(255,214,219,' + al + ')';
+        x.lineWidth = w;
+        x.beginPath(); x.arc(64, 64, r, 0, 6.2832); x.stroke();
+      });
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+    })();
+    const shock = new THREE.Sprite(new THREE.SpriteMaterial({ map: ringTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    shock.position.copy(core.position);
+    group.add(shock);
+
+    /* spark burst */
+    const N_SPK = 26;
+    const spkDirs = [];
+    for (let i = 0; i < N_SPK; i++) {
+      const th = Math.random() * Math.PI * 2, ph2 = Math.acos(Math.random() * 2 - 1);
+      spkDirs.push([Math.sin(ph2) * Math.cos(th), Math.cos(ph2) * 0.6, Math.sin(ph2) * Math.sin(th)]);
+    }
+    const spkMat = new THREE.MeshBasicMaterial({ color: 0xFFD2D7, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const sparks = new THREE.InstancedMesh(new THREE.SphereGeometry(0.09, 6, 6), spkMat, N_SPK);
+    group.add(sparks);
+
+    /* labels — mirror the original rail's typography */
+    const lCro  = makeLabel('COMMERCIAL CRO', '#FF8D96', 9.6);  lCro.position.set(-27.5, 2.1, 0);  group.add(lCro);
+    const lCroS = makeLabel('SPEED · SCALE', '#D49AA1', 6.6);   lCroS.position.set(-17, -2.0, 0);  group.add(lCroS);
+    const lAro  = makeLabel('ACADEMIC ARO', '#9FB6DA', 9.6);    lAro.position.set(27.5, 2.1, 0);   group.add(lAro);
+    const lAroS = makeLabel('RIGOR · SCIENCE', '#9FB6DA', 6.6); lAroS.position.set(17, -2.0, 0);   group.add(lAroS);
+    const lOneTeam  = makeLabel('Tracescribe · ONE TEAM', '#FFFFFF', 7.2);  lOneTeam.position.set(0, -2.5, 2.8);   group.add(lOneTeam);
+    const mains = [lCro, lAro], subs = [lCroS, lAroS];
+
+    scene.add(group);
+
+    return {
+      group,
+      update(t, beat, k) {
+        railMat.uniforms.uTime.value = t;
+        railMat.uniforms.uIntensity.value = k;
+        const ph = (t % T_F) / T_F;
+
+        /* convoys gather at the core around phase 0.55 */
+        pktMat.opacity = 0.95 * k;
+        for (let i = 0; i < N_PKT; i++) {
+          const s = 0.04 + i * 0.028, e = 0.50 + (i % 4) * 0.014;
+          const pr = (ph - s) / (e - s);
+          if (pr > 0 && pr < 1) {
+            const u = easeS(pr) * 0.5;
+            dummy.position.copy(railCurve.getPoint(u));
+            const sc = 0.75 + 0.55 * Math.sin(pr * Math.PI);
+            dummy.scale.set(sc * 2.0, sc, sc);          /* stretched: motion streak */
+          } else { dummy.position.set(0, -999, 0); dummy.scale.setScalar(0.001); }
+          dummy.updateMatrix(); pkts.setMatrixAt(i, dummy.matrix);
+        }
+        pkts.instanceMatrix.needsUpdate = true;
+
+        plsMat.opacity = 0.9 * k;
+        for (let i = 0; i < N_PLS; i++) {
+          const s = 0.06 + i * 0.05, e = 0.52 + i * 0.012;
+          const pr = (ph - s) / (e - s);
+          if (pr > 0 && pr < 1) {
+            dummy.position.copy(railCurve.getPoint(1 - easeS(pr) * 0.5));
+            const sc = 0.8 + 0.3 * Math.sin(t * 2.2 + i);
+            dummy.scale.setScalar(sc);
+          } else { dummy.position.set(0, -999, 0); dummy.scale.setScalar(0.001); }
+          dummy.updateMatrix(); plss.setMatrixAt(i, dummy.matrix);
+        }
+        plss.instanceMatrix.needsUpdate = true;
+
+        /* fusion: flash → shockwave → sparks → ignition wash */
+        const flash = Math.exp(-Math.pow((ph - 0.555) * 16, 2));
+        const st = (ph - 0.555) / 0.22;
+        const ft = Math.min(Math.max((ph - 0.56) / 0.34, 0), 1);
+        railMat.uniforms.uFuse.value = ft;
+
+        icosa.rotation.y = t * 0.5;  icosa.rotation.x = t * 0.23;
+        octa.rotation.y = -t * 0.9;  octa.rotation.z = t * 0.4;
+        halo.rotation.z = t * 0.3;   halo.rotation.x = 1.1 + Math.sin(t * 0.4) * 0.25;
+        core.scale.setScalar(1 + beat * 0.06 + flash * 0.5);
+        icosa.material.opacity = k * (0.45 + 0.45 * flash);
+        octa.material.opacity = k * 0.55;
+        halo.material.opacity = k * 0.38;
+        coreGlow.material.opacity = k * (0.38 + 0.5 * flash + 0.12 * beat);
+        coreDot.material.opacity = k * (0.5 + 0.5 * flash);
+
+        if (st > 0 && st < 1) {
+          const e = easeO(st);
+          shock.material.opacity = k * Math.pow(1 - st, 1.7);
+          shock.scale.setScalar(2 + 26 * e);
+          spkMat.opacity = k * (1 - st);
+          for (let i = 0; i < N_SPK; i++) {
+            const r = 0.8 + 7.0 * e * (0.7 + (i % 5) * 0.12);
+            dummy.position.set(
+              core.position.x + spkDirs[i][0] * r,
+              core.position.y + spkDirs[i][1] * r,
+              core.position.z + spkDirs[i][2] * r);
+            dummy.scale.setScalar(1 - st);
+            dummy.updateMatrix(); sparks.setMatrixAt(i, dummy.matrix);
+          }
+          sparks.instanceMatrix.needsUpdate = true;
+        } else { shock.material.opacity = 0; spkMat.opacity = 0; }
+
+        poolL.material.opacity = 0.13 * k;
+        poolR.material.opacity = 0.13 * k;
+        mains.forEach(L => { if (L.userData.mat) L.userData.mat.opacity = 0.85 * k; });
+        subs.forEach(L => { if (L.userData.mat) L.userData.mat.opacity = 0.55 * k; });
+        if (lOneTeam.userData.mat) lOneTeam.userData.mat.opacity = k * (0.85 + 0.15 * flash);
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 4 · Capability lattice (the in-house machine)
+     ============================================================ */
+  function buildLattice() {
+    const group = new THREE.Group();
+    const NX = 6, NY = 3, NZ = 4, SP = 7;
+    const n = NX * NY * NZ;
+    const mat = new THREE.MeshBasicMaterial({ color: 0x4A6FA8, wireframe: true, transparent: true, opacity: 0, depthWrite: false });
+    const im = new THREE.InstancedMesh(new THREE.OctahedronGeometry(0.85, 0), mat, n);
+    const dummy = new THREE.Object3D();
+    let i = 0;
+    const nodePos = [];
+    for (let x = 0; x < NX; x++) for (let y = 0; y < NY; y++) for (let z = 0; z < NZ; z++) {
+      dummy.position.set((x - (NX - 1) / 2) * SP, (y - (NY - 1) / 2) * SP, (z - (NZ - 1) / 2) * SP);
+      nodePos.push(dummy.position.clone());
+      dummy.rotation.set(Math.random() * 3, Math.random() * 3, 0);
+      dummy.updateMatrix();
+      im.setMatrixAt(i++, dummy.matrix);
+    }
+    group.add(im);
+
+    const actives = [];
+    for (let a = 0; a < 7; a++) {
+      const s = makeGlowSprite(TEX_RED, 3.2, 0);
+      s.position.copy(nodePos[Math.floor(Math.random() * nodePos.length)]);
+      s.userData.ph = Math.random() * 6.28;
+      group.add(s); actives.push(s);
+    }
+    group.position.set(0, 2, -36);
+    scene.add(group);
+    return {
+      group,
+      update(t, beat, k) {
+        mat.opacity = 0.36 * k;
+        group.rotation.y = t * 0.05;
+        group.rotation.x = Math.sin(t * 0.11) * 0.08;
+        actives.forEach(s => { s.material.opacity = k * (0.22 + 0.20 * Math.sin(t * 1.6 + s.userData.ph)); });
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 5 · Chain of custody — CRF → CEC → DATABASE
+     ============================================================ */
+  function buildChain() {
+    const group = new THREE.Group();
+    const X = [-13, 0, 13];
+    const names = ['CRF', 'CEC REVIEW', 'DATABASE'];
+    const nodeMats = [];
+    X.forEach((x, idx) => {
+      const isDB = idx === 2;
+      const wire = new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.35, 1)),
+        new THREE.LineBasicMaterial({ color: isDB ? 0xFF7780 : 0x9FB6DA, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      wire.position.set(x, 0, 0);
+      group.add(wire); nodeMats.push(wire);
+      const glow = makeGlowSprite(isDB ? TEX_RED : TEX_BLUE, isDB ? 7 : 5.4, 0);
+      glow.position.set(x, 0, 0);
+      group.add(glow); nodeMats.push(glow);
+      const lbl = makeLabel(names[idx], isDB ? '#FF8D96' : '#9FB6DA', 8);
+      lbl.position.set(x, -3.1, 0);
+      group.add(lbl); nodeMats.push(lbl);
+    });
+
+    const beamGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-13, 0, 0), new THREE.Vector3(13, 0, 0)]);
+    const beamMat = new THREE.LineBasicMaterial({ color: 0x7E9CCB, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    group.add(new THREE.Line(beamGeo, beamMat));
+
+    const pktMat = new THREE.MeshBasicMaterial({ color: 0xFF6671, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const pkts = new THREE.InstancedMesh(new THREE.SphereGeometry(0.2, 8, 8), pktMat, 7);
+    group.add(pkts);
+    const dummy = new THREE.Object3D();
+
+    group.position.set(28, 1, -10);
+    scene.add(group);
+    return {
+      group,
+      update(t, beat, k) {
+        beamMat.opacity = 0.28 * k;
+        pktMat.opacity = 0.9 * k;
+        for (let i = 0; i < 7; i++) {
+          const u = (t * 0.10 + i / 7) % 1;
+          dummy.position.set(-13 + 26 * u, 0, 0);
+          dummy.scale.setScalar(0.7 + 0.5 * Math.sin(u * Math.PI));
+          dummy.updateMatrix();
+          pkts.setMatrixAt(i, dummy.matrix);
+        }
+        pkts.instanceMatrix.needsUpdate = true;
+        nodeMats.forEach((o, idx) => {
+          if (o.userData && o.userData.mat) { o.userData.mat.opacity = 0.85 * k; return; }
+          if (o.material) {
+            const isSprite = o.isSprite;
+            o.material.opacity = (isSprite ? 0.40 : 0.55) * k * (isSprite ? (0.8 + 0.4 * beat) : 1);
+          }
+          if (o.isLineSegments) { o.rotation.y = t * 0.35 + idx; }
+        });
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 6 · 35-day topline rail
+     ============================================================ */
+  function buildRail() {
+    const group = new THREE.Group();
+    const HALF = 24;
+    const railGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-HALF, 0, 0), new THREE.Vector3(HALF, 0, 0)]);
+    const railMat = new THREE.LineBasicMaterial({ color: 0x8AA7D6, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    group.add(new THREE.Line(railGeo, railMat));
+
+    const tickMat = new THREE.MeshBasicMaterial({ color: 0x6E8DC0, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const ticks = new THREE.InstancedMesh(new THREE.BoxGeometry(0.05, 0.7, 0.05), tickMat, 36);
+    const dummy = new THREE.Object3D();
+    for (let i = 0; i < 36; i++) {
+      const big = i % 5 === 0;
+      dummy.position.set(-HALF + (i / 35) * HALF * 2, 0, 0);
+      dummy.scale.set(1, big ? 1.8 : 1, 1);
+      dummy.updateMatrix();
+      ticks.setMatrixAt(i, dummy.matrix);
+    }
+    group.add(ticks);
+
+    const gStart = makeGlowSprite(TEX_BLUE, 4.6, 0); gStart.position.set(-HALF, 0, 0); group.add(gStart);
+    const gEnd = makeGlowSprite(TEX_RED, 6.4, 0);    gEnd.position.set(HALF, 0, 0);   group.add(gEnd);
+    const lblA = makeLabel('LPLV · D0', '#9FB6DA', 6.4);      lblA.position.set(-HALF, -2.4, 0); group.add(lblA);
+    const lblB = makeLabel('TOPLINE · D35', '#FF8D96', 7.6);  lblB.position.set(HALF, -2.4, 0);  group.add(lblB);
+
+    const pulse = makeGlowSprite(TEX_RED, 3.4, 0);
+    group.add(pulse);
+
+    group.position.set(-17, -2.5, -9);
+    group.rotation.y = 0.55;
+    scene.add(group);
+    const ease = (p) => p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    return {
+      group,
+      update(t, beat, k) {
+        railMat.opacity = 0.4 * k;
+        tickMat.opacity = 0.5 * k;
+        gStart.material.opacity = 0.4 * k;
+        gEnd.material.opacity = 0.5 * k * (0.75 + 0.5 * beat);
+        const u = ease((t * 0.085) % 1);
+        pulse.position.set(-HALF + HALF * 2 * u, 0, 0);
+        pulse.material.opacity = 0.85 * k;
+        [lblA, lblB].forEach(L => { if (L.userData.mat) L.userData.mat.opacity = 0.85 * k; });
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 7 · Five-modality core-lab orbit
+     ============================================================ */
+  function buildOrbit() {
+    const group = new THREE.Group();
+    const nucleus = makeGlowSprite(TEX_RED, 7.5, 0);
+    group.add(nucleus);
+    const names = ['ECHO', 'HEMO', 'MRI', 'SPECT', 'PET'];
+    const rings = [];
+    for (let i = 0; i < 5; i++) {
+      const r = 3.0 + i * 1.05;
+      const pivot = new THREE.Object3D();
+      pivot.rotation.x = 0.9 + i * 0.32;
+      pivot.rotation.y = i * 0.75;
+      const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(r, 0.02, 6, 96),
+        new THREE.MeshBasicMaterial({ color: i === 4 ? 0xE63946 : 0x7E9CCB, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      pivot.add(torus);
+      const bead = makeGlowSprite(i === 4 ? TEX_RED : TEX_BLUE, 1.9, 0);
+      pivot.add(bead);
+      const lbl = makeLabel(names[i], i === 4 ? '#FF8D96' : '#9FB6DA', 4.6);
+      pivot.add(lbl);
+      group.add(pivot);
+      rings.push({ pivot, torus, bead, lbl, r, speed: 0.5 - i * 0.07, ph: i * 1.7 });
+    }
+    group.position.set(19, 0.5, -9);
+    scene.add(group);
+    return {
+      group,
+      update(t, beat, k) {
+        nucleus.material.opacity = 0.5 * k * (0.7 + 0.5 * beat);
+        group.rotation.y = t * 0.07;
+        rings.forEach(R => {
+          R.torus.material.opacity = 0.45 * k;
+          const a = t * R.speed + R.ph;
+          R.bead.position.set(Math.cos(a) * R.r, Math.sin(a) * R.r, 0);
+          R.bead.material.opacity = 0.8 * k;
+          R.lbl.position.set(Math.cos(a) * (R.r + 1.6), Math.sin(a) * (R.r + 1.6), 0);
+          if (R.lbl.userData.mat) R.lbl.userData.mat.opacity = 0.75 * k;
+        });
+      },
+    };
+  }
+
+  /* ============================================================
+     MOTIF 8 · Starfield + data dust + reference grid
+     ============================================================ */
+  function buildStars() {
+    const group = new THREE.Group();
+    const n = COUNT.stars;
+    const pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const r = 60 + Math.random() * 110;
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(Math.random() * 2 - 1);
+      pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      pos[i * 3 + 1] = r * Math.cos(ph) * 0.6;
+      pos[i * 3 + 2] = -20 - Math.abs(r * Math.sin(ph) * Math.sin(th));
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({ color: 0x9FB6DA, map: TEX_DOT, size: 1.0, sizeAttenuation: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    group.add(new THREE.Points(geo, mat));
+    scene.add(group);
+    return { group, update(t, beat, k) { mat.opacity = 0.65 * k; group.rotation.y = t * 0.004; } };
+  }
+
+  function buildDust() {
+    const group = new THREE.Group();
+    const n = COUNT.dust;
+    const pos = new Float32Array(n * 3);
+    const col = new Float32Array(n * 3);
+    const cR = new THREE.Color(0xE63946), cB = new THREE.Color(0x5E82B8);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3] = (Math.random() * 2 - 1) * 36;
+      pos[i * 3 + 1] = (Math.random() * 2 - 1) * 20;
+      pos[i * 3 + 2] = -8 + Math.random() * 22;
+      const c = Math.random() < 0.3 ? cR : cB;
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const mat = new THREE.PointsMaterial({ vertexColors: true, map: TEX_DOT, size: 1.0, sizeAttenuation: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    group.add(new THREE.Points(geo, mat));
+    scene.add(group);
+    return {
+      group,
+      update(t, beat, k) {
+        mat.opacity = 0.32 * k;
+        group.rotation.y = Math.sin(t * 0.05) * 0.05;
+        group.position.y = Math.sin(t * 0.16) * 0.9;
+      },
+    };
+  }
+
+  function buildGrid() {
+    const gh = new THREE.GridHelper(380, 76, 0x2B5390, 0x10294E);
+    gh.material.transparent = true;
+    gh.material.opacity = 0;
+    gh.material.depthWrite = false;
+    gh.material.blending = THREE.AdditiveBlending;
+    gh.position.set(0, -16.5, -40);
+    scene.add(gh);
+    return { group: gh, update(t, beat, k) { gh.material.opacity = 0.34 * k; } };
+  }
+
+  /* ============================================================
+     SCROLL CHOREOGRAPHY
+     ============================================================ */
+  const heart = buildHeart();
+  const ecg = buildECG();
+  const fusion = buildFusion();
+  const lattice = buildLattice();
+  const chain = buildChain();
+  const rail = buildRail();
+  const orbit = buildOrbit();
+  const stars = buildStars();
+  const dust = buildDust();
+  const grid = buildGrid();
+
+  const MOTIFS = { heart, ecg, fusion, lattice, chain, rail, orbit, stars, dust, grid };
+
+  /* render labels once the mono webfont is ready (decorative; fallback font otherwise) */
+  const runLabelJobs = () => labelJobs.forEach(j => j());
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(runLabelJobs).catch(runLabelJobs);
+  } else { runLabelJobs(); }
+
+  /* per-section world state:
+     cam / look / hp (heart position) / motif intensities */
+  const DEFAULT_HP = [13, -0.5, -1];
+  const DEFAULT_FP = [0, -13.2, 2, 1];   /* hero band placement [x, y, z, scale] */
+  const SCENES = {
+    top:          { cam: [0, 0.5, 44],  look: [3, 0, 0],   hp: DEFAULT_HP,      f: { heart: 1, ecg: 1, stars: 0.7, grid: 0.85, dust: 0.55 } },
+    glance:       { cam: [1, 1, 42],    look: [2, 0, -5],  hp: [15, 1, -13],    f: { heart: 0.34, ecg: 0.5, stars: 0.85, grid: 0.5, dust: 0.5 } },
+    thesis:       { cam: [-1, 0.5, 41], look: [0, 0, -6],  hp: [17, 2, -20],    f: { heart: 0.2, ecg: 0.32, stars: 0.95, grid: 0.4, dust: 0.6 } },
+    why:          { cam: [0.5, 0, 41],  look: [-2, 0, -6], hp: [18, 2, -24],    fp: [0, 15, -8, 0.9], f: { heart: 0.1, ecg: 0.25, stars: 0.95, grid: 0.32, dust: 0.7, lattice: 0.1 } },
+    synthesis:    { cam: [0, 0, 43],    look: [1, 0, -6],  hp: [18, 2, -28],    fp: [0, 15, -8, 0.9], f: { fusion: 1, stars: 0.6, grid: 0.42, ecg: 0.12, dust: 0.4 } },
+    model:        { cam: [2, 1, 42],    look: [0, 0, -14], hp: [18, 2, -28],    fp: [0, 15, -8, 0.9], f: { lattice: 1, stars: 0.75, grid: 0.46, dust: 0.5 } },
+    services:     { cam: [-2, 2, 43],   look: [1, 1, -14], hp: [18, 2, -28],    f: { lattice: 0.85, stars: 0.75, grid: 0.46, dust: 0.55, ecg: 0.1 } },
+    adjudication: { cam: [0, 0.5, 42],  look: [5, 0, -4],  hp: [18, 2, -28],    f: { chain: 1, stars: 0.6, grid: 0.4, ecg: 0.14, dust: 0.4 } },
+    time:         { cam: [0.5, 0.5, 42],look: [-4, -1, -5],hp: [18, 2, -28],    f: { rail: 1, stars: 0.6, grid: 0.5, dust: 0.45 } },
+    corelab:      { cam: [0, 1, 43],    look: [5, 1, -5],  hp: [18, 2, -28],    f: { orbit: 1, stars: 0.65, grid: 0.4, dust: 0.45 } },
+    founders:     { cam: [0, 0.5, 42],  look: [0, 0, -8],  hp: [-16, 2, -26],   f: { stars: 1, grid: 0.3, dust: 0.75, ecg: 0.2, heart: 0.08 } },
+    case:         { cam: [1, 0, 41],    look: [2, 0, -8],  hp: [-16, 2, -26],   f: { stars: 0.9, grid: 0.36, ecg: 0.35, rail: 0.16, dust: 0.6 } },
+    sponsors:     { cam: [-1, 0.5, 42], look: [0, 0, -8],  hp: [-16, 2, -26],   f: { stars: 1, grid: 0.3, dust: 0.7 } },
+    experience:   { cam: [0, 0, 42],    look: [-1, 0, -8], hp: [-16, 2, -26],   f: { stars: 0.9, grid: 0.36, lattice: 0.2, dust: 0.55, ecg: 0.15 } },
+    team:         { cam: [0, 1, 41],    look: [0, 0, -8],  hp: [-14, 2, -22],   f: { stars: 1, grid: 0.3, dust: 0.75, heart: 0.16, ecg: 0.2 } },
+    events:       { cam: [0, 0.5, 42],  look: [1, 0, -8],  hp: [-8, 2.5, -18],  f: { stars: 0.9, grid: 0.36, ecg: 0.45, dust: 0.6, heart: 0.3 } },
+    contact:      { cam: [0, 1, 45],    look: [0, 1.5, -8],hp: [0, 5, -19],     f: { heart: 1, ecg: 0.55, stars: 0.85, grid: 0.55, dust: 0.6 } },
+  };
+  const MKEYS = Object.keys(MOTIFS);
+
+  /* flatten a scene entry into a numeric vector for interpolation */
+  function flatten(s) {
+    const v = {
+      cx: s.cam[0], cy: s.cam[1], cz: s.cam[2],
+      lx: s.look[0], ly: s.look[1], lz: s.look[2],
+      hx: s.hp[0], hy: s.hp[1], hz: s.hp[2],
+    };
+    const fp = s.fp || DEFAULT_FP;
+    v.fx = fp[0]; v.fy = fp[1]; v.fz = fp[2]; v.fs = fp[3];
+    MKEYS.forEach(k => { v['i_' + k] = (s.f && s.f[k]) || 0; });
+    return v;
+  }
+
+  let KEYS = [];   /* [{y, v}] sorted by y */
+  function measure() {
+    const secs = Array.from(document.querySelectorAll('[data-scene]'));
+    const vh = window.innerHeight;
+    KEYS = secs
+      .filter(el => SCENES[el.dataset.scene])
+      .map((el, idx) => ({
+        y: idx === 0 ? 0 : Math.max(1, el.offsetTop - vh * 0.45),
+        v: flatten(SCENES[el.dataset.scene]),
+      }))
+      .sort((a, b) => a.y - b.y);
+  }
+  measure();
+
+  const smooth = { y: window.scrollY || 0 };
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  if (FINE_PTR && !REDUCED) {
+    window.addEventListener('mousemove', (e) => {
+      mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+
+  const cur = {};
+  function resolve(y) {
+    if (!KEYS.length) return;
+    let a = KEYS[0], b = KEYS[0];
+    for (let i = 0; i < KEYS.length; i++) {
+      if (KEYS[i].y <= y) { a = KEYS[i]; b = KEYS[Math.min(i + 1, KEYS.length - 1)]; }
+    }
+    let p = b.y === a.y ? 0 : (y - a.y) / (b.y - a.y);
+    p = Math.max(0, Math.min(1, p));
+    p = p * p * (3 - 2 * p);
+    for (const k in a.v) cur[k] = a.v[k] + (b.v[k] - a.v[k]) * p;
+  }
+
+  /* heartbeat envelope — lub-dub at 62 bpm */
+  const T_BEAT = 60 / 62;
+  function beatEnv(t) {
+    const p = (t % T_BEAT) / T_BEAT;
+    const g = (c, w) => Math.exp(-((p - c) * (p - c)) / (w * w));
+    return g(0.12, 0.05) + 0.55 * g(0.34, 0.075);
+  }
+
+  /* HUD */
+  const hudPos = document.getElementById('hudPos');
+  const secList = Array.from(document.querySelectorAll('[data-scene]'));
+  const SEC_NAMES = {
+    top: 'Hero', glance: 'At a Glance', thesis: 'Thesis', why: 'Why Tracescribe', synthesis: 'ARO + CRO',
+    model: 'Operating Model', services: 'Capabilities', adjudication: 'Adjudication', time: 'Time-to-Decision',
+    corelab: 'Core Lab', founders: 'Founders', case: 'Case Study', sponsors: 'Engagements',
+    experience: 'Experience', team: 'Team', events: 'Events', contact: 'Contact',
+  };
+  let hudTick = 0;
+  function updateHUD(y) {
+    if (!hudPos || (hudTick++ % 8)) return;
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? Math.round((y / max) * 100) : 0;
+    let idx = 0;
+    for (let i = 0; i < secList.length; i++) if (secList[i].offsetTop - window.innerHeight * 0.5 <= y) idx = i;
+    const id = secList[idx] ? secList[idx].dataset.scene : 'top';
+    hudPos.textContent = 'Scroll ' + String(pct).padStart(3, '0') + '% · ' +
+      String(idx + 1).padStart(2, '0') + ' / ' + (SEC_NAMES[id] || id);
+  }
+
+  const clock = new THREE.Clock();
+  const LOOK = new THREE.Vector3();
+  let rafId = 0;
+
+  function frame() {
+    const t = clock.getElapsedTime();
+    const beat = beatEnv(t);
+    smooth.y += ((window.scrollY || 0) - smooth.y) * 0.075;
+    mouse.x += (mouse.tx - mouse.x) * 0.05;
+    mouse.y += (mouse.ty - mouse.y) * 0.05;
+    resolve(smooth.y);
+
+    camera.position.set(cur.cx + mouse.x * 1.3, cur.cy - mouse.y * 0.8, cur.cz);
+    LOOK.set(cur.lx + mouse.x * 0.6, cur.ly - mouse.y * 0.4, cur.lz);
+    camera.lookAt(LOOK);
+
+    heart.group.position.set(cur.hx, cur.hy, cur.hz);
+    fusion.group.position.set(cur.fx, cur.fy, cur.fz);
+    fusion.group.scale.setScalar(cur.fs);
+
+    for (const k of MKEYS) {
+      const m = MOTIFS[k];
+      const inten = cur['i_' + k] || 0;
+      const on = inten > 0.004;
+      m.group.visible = on;
+      if (on) m.update(t, beat, inten);
+    }
+
+    renderer.render(scene, camera);
+    updateHUD(smooth.y);
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    measure();
+    if (REDUCED) renderStatic();
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('load', () => { measure(); });
+  setTimeout(measure, 900);
+
+  function renderStatic() {
+    resolve(window.scrollY || 0);
+    camera.position.set(cur.cx, cur.cy, cur.cz);
+    camera.lookAt(cur.lx, cur.ly, cur.lz);
+    heart.group.position.set(cur.hx, cur.hy, cur.hz);
+    fusion.group.position.set(cur.fx, cur.fy, cur.fz);
+    fusion.group.scale.setScalar(cur.fs);
+    for (const k of MKEYS) {
+      const m = MOTIFS[k];
+      const inten = cur['i_' + k] || 0;
+      m.group.visible = inten > 0.004;
+      if (m.group.visible) m.update(1.5, 0, inten);
+    }
+    renderer.render(scene, camera);
+  }
+
+  if (REDUCED) {
+    renderStatic();
+    document.fonts && document.fonts.ready && document.fonts.ready.then(() => renderStatic());
+    window.addEventListener('scroll', () => renderStatic(), { passive: true });
+  } else {
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(rafId); }
+      else { clock.getDelta(); rafId = requestAnimationFrame(frame); }
+    });
+    rafId = requestAnimationFrame(frame);
+  }
+
+  window.__ts3dReady = true;
+} catch (err) {
+  document.body.classList.add('no3d');
+  console.warn('Tracescribe · 3D layer disabled, content unaffected:', err);
+}
+</script>
+</body>
+</html>
