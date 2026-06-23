@@ -24,11 +24,11 @@ copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
 copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
 copy_dir  "$SRC/cro-website"                           "demos/cro"
 # NOTE: demos/icf.html is hand-authored (an in-repo recreation of TraceScribe2's ICF-generation
-# feature — that app is a large backend and is NOT bundled). This script never manages it.
+# feature - that app is a large backend and is NOT bundled). This script never manages it.
 
 # De-brand: the source projects carry "CCS" / "Cardiovascular Clinical Sciences"
 # institutional branding; this showcase must be CCS-free. Re-applied on every sync so
-# the bundled copies never reintroduce it. Targeted, case-sensitive substitutions only —
+# the bundled copies never reintroduce it. Targeted, case-sensitive substitutions only -
 # we touch visitor-facing text + the org name in sample data, never clinical content.
 debrand() {
   # monitoring: wordmark in title/header/body/footer + the demo URL.
@@ -37,7 +37,7 @@ debrand() {
     s{\Qccs-monitor\E}{clinical-monitor}g;
   ' demos/monitoring.html
   # ncdisc bundles its source dev doc (CLAUDE.md) which references CCS and is not part
-  # of the runnable demo — drop it.
+  # of the runnable demo - drop it.
   rm -f demos/ncdisc/CLAUDE.md
   echo "de-branded demos (CCS -> neutral)"
 }
