@@ -1,0 +1,13 @@
+patient_id,treatment_group,site,age,sex,bmi,baseline,week4,week8,week12,adverse_event,completed
+P001,Treatment,Site_A,45,M,25.3,85,72,65,58,0,1
+P002,Placebo,Site_A,52,F,28.1,88,85,84,82,0,1
+P003,Treatment,Site_B,38,M,23.5,92,78,70,62,1,0
+P004,Placebo,Site_B,61,F,31.2,79,78,77,76,0,1
+P005,Treatment,Site_A,44,M,26.8,90,75,68,60,0,1
+P006,Placebo,Site_C,55,F,24.9,85,84,83,81,0,1
+P007,Treatment,Site_B,49,M,29.4,88,74,66,59,0,1
+P008,Placebo,Site_A,42,F,22.1,91,90,88,87,1,0
+P009,Treatment,Site_C,58,M,27.6,82,70,63,55,0,1
+P010,Placebo,Site_B,47,F,25.8,86,85,84,83,0,1
+P011,Treatment,Site_A,63,M,24.2,78,65,58,52,0,1
+P012,Placebo,Site_C,39,F,27.3,94,92,91,89,0,1

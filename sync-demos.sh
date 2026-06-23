@@ -20,6 +20,7 @@ copy_file() { # $1 src file  $2 dest file
 copy_dir  "$SRC/ccs-cdisc-demo/site"                   "demos/cdisc"
 copy_dir  "$SRC/ccs-ncdisc-demo/site"                  "demos/ncdisc"
 copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
+copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
 
 # De-brand: the source projects carry "CCS" / "Cardiovascular Clinical Sciences"
 # institutional branding; this showcase must be CCS-free. Re-applied on every sync so

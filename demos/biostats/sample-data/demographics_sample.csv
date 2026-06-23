@@ -1,0 +1,13 @@
+subject_id,age,sex,ethnicity,region,education,income_bracket,health_status
+D001,45,M,White,Northeast,Bachelor,Middle,Good
+D002,32,F,Asian,West,Master,Upper,Excellent
+D003,58,M,Black,South,High_School,Lower,Fair
+D004,41,F,Hispanic,Midwest,Bachelor,Middle,Good
+D005,67,M,White,Northeast,Doctorate,Upper,Fair
+D006,29,F,Asian,West,Bachelor,Middle,Excellent
+D007,54,M,Black,South,Associate,Lower,Good
+D008,38,F,White,Midwest,Master,Upper,Excellent
+D009,62,M,Hispanic,West,High_School,Middle,Fair
+D010,47,F,White,Northeast,Bachelor,Middle,Good
+D011,35,M,Asian,West,Master,Upper,Excellent
+D012,51,F,Black,South,Bachelor,Middle,Good
