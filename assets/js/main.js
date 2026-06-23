@@ -24,7 +24,7 @@
     box.className = "demo-embed";
     var bar = document.createElement("div");
     bar.className = "demo-embed-bar";
-    bar.innerHTML = '<span>Live demo</span><a href="' + href + '" target="_blank" rel="noopener">Open in new tab ↗</a>';
+    bar.innerHTML = '<span>Live demo</span><a href="' + href + '">Open full screen ↗</a>';
     var frame = document.createElement("iframe");
     frame.src = href;
     frame.title = "Live demo";
