@@ -72,11 +72,14 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   siblings (author time only; the running site never depends on them). It strips bundled
   `.git`/`.gitignore`/`.DS_Store`, de-brands CCS (see rule 1), and trims `demos/cro` to website
   files only.
-- **Exception - `demos/icf.html` is hand-authored**, not synced. It is an in-repo, self-contained
-  recreation of the ICF-generation feature from the **TraceScribe2** app (`~/Documents/TraceScribe2`),
-  which is a large backend+LLM application and is *not* bundled. `sync-demos.sh` never touches
-  `demos/icf.html`. It uses real XYZ-301 ICF content; supports `?still=1` to render the finished
-  state instantly (used for the screenshot / reduced-motion).
+- **Exception - `demos/icf.html` and `demos/ectd.html` are hand-authored**, not synced. Each is an
+  in-repo, self-contained recreation of one feature from a large backend app that is *not* bundled:
+  `icf.html` recreates ICF generation from **TraceScribe2** (`~/Documents/TraceScribe2`); `ectd.html`
+  recreates eCTD submission packaging from **CSR Publishing** (`~/Documents/csr-publishing`).
+  `sync-demos.sh` never touches them. Both use real source content/structure, are `file://`-safe (no
+  fetch), and support `?still=1` to render the finished state instantly (screenshot / reduced-motion).
+  Pattern for the next such app: read the source to learn the feature (never edit it, rule 2), then
+  build a standalone static recreation here.
 
 **Design system = `mydesign.md` (the "TraceScribe" system):** teal `#0D9488` primary, coral
 `#F97316` accent, Plus Jakarta Sans + JetBrains Mono (bundled locally in `assets/fonts/` for
