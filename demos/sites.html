@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Activation Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%);
+    --ok:hsl(160 84% 36%); --warn:hsl(38 92% 45%); --err:hsl(0 78% 56%); --info:hsl(199 89% 48%);
+    --border:hsl(220 13% 91%);
+    --shadow:0 1px 3px rgb(0 0 0/.08),0 1px 2px -1px rgb(0 0 0/.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1180px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:13px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--primary);text-transform:uppercase}
+  .pill{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+  @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi .n{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1}
+  .kpi .l{font-size:11px;color:var(--mut);margin-top:5px;font-weight:600}
+  .kpi.risk .n{color:var(--err)} .kpi.act .n{color:var(--ok)} .kpi.ing .n{color:var(--warn)}
+  /* filter */
+  .filter{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+  .fb{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--mut);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .12s}
+  .fb:hover{border-color:var(--mut)}
+  .fb.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+  .fb .c{opacity:.6;margin-left:4px}
+  /* study group */
+  .study{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+  .study-h{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .study-h .nm{font-weight:700}
+  .study-h .meta{font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .study-h .tag{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--muted);color:var(--mut)}
+  .study-h .prog{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--mut);display:flex;align-items:center;gap:8px}
+  .study-h .bar{width:90px;height:6px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .study-h .bar span{display:block;height:100%;background:var(--ok);border-radius:99px}
+  /* site row */
+  .site{border-bottom:1px solid var(--border)}
+  .site:last-child{border-bottom:0}
+  .site.risk{box-shadow:inset 3px 0 0 var(--err)}
+  .site-r{display:grid;grid-template-columns:200px 1fr 150px;gap:14px;align-items:center;padding:11px 16px;cursor:pointer;transition:background .12s}
+  .site-r:hover{background:var(--muted)}
+  @media(max-width:760px){.site-r{grid-template-columns:1fr}}
+  .site-id .num{font-family:var(--mono);font-size:11px;color:var(--primary);font-weight:600}
+  .site-id .nm{font-weight:600;font-size:14px}
+  .site-id .pi{font-size:11px;color:var(--mut)}
+  /* pipeline track */
+  .track{display:flex;align-items:center;gap:0}
+  .seg{flex:1;height:6px;background:var(--muted);position:relative}
+  .seg:first-child{border-radius:99px 0 0 99px} .seg:last-child{border-radius:0 99px 99px 0}
+  .seg.done{background:var(--ok)} .seg.cur{background:var(--warn)}
+  .seg.cur.risk{background:var(--err)}
+  .stage{font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:5px;display:flex;justify-content:space-between}
+  .stage b{color:var(--fg);font-weight:600}
+  .stage .days.r{color:var(--err)} .stage .days.w{color:var(--warn)}
+  .site-meta{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px}
+  .badge.active{background:hsl(160 84% 36%/.12);color:var(--ok)}
+  .badge.activating{background:hsl(38 92% 45%/.14);color:hsl(38 80% 38%)}
+  .badge.planned{background:var(--muted);color:var(--mut)}
+  .badge.riskb{background:hsl(0 78% 56%/.12);color:var(--err)}
+  .enr{font-family:var(--mono);font-size:10px;color:var(--mut);text-align:right}
+  .enr .b{width:64px;height:5px;border-radius:99px;background:var(--muted);overflow:hidden;margin-top:2px;margin-left:auto}
+  .enr .b span{display:block;height:100%;background:var(--primary);border-radius:99px}
+  /* expanded timeline */
+  .timeline{padding:4px 16px 14px;display:none;background:var(--muted)}
+  .timeline.open{display:block}
+  .tl{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px}
+  @media(max-width:760px){.tl{grid-template-columns:repeat(4,1fr)}}
+  .ms{text-align:center}
+  .ms .dot{width:18px;height:18px;border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;background:var(--card);border:2px solid var(--border)}
+  .ms.done .dot{background:var(--ok);border-color:var(--ok)} .ms.cur .dot{background:var(--warn);border-color:var(--warn)} .ms.cur.risk .dot{background:var(--err);border-color:var(--err)}
+  .ms .dot svg{width:9px;height:9px;color:#fff}
+  .ms .lab{font-size:10px;color:var(--mut);line-height:1.25}
+  .ms.done .lab,.ms.cur .lab{color:var(--fg)}
+  .ms .dt{font-family:var(--mono);font-size:9px;color:var(--mut);margin-top:2px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+  <span class="brand">TraceScribe<small>Site Activation Tracker</small></span>
+  <span class="pill" id="pill">Portfolio</span>
+</div></header>
+
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+  <div class="filter" id="filter"></div>
+  <div id="list"></div>
+</div>
+
+<script>
+const MS=[
+  {k:"regulatory_submitted",s:"Reg. submitted"},
+  {k:"regulatory_approved",s:"Reg. approved"},
+  {k:"contract_sent",s:"Contract sent"},
+  {k:"contract_executed",s:"Contract exec."},
+  {k:"siv_scheduled",s:"SIV scheduled"},
+  {k:"siv_completed",s:"SIV completed"},
+  {k:"edc_training_complete",s:"EDC training"},
+  {k:"site_activated",s:"Activated"}
+];
+/* Real seed dataset from site-tracker (src/lib/seed/demo-data.ts).
+   last = index of last completed milestone (-1 = none); inprog = next is in progress; stuck = days at current stage. */
+const STUDIES=[
+ {name:"CARDIO-301: Heart Failure Outcomes",proto:"CARDIO-301",sponsor:"Northbridge Therapeutics",phase:"III",target:480,sites:[
+   {num:"001",nm:"Boston Medical Center",pi:"Dr. Lin Chen",co:"USA",t:40,last:7,inprog:false},
+   {num:"002",nm:"UCSF Medical Center",pi:"Dr. Maya Patel",co:"USA",t:40,last:7,inprog:false},
+   {num:"003",nm:"Houston Heart Institute",pi:"Dr. Robert Kim",co:"USA",t:40,last:6,inprog:true,stuck:4},
+   {num:"004",nm:"Toronto General",pi:"Dr. Amelia Singh",co:"Canada",t:40,last:3,inprog:true,stuck:21},
+   {num:"005",nm:"Royal London Hospital",pi:"Dr. James Whitman",co:"UK",t:40,last:1,inprog:true,stuck:8},
+   {num:"006",nm:"Charité Berlin",pi:"Dr. Anna Müller",co:"Germany",t:40,last:-1,inprog:false}]},
+ {name:"ONCO-204: Solid Tumor Combination",proto:"ONCO-204",sponsor:"Helix Bio",phase:"II",target:180,sites:[
+   {num:"101",nm:"MSK Cancer Center",pi:"Dr. Sara Goldberg",co:"USA",t:25,last:7,inprog:false},
+   {num:"102",nm:"MD Anderson",pi:"Dr. Carlos Mendez",co:"USA",t:25,last:7,inprog:false},
+   {num:"103",nm:"Dana-Farber",pi:"Dr. Hannah Park",co:"USA",t:25,last:5,inprog:true,stuck:16},
+   {num:"104",nm:"Princess Margaret",pi:"Dr. David Hu",co:"Canada",t:25,last:4,inprog:true,stuck:3},
+   {num:"105",nm:"Karolinska",pi:"Dr. Erik Lindqvist",co:"Sweden",t:25,last:2,inprog:true,stuck:30}]},
+ {name:"NEURO-118: Early Parkinson Cohort",proto:"NEURO-118",sponsor:"Aria Neurosciences",phase:"II",target:120,sites:[
+   {num:"N01",nm:"Johns Hopkins",pi:"Dr. Olivia Reyes",co:"USA",t:20,last:7,inprog:false},
+   {num:"N02",nm:"Mayo Clinic Rochester",pi:"Dr. Brian Tanaka",co:"USA",t:20,last:6,inprog:true,stuck:5},
+   {num:"N03",nm:"Cleveland Clinic",pi:"Dr. Priya Anand",co:"USA",t:20,last:3,inprog:true,stuck:11},
+   {num:"N04",nm:"Hôpital Pitié-Salpêtrière",pi:"Dr. Camille Roux",co:"France",t:20,last:0,inprog:true,stuck:19}]}
+];
+const RISK=14; // days stuck at a stage to flag at-risk
+const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+
+function statusOf(s){ return s.last===7?"active":(s.last>=0||s.inprog?"activating":"planned"); }
+function atRisk(s){ return s.inprog && (s.stuck||0)>=RISK; }
+function curStage(s){ return s.last>=7?"Activated":MS[s.last+1].s; }
+// deterministic enrollment for active sites (demo only): a fraction of target
+function enrolled(s){ if(s.last!==7) return 0; const f=0.3+ (parseInt((s.num+s.nm).split("").reduce((a,c)=>a+c.charCodeAt(0),0))%55)/100; return Math.round(s.t*f); }
+
+const all=()=>STUDIES.flatMap(st=>st.sites);
+let filter="all";
+const FILTERS=[
+  {k:"all",l:"All"},
+  {k:"active",l:"Activated"},
+  {k:"activating",l:"In activation"},
+  {k:"risk",l:"At risk"},
+  {k:"planned",l:"Planned"}
+];
+function match(s){ if(filter==="all")return true; if(filter==="risk")return atRisk(s); return statusOf(s)===filter; }
+
+function renderKpis(){
+  const a=all();
+  const data=[
+    {n:STUDIES.length,l:"Active studies"},
+    {n:a.length,l:"Sites"},
+    {n:a.filter(s=>statusOf(s)==="active").length,l:"Activated",c:"act"},
+    {n:a.filter(s=>statusOf(s)==="activating").length,l:"In activation",c:"ing"},
+    {n:a.filter(atRisk).length,l:"At risk (>"+RISK+"d)",c:"risk"}
+  ];
+  $("#kpis").innerHTML=data.map(d=>`<div class="kpi ${d.c||""}"><div class="n">${d.n}</div><div class="l">${d.l}</div></div>`).join("");
+}
+function renderFilter(){
+  const a=all();
+  const cnt=k=>k==="all"?a.length:(k==="risk"?a.filter(atRisk).length:a.filter(s=>statusOf(s)===k).length);
+  $("#filter").innerHTML=FILTERS.map(f=>`<button class="fb ${filter===f.k?"on":""}" data-k="${f.k}">${f.l}<span class="c">${cnt(f.k)}</span></button>`).join("");
+  $("#filter").querySelectorAll(".fb").forEach(b=>b.onclick=()=>{filter=b.dataset.k;renderFilter();renderList();});
+}
+function track(s){
+  let h="";
+  for(let i=0;i<8;i++){
+    let cls = i<=s.last?"done":((i===s.last+1&&s.inprog)?("cur"+(atRisk(s)?" risk":"")):"");
+    h+=`<div class="seg ${cls}"></div>`;
+  }
+  return `<div class="track">${h}</div>`;
+}
+function timeline(s){
+  let h="";
+  for(let i=0;i<8;i++){
+    const done=i<=s.last, cur=(i===s.last+1&&s.inprog);
+    const cls=done?"done":(cur?("cur"+(atRisk(s)?" risk":"")):"");
+    const dt = done?isoAgo(8-i,s):(cur?(s.stuck+"d"):"");
+    h+=`<div class="ms ${cls}"><div class="dot">${done?CHK:""}</div><div class="lab">${MS[i].s}</div><div class="dt">${dt}</div></div>`;
+  }
+  return `<div class="timeline" id="tl-${s.num}"><div class="tl">${h}</div></div>`;
+}
+function isoAgo(weeks,s){ const d=new Date(2026,5,23); d.setDate(d.getDate()-(weeks*7+(parseInt(s.num.replace(/\D/g,""))||1)%6)); return (d.getMonth()+1)+"/"+d.getDate(); }
+
+function renderList(){
+  const wrap=$("#list"); wrap.innerHTML="";
+  STUDIES.forEach(st=>{
+    const sites=st.sites.filter(match); if(!sites.length) return;
+    const activated=st.sites.filter(s=>statusOf(s)==="active").length;
+    const g=ce("div","study");
+    g.appendChild(ce("div","study-h",
+      `<span class="nm">${st.proto}</span><span class="meta">${st.name.split(": ")[1]||st.name}</span>
+       <span class="tag">Phase ${st.phase}</span><span class="tag">${st.sponsor}</span>
+       <span class="prog">${activated}/${st.sites.length} activated<span class="bar"><span style="width:${activated/st.sites.length*100}%"></span></span></span>`));
+    sites.forEach(s=>{
+      const status=statusOf(s), risk=atRisk(s), en=enrolled(s);
+      const wrapS=ce("div","site"+(risk?" risk":""));
+      const daysCls = risk?"r":((s.stuck||0)>=7?"w":"");
+      wrapS.innerHTML=
+        `<div class="site-r" data-num="${s.num}">
+          <div class="site-id"><span class="num">#${s.num}</span> <span class="nm">${s.nm}</span><div class="pi">${s.pi} · ${s.co}</div></div>
+          <div><div>${track(s)}</div><div class="stage"><span>Stage: <b>${curStage(s)}</b></span>${s.inprog?`<span class="days ${daysCls}">${s.stuck}d at stage</span>`:(status==="active"?'<span class="days" style="color:var(--ok)">complete</span>':"")}</div></div>
+          <div class="site-meta">
+            ${risk?'<span class="badge riskb">At risk</span>':''}
+            <span class="badge ${status}">${status==="active"?"Activated":status==="activating"?"Activating":"Planned"}</span>
+            ${status==="active"?`<div class="enr">${en}/${s.t} enrolled<div class="b"><span style="width:${en/s.t*100}%"></span></div></div>`:""}
+          </div>
+        </div>`+timeline(s);
+      wrapS.querySelector(".site-r").onclick=()=>{ wrapS.querySelector(".timeline").classList.toggle("open"); };
+      g.appendChild(wrapS);
+    });
+    wrap.appendChild(g);
+  });
+  $("#pill").textContent="Portfolio · "+STUDIES.length+" studies · "+all().length+" sites";
+}
+renderKpis(); renderFilter(); renderList();
+</script>
+</body>
+</html>
