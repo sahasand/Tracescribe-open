@@ -288,8 +288,17 @@ function buildPresets(){
   Object.keys(PRESETS).forEach((name,i)=>{const b=ce("div","preset"+(i===0?" active":""),name);b.onclick=()=>{state=PRESETS[name]();document.querySelectorAll(".preset").forEach(x=>x.classList.remove("active"));b.classList.add("active");buildControls();updateAll();};box.appendChild(b);});
 }
 function updateAll(){ renderPreview(); updatePrompt(); }
+function copyText(text){
+  // navigator.clipboard is blocked on file:// (non-secure context); fall back to execCommand
+  if(navigator.clipboard && window.isSecureContext){ return navigator.clipboard.writeText(text); }
+  return new Promise((resolve,reject)=>{
+    try{ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); resolve();
+    }catch(e){ reject(e); }
+  });
+}
 $("#copyBtn").addEventListener("click",()=>{
-  const btn=$("#copyBtn"); navigator.clipboard.writeText($("#prompt").textContent).then(()=>{
+  const btn=$("#copyBtn"); copyText($("#prompt").textContent).then(()=>{
     const o=btn.innerHTML; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Copied!';
     setTimeout(()=>btn.innerHTML=o,1400);
   }).catch(()=>{});
