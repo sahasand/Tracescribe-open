@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:def="http://www.cdisc.org/ns/def/v2.1" xmlns:xlink="http://www.w3.org/1999/xlink" ODMVersion="1.3.2" FileType="Snapshot" FileOID="DEFINE.ADAM.HF-1002-CL-101" CreationDateTime="2026-06-09T00:00:00" def:Context="Submission">
+<Study OID="ST.HF-1002-CL-101">
+<GlobalVariables>
+<StudyName>HF-1002-CL-101</StudyName>
+<StudyDescription>ADaM analysis datasets for HF-1002-CL-101</StudyDescription>
+<ProtocolName>HF-1002-CL-101</ProtocolName>
+</GlobalVariables>
+<MetaDataVersion OID="MDV.1" Name="ADaM HF-1002-CL-101" Description="ADaM Metadata" def:DefineVersion="2.1.0" def:StandardName="ADaMIG" def:StandardVersion="1.3">
+<def:Standards>
+<def:Standard OID="STD.ADAMIG" Name="ADaMIG" Type="IG" Version="1.3" Status="Final"/>
+</def:Standards>
+<ItemGroupDef OID="IG.ADSL" Name="ADSL" Repeating="No" IsReferenceData="No" SASDatasetName="ADSL" Purpose="Analysis" def:Structure="One record per subject" def:Class="ADSL" def:ArchiveLocationID="LF.ADSL">
+<Description><TranslatedText xml:lang="en">Subject-Level Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADSL.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADSL.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADSL.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ARM" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ARMCD" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ACTARM" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ACTARMCD" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.DOSELVL" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRT01P" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRT01PN" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRT01A" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRT01AN" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.AGE" OrderNumber="15" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.AGEGR1" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.AGEGR1N" OrderNumber="17" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.SEX" OrderNumber="18" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.RACE" OrderNumber="19" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ETHNIC" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.COUNTRY" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.HEIGHTBL" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.WEIGHTBL" OrderNumber="23" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.BMIBL" OrderNumber="24" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRTSDT" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRTEDT" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRTDURD" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.EOSDT" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.TRSDURD" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.DTHDT" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.DTHFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.EOSSTT" OrderNumber="32" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.DCSREAS" OrderNumber="33" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.ENRLFL" OrderNumber="34" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.SAFFL" OrderNumber="35" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.FASFL" OrderNumber="36" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADSL.DLTFL" OrderNumber="37" Mandatory="No"/>
+<def:leaf ID="LF.ADSL" xlink:href="adsl.xpt"><def:title>adsl.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADAE" Name="ADAE" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADAE" Purpose="Analysis" def:Structure="One record per adverse event per subject" def:Class="OCCURRENCE DATA STRUCTURE" def:ArchiveLocationID="LF.ADAE">
+<Description><TranslatedText xml:lang="en">Adverse Events Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADAE.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADAE.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADAE.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.TRTA" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.TRTAN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AGE" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AGEGR1" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.SEX" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.RACE" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.SAFFL" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AESEQ" OrderNumber="15" Mandatory="No" KeySequence="5"/>
+<ItemRef ItemOID="IT.ADAE.AETERM" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AEDECOD" OrderNumber="17" Mandatory="No" KeySequence="4"/>
+<ItemRef ItemOID="IT.ADAE.AEBODSYS" OrderNumber="18" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.ASTDT" OrderNumber="19" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADAE.AENDT" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.ASTDY" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AENDY" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.ADURN" OrderNumber="23" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.ATOXGR" OrderNumber="24" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AESER" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AREL" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AEOUT" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AEACN" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.TRTEMFL" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AOCCFL" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AOCCPFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADAE.AEDLTFL" OrderNumber="32" Mandatory="No"/>
+<def:leaf ID="LF.ADAE" xlink:href="adae.xpt"><def:title>adae.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADEX" Name="ADEX" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADEX" Purpose="Analysis" def:Structure="One record per exposure parameter per subject" def:Class="BASIC DATA STRUCTURE" def:ArchiveLocationID="LF.ADEX">
+<Description><TranslatedText xml:lang="en">Exposure Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADEX.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADEX.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADEX.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.TRT01P" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.TRT01PN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.SAFFL" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.PARAMCD" OrderNumber="11" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADEX.PARAM" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.PARAMN" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.AVAL" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEX.AVALU" OrderNumber="15" Mandatory="No"/>
+<def:leaf ID="LF.ADEX" xlink:href="adex.xpt"><def:title>adex.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADLB" Name="ADLB" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADLB" Purpose="Analysis" def:Structure="One record per parameter per analysis visit per subject" def:Class="BASIC DATA STRUCTURE" def:ArchiveLocationID="LF.ADLB">
+<Description><TranslatedText xml:lang="en">Laboratory Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADLB.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADLB.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADLB.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.TRT01P" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.TRT01PN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AGE" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AGEGR1" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AGEGR1N" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.SEX" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.RACE" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ETHNIC" OrderNumber="15" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.SAFFL" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.FASFL" OrderNumber="17" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.PARAMCD" OrderNumber="18" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADLB.PARAM" OrderNumber="19" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.PARAMN" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.PARCAT1" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AVISIT" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AVISITN" OrderNumber="23" Mandatory="No" KeySequence="4"/>
+<ItemRef ItemOID="IT.ADLB.ADT" OrderNumber="24" Mandatory="No" KeySequence="5"/>
+<ItemRef ItemOID="IT.ADLB.ADY" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AVAL" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.AVALC" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.BASE" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.CHG" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.PCHG" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ABLFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ANL01FL" OrderNumber="32" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ANRLO" OrderNumber="33" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ANRHI" OrderNumber="34" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.ANRIND" OrderNumber="35" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADLB.BNRIND" OrderNumber="36" Mandatory="No"/>
+<def:leaf ID="LF.ADLB" xlink:href="adlb.xpt"><def:title>adlb.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADVS" Name="ADVS" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADVS" Purpose="Analysis" def:Structure="One record per parameter per analysis visit per subject" def:Class="BASIC DATA STRUCTURE" def:ArchiveLocationID="LF.ADVS">
+<Description><TranslatedText xml:lang="en">Vital Signs Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADVS.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADVS.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADVS.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.TRT01P" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.TRT01PN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AGE" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AGEGR1" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AGEGR1N" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.SEX" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.RACE" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.ETHNIC" OrderNumber="15" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.SAFFL" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.FASFL" OrderNumber="17" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.PARAMCD" OrderNumber="18" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADVS.PARAM" OrderNumber="19" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.PARAMN" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.PARCAT1" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AVISIT" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AVISITN" OrderNumber="23" Mandatory="No" KeySequence="4"/>
+<ItemRef ItemOID="IT.ADVS.ADT" OrderNumber="24" Mandatory="No" KeySequence="5"/>
+<ItemRef ItemOID="IT.ADVS.ADY" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AVAL" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.AVALC" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.BASE" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.CHG" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.PCHG" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.ABLFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADVS.ANL01FL" OrderNumber="32" Mandatory="No"/>
+<def:leaf ID="LF.ADVS" xlink:href="advs.xpt"><def:title>advs.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADIMG" Name="ADIMG" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADIMG" Purpose="Analysis" def:Structure="One record per parameter per analysis visit per subject" def:Class="BASIC DATA STRUCTURE" def:ArchiveLocationID="LF.ADIMG">
+<Description><TranslatedText xml:lang="en">Imaging Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADIMG.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADIMG.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADIMG.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.TRT01P" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.TRT01PN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AGE" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AGEGR1" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AGEGR1N" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.SEX" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.RACE" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.ETHNIC" OrderNumber="15" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.SAFFL" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.FASFL" OrderNumber="17" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.PARAMCD" OrderNumber="18" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADIMG.PARAM" OrderNumber="19" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.PARAMN" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.PARCAT1" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AVISIT" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AVISITN" OrderNumber="23" Mandatory="No" KeySequence="4"/>
+<ItemRef ItemOID="IT.ADIMG.ADT" OrderNumber="24" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.ADY" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AVAL" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.AVALC" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.BASE" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.CHG" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.PCHG" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.ABLFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADIMG.ANL01FL" OrderNumber="32" Mandatory="No"/>
+<def:leaf ID="LF.ADIMG" xlink:href="adimg.xpt"><def:title>adimg.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemGroupDef OID="IG.ADEFF" Name="ADEFF" Repeating="Yes" IsReferenceData="No" SASDatasetName="ADEFF" Purpose="Analysis" def:Structure="One record per parameter per analysis visit per subject" def:Class="BASIC DATA STRUCTURE" def:ArchiveLocationID="LF.ADEFF">
+<Description><TranslatedText xml:lang="en">Efficacy Analysis Dataset</TranslatedText></Description>
+<ItemRef ItemOID="IT.ADEFF.STUDYID" OrderNumber="1" Mandatory="Yes" KeySequence="1"/>
+<ItemRef ItemOID="IT.ADEFF.USUBJID" OrderNumber="2" Mandatory="Yes" KeySequence="2"/>
+<ItemRef ItemOID="IT.ADEFF.SUBJID" OrderNumber="3" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.SITEID" OrderNumber="4" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.TRT01P" OrderNumber="5" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.TRT01PN" OrderNumber="6" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.TRT01A" OrderNumber="7" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.TRT01AN" OrderNumber="8" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.COHORT" OrderNumber="9" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AGE" OrderNumber="10" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AGEGR1" OrderNumber="11" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AGEGR1N" OrderNumber="12" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.SEX" OrderNumber="13" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.RACE" OrderNumber="14" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.ETHNIC" OrderNumber="15" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.SAFFL" OrderNumber="16" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.FASFL" OrderNumber="17" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.PARAMCD" OrderNumber="18" Mandatory="No" KeySequence="3"/>
+<ItemRef ItemOID="IT.ADEFF.PARAM" OrderNumber="19" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.PARAMN" OrderNumber="20" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.PARCAT1" OrderNumber="21" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AVISIT" OrderNumber="22" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AVISITN" OrderNumber="23" Mandatory="No" KeySequence="4"/>
+<ItemRef ItemOID="IT.ADEFF.ADT" OrderNumber="24" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.ADY" OrderNumber="25" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AVAL" OrderNumber="26" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.AVALC" OrderNumber="27" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.BASE" OrderNumber="28" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.CHG" OrderNumber="29" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.PCHG" OrderNumber="30" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.ABLFL" OrderNumber="31" Mandatory="No"/>
+<ItemRef ItemOID="IT.ADEFF.ANL01FL" OrderNumber="32" Mandatory="No"/>
+<def:leaf ID="LF.ADEFF" xlink:href="adeff.xpt"><def:title>adeff.xpt</def:title></def:leaf>
+</ItemGroupDef>
+<ItemDef OID="IT.ADSL.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ARM" Name="ARM" DataType="text" Length="15">
+<Description><TranslatedText xml:lang="en">Description of Planned Arm</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ARMCD" Name="ARMCD" DataType="text" Length="2">
+<Description><TranslatedText xml:lang="en">Planned Arm Code</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ACTARM" Name="ACTARM" DataType="text" Length="15">
+<Description><TranslatedText xml:lang="en">Description of Actual Arm</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ACTARMCD" Name="ACTARMCD" DataType="text" Length="2">
+<Description><TranslatedText xml:lang="en">Actual Arm Code</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.DOSELVL" Name="DOSELVL" DataType="float">
+<Description><TranslatedText xml:lang="en">Dose Level (vg)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.AGEGR1N" Name="AGEGR1N" DataType="integer">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ETHNIC" Name="ETHNIC" DataType="text" Length="22">
+<Description><TranslatedText xml:lang="en">Ethnicity</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.COUNTRY" Name="COUNTRY" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Country</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.HEIGHTBL" Name="HEIGHTBL" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Height (cm)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.WEIGHTBL" Name="WEIGHTBL" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Weight (kg)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.BMIBL" Name="BMIBL" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline BMI (kg/m2)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRTSDT" Name="TRTSDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Date of First Exposure to Treatment</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRTEDT" Name="TRTEDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Date of Last Exposure to Treatment</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRTDURD" Name="TRTDURD" DataType="integer">
+<Description><TranslatedText xml:lang="en">Total Treatment Duration (Days)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.EOSDT" Name="EOSDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">End of Study Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.TRSDURD" Name="TRSDURD" DataType="integer">
+<Description><TranslatedText xml:lang="en">Total Time on Study (Days)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.DTHDT" Name="DTHDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Date of Death</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.DTHFL" Name="DTHFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Subject Death Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.NY"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.EOSSTT" Name="EOSSTT" DataType="text" Length="12">
+<Description><TranslatedText xml:lang="en">End of Study Status</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.EOSSTT"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.DCSREAS" Name="DCSREAS" DataType="text" Length="21">
+<Description><TranslatedText xml:lang="en">Reason for Discontinuation from Study</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.ENRLFL" Name="ENRLFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Enrolled Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.FASFL" Name="FASFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Full Analysis Set Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADSL.DLTFL" Name="DLTFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">DLT-Evaluable Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.TRTA" Name="TRTA" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.TRTAN" Name="TRTAN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AESEQ" Name="AESEQ" DataType="float">
+<Description><TranslatedText xml:lang="en">Sequence Number</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AETERM" Name="AETERM" DataType="text" Length="45">
+<Description><TranslatedText xml:lang="en">Reported Term for the Adverse Event</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AEDECOD" Name="AEDECOD" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Dictionary-Derived Term</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AEBODSYS" Name="AEBODSYS" DataType="text" Length="52">
+<Description><TranslatedText xml:lang="en">Body System or Organ Class</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.ASTDT" Name="ASTDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Start Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AENDT" Name="AENDT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis End Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.ASTDY" Name="ASTDY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Start Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AENDY" Name="AENDY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis End Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.ADURN" Name="ADURN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Duration (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.ATOXGR" Name="ATOXGR" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Analysis Toxicity Grade</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AESER" Name="AESER" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Serious Event</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.NY"/>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AREL" Name="AREL" DataType="text" Length="16">
+<Description><TranslatedText xml:lang="en">Analysis Causality</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AEOUT" Name="AEOUT" DataType="text" Length="32">
+<Description><TranslatedText xml:lang="en">Outcome of Adverse Event</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AEACN" Name="AEACN" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Action Taken with Study Treatment</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.TRTEMFL" Name="TRTEMFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Treatment Emergent Analysis Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AOCCFL" Name="AOCCFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">1st Occurrence of Any AE Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AOCCPFL" Name="AOCCPFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">1st Occurrence of Preferred Term Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADAE.AEDLTFL" Name="AEDLTFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Dose-Limiting Toxicity Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.PARAMCD" Name="PARAMCD" DataType="text" Length="6">
+<Description><TranslatedText xml:lang="en">Parameter Code</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.PARAM" Name="PARAM" DataType="text" Length="28">
+<Description><TranslatedText xml:lang="en">Parameter</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.PARAMN" Name="PARAMN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Parameter (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.AVAL" Name="AVAL" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Value</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEX.AVALU" Name="AVALU" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Analysis Value Unit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AGEGR1N" Name="AGEGR1N" DataType="integer">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ETHNIC" Name="ETHNIC" DataType="text" Length="22">
+<Description><TranslatedText xml:lang="en">Ethnicity</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.FASFL" Name="FASFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Full Analysis Set Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.PARAMCD" Name="PARAMCD" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Parameter Code</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.PARAM" Name="PARAM" DataType="text" Length="32">
+<Description><TranslatedText xml:lang="en">Parameter</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.PARAMN" Name="PARAMN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Parameter (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.PARCAT1" Name="PARCAT1" DataType="text" Length="10">
+<Description><TranslatedText xml:lang="en">Parameter Category 1</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AVISIT" Name="AVISIT" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Analysis Visit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AVISITN" Name="AVISITN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Visit (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ADT" Name="ADT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ADY" Name="ADY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AVAL" Name="AVAL" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Value</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.AVALC" Name="AVALC" DataType="text" Length="5">
+<Description><TranslatedText xml:lang="en">Analysis Value (C)</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.BASE" Name="BASE" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Value</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.CHG" Name="CHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.PCHG" Name="PCHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Percent Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ABLFL" Name="ABLFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Baseline Record Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ANL01FL" Name="ANL01FL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Analysis Record Flag 01</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ANRLO" Name="ANRLO" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Normal Range Lower Limit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ANRHI" Name="ANRHI" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Normal Range Upper Limit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.ANRIND" Name="ANRIND" DataType="text" Length="6">
+<Description><TranslatedText xml:lang="en">Analysis Reference Range Indicator</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADLB.BNRIND" Name="BNRIND" DataType="text" Length="6">
+<Description><TranslatedText xml:lang="en">Baseline Reference Range Indicator</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AGEGR1N" Name="AGEGR1N" DataType="integer">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.ETHNIC" Name="ETHNIC" DataType="text" Length="22">
+<Description><TranslatedText xml:lang="en">Ethnicity</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.FASFL" Name="FASFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Full Analysis Set Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.PARAMCD" Name="PARAMCD" DataType="text" Length="5">
+<Description><TranslatedText xml:lang="en">Parameter Code</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.PARAM" Name="PARAM" DataType="text" Length="31">
+<Description><TranslatedText xml:lang="en">Parameter</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.PARAMN" Name="PARAMN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Parameter (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.PARCAT1" Name="PARCAT1" DataType="text" Length="11">
+<Description><TranslatedText xml:lang="en">Parameter Category 1</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AVISIT" Name="AVISIT" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Analysis Visit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AVISITN" Name="AVISITN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Visit (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.ADT" Name="ADT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.ADY" Name="ADY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AVAL" Name="AVAL" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Value</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.AVALC" Name="AVALC" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Analysis Value (C)</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.BASE" Name="BASE" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Value</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.CHG" Name="CHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.PCHG" Name="PCHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Percent Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.ABLFL" Name="ABLFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Baseline Record Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADVS.ANL01FL" Name="ANL01FL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Analysis Record Flag 01</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AGEGR1N" Name="AGEGR1N" DataType="integer">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.ETHNIC" Name="ETHNIC" DataType="text" Length="22">
+<Description><TranslatedText xml:lang="en">Ethnicity</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.FASFL" Name="FASFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Full Analysis Set Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.PARAMCD" Name="PARAMCD" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Parameter Code</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.PARAM" Name="PARAM" DataType="text" Length="38">
+<Description><TranslatedText xml:lang="en">Parameter</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.PARAMN" Name="PARAMN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Parameter (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.PARCAT1" Name="PARCAT1" DataType="text" Length="16">
+<Description><TranslatedText xml:lang="en">Parameter Category 1</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AVISIT" Name="AVISIT" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Analysis Visit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AVISITN" Name="AVISITN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Visit (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.ADT" Name="ADT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.ADY" Name="ADY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AVAL" Name="AVAL" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Value</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.AVALC" Name="AVALC" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Analysis Value (C)</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.BASE" Name="BASE" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Value</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.CHG" Name="CHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.PCHG" Name="PCHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Percent Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.ABLFL" Name="ABLFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Baseline Record Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADIMG.ANL01FL" Name="ANL01FL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Analysis Record Flag 01</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.STUDYID" Name="STUDYID" DataType="text" Length="14">
+<Description><TranslatedText xml:lang="en">Study Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.USUBJID" Name="USUBJID" DataType="text" Length="23">
+<Description><TranslatedText xml:lang="en">Unique Subject Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.SUBJID" Name="SUBJID" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Subject Identifier for the Study</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.SITEID" Name="SITEID" DataType="text" Length="3">
+<Description><TranslatedText xml:lang="en">Study Site Identifier</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.TRT01P" Name="TRT01P" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.TRT01PN" Name="TRT01PN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Planned Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.TRT01A" Name="TRT01A" DataType="text" Length="34">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.TRT01AN" Name="TRT01AN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Actual Treatment for Period 01 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.COHORT" Name="COHORT" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Cohort</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AGE" Name="AGE" DataType="float">
+<Description><TranslatedText xml:lang="en">Age</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AGEGR1" Name="AGEGR1" DataType="text" Length="4">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.AGEGR1"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AGEGR1N" Name="AGEGR1N" DataType="integer">
+<Description><TranslatedText xml:lang="en">Pooled Age Group 1 (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.SEX" Name="SEX" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Sex</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.SEX"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.RACE" Name="RACE" DataType="text" Length="25">
+<Description><TranslatedText xml:lang="en">Race</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.ETHNIC" Name="ETHNIC" DataType="text" Length="22">
+<Description><TranslatedText xml:lang="en">Ethnicity</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.SAFFL" Name="SAFFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Safety Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.FASFL" Name="FASFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Full Analysis Set Population Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.PARAMCD" Name="PARAMCD" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Parameter Code</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.PARAM" Name="PARAM" DataType="text" Length="35">
+<Description><TranslatedText xml:lang="en">Parameter</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.PARAMN" Name="PARAMN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Parameter (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.PARCAT1" Name="PARCAT1" DataType="text" Length="5">
+<Description><TranslatedText xml:lang="en">Parameter Category 1</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AVISIT" Name="AVISIT" DataType="text" Length="8">
+<Description><TranslatedText xml:lang="en">Analysis Visit</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AVISITN" Name="AVISITN" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Visit (N)</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.ADT" Name="ADT" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Date</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.ADY" Name="ADY" DataType="integer">
+<Description><TranslatedText xml:lang="en">Analysis Relative Day</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AVAL" Name="AVAL" DataType="float">
+<Description><TranslatedText xml:lang="en">Analysis Value</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.AVALC" Name="AVALC" DataType="text" Length="5">
+<Description><TranslatedText xml:lang="en">Analysis Value (C)</TranslatedText></Description>
+<def:Origin Type="Predecessor"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.BASE" Name="BASE" DataType="float">
+<Description><TranslatedText xml:lang="en">Baseline Value</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.CHG" Name="CHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.PCHG" Name="PCHG" DataType="float">
+<Description><TranslatedText xml:lang="en">Percent Change from Baseline</TranslatedText></Description>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.ABLFL" Name="ABLFL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Baseline Record Flag</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<ItemDef OID="IT.ADEFF.ANL01FL" Name="ANL01FL" DataType="text" Length="1">
+<Description><TranslatedText xml:lang="en">Analysis Record Flag 01</TranslatedText></Description>
+<CodeListRef CodeListOID="CL.FLAG"/>
+<def:Origin Type="Derived"/>
+</ItemDef>
+<CodeList OID="CL.NY" Name="No Yes Response" DataType="text">
+<CodeListItem CodedValue="N"><Decode><TranslatedText xml:lang="en">No</TranslatedText></Decode></CodeListItem>
+<CodeListItem CodedValue="Y"><Decode><TranslatedText xml:lang="en">Yes</TranslatedText></Decode></CodeListItem>
+</CodeList>
+<CodeList OID="CL.FLAG" Name="Analysis Flag" DataType="text">
+<CodeListItem CodedValue="Y"><Decode><TranslatedText xml:lang="en">Yes</TranslatedText></Decode></CodeListItem>
+</CodeList>
+<CodeList OID="CL.SEX" Name="Sex" DataType="text">
+<CodeListItem CodedValue="M"><Decode><TranslatedText xml:lang="en">Male</TranslatedText></Decode></CodeListItem>
+<CodeListItem CodedValue="F"><Decode><TranslatedText xml:lang="en">Female</TranslatedText></Decode></CodeListItem>
+</CodeList>
+<CodeList OID="CL.AGEGR1" Name="Pooled Age Group 1" DataType="text">
+<CodeListItem CodedValue="&lt;65"><Decode><TranslatedText xml:lang="en">&lt; 65 years</TranslatedText></Decode></CodeListItem>
+<CodeListItem CodedValue="&gt;=65"><Decode><TranslatedText xml:lang="en">&gt;= 65 years</TranslatedText></Decode></CodeListItem>
+</CodeList>
+<CodeList OID="CL.EOSSTT" Name="End of Study Status" DataType="text">
+<CodeListItem CodedValue="COMPLETED"><Decode><TranslatedText xml:lang="en">Completed</TranslatedText></Decode></CodeListItem>
+<CodeListItem CodedValue="DISCONTINUED"><Decode><TranslatedText xml:lang="en">Discontinued</TranslatedText></Decode></CodeListItem>
+<CodeListItem CodedValue="ONGOING"><Decode><TranslatedText xml:lang="en">Ongoing</TranslatedText></Decode></CodeListItem>
+</CodeList>
+</MetaDataVersion>
+</Study>
+</ODM>

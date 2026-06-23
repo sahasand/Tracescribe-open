@@ -1,0 +1,15 @@
+STUDYID,DOMAIN,IETESTCD,IETEST,IECAT
+HF-1002-CL-101,TI,INCL01,Adults at least 18 years of age.,INCLUSION
+HF-1002-CL-101,TI,INCL02,Chronic nonischemic dilated cardiomyopathy with LVEF 15-35% by echocardiography within 6 months before enrollment.,INCLUSION
+HF-1002-CL-101,TI,INCL03,NYHA class III for at least 1 month despite stable optimized guideline-directed medical therapy.,INCLUSION
+HF-1002-CL-101,TI,INCL04,Anti-AAV NAb titer at or below 1:5 within 6 months before infusion.,INCLUSION
+HF-1002-CL-101,TI,INCL05,Willing and able to provide written informed consent and to use acceptable contraception if applicable.,INCLUSION
+HF-1002-CL-101,TI,EXCL01,"Ischemic, hypertrophic, infiltrative, inflammatory, or restrictive cardiomyopathy; uncorrected third-degree heart block.",EXCLUSION
+HF-1002-CL-101,TI,EXCL02,"IV inotropes, intra-aortic balloon pump, or other percutaneous mechanical circulatory support within 30 days.",EXCLUSION
+HF-1002-CL-101,TI,EXCL03,Cardiac surgery or PCI within 30 days; dialysis dependence or serum creatinine greater than 2.5 mg/dL.,EXCLUSION
+HF-1002-CL-101,TI,EXCL04,"Clinically relevant myocardial infarction within 6 months; prior heart transplant, LV reduction surgery, or surgical LVAD.",EXCLUSION
+HF-1002-CL-101,TI,EXCL05,"Anticipated CRT, revascularization, transplant, or valve repair/replacement within 3 months of dosing.",EXCLUSION
+HF-1002-CL-101,TI,EXCL06,Known intrinsic liver disease or liver function tests greater than 2x the upper limit of normal.,EXCLUSION
+HF-1002-CL-101,TI,EXCL07,"Anemia, neutropenia, thrombocytopenia, or bleeding diathesis; active or suspected infection within 48 hours.",EXCLUSION
+HF-1002-CL-101,TI,EXCL08,Malignancy within 5 years except those with negligible risk of metastasis or death.,EXCLUSION
+HF-1002-CL-101,TI,EXCL09,Pregnancy or breastfeeding; prior gene therapy; receipt of another investigational agent within 30 days.,EXCLUSION

@@ -1,0 +1,72 @@
+STUDYID,DOMAIN,USUBJID,MHSEQ,MHTERM,MHDECOD,MHBODSYS,MHCAT,MHSTDTC,MHENRTPT,MHENTPT
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1001,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1001,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2022,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1001,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1001,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1001,5.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1004,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1004,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1004,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-1004,4.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2022,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2001,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2001,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2001,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2001,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2001,5.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2020,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2004,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2004,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2022,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2004,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2004,4.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-2004,5.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3001,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3001,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3001,3.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3004,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2026,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3004,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-101-3004,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1002,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1002,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1002,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2020,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1002,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1002,5.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1005,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2022,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1005,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1005,3.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-1005,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2020,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2002,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2002,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2002,3.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2002,4.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2005,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2005,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2005,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-2005,4.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3002,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3002,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3002,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3002,4.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2020,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3005,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2026,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3005,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-102-3005,3.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2024,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1003,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1003,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1003,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1003,4.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1006,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1006,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2023,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1006,3.0,Chronic kidney disease stage 2,Chronic kidney disease,Renal and urinary disorders,GENERAL,2022,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-1006,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2003,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2017,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2003,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2003,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2021,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2003,4.0,Hypertension,Hypertension,Vascular disorders,GENERAL,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2006,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2024,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2006,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-2006,3.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3003,1.0,Atrial fibrillation,Atrial fibrillation,Cardiac disorders,CARDIAC,2018,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3003,2.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3003,3.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3003,4.0,Dyslipidemia,Dyslipidaemia,Metabolism and nutrition disorders,GENERAL,2026,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3006,1.0,Chronic heart failure,Cardiac failure chronic,Cardiac disorders,CARDIAC,2025,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3006,2.0,Nonischemic dilated cardiomyopathy,Dilated cardiomyopathy,Cardiac disorders,CARDIAC,2019,ONGOING,End of Study
+HF-1002-CL-101,MH,HF-1002-CL-101-103-3006,3.0,Type 2 diabetes mellitus,Type 2 diabetes mellitus,Metabolism and nutrition disorders,GENERAL,2023,ONGOING,End of Study

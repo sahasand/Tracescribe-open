@@ -1,0 +1,55 @@
+STUDYID,USUBJID,SUBJID,SITEID,TRT01P,TRT01PN,TRT01A,TRT01AN,COHORT,SAFFL,PARAMCD,PARAM,PARAMN,AVAL,AVALU
+HF-1002-CL-101,HF-1002-CL-101-101-1001,1001,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-1001,1001,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-1001,1001,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-101-1004,1004,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-1004,1004,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-1004,1004,101,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-101-2001,2001,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-2001,2001,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-2001,2001,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-101-2004,2004,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-2004,2004,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-2004,2004,101,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-101-3001,3001,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-3001,3001,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-3001,3001,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-101-3004,3004,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-101-3004,3004,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-101-3004,3004,101,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-1002,1002,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-1002,1002,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-1002,1002,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-1005,1005,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-1005,1005,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-1005,1005,102,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-2002,2002,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-2002,2002,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-2002,2002,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-2005,2005,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-2005,2005,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-2005,2005,102,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-3002,3002,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-3002,3002,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-3002,3002,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-102-3005,3005,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-102-3005,3005,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-102-3005,3005,102,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-1003,1003,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-1003,1003,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-1003,1003,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-1006,1006,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,TDOSE,Total Dose Administered (vg),1.0,30000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-1006,1006,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-1006,1006,103,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,Cohort 1 (Low): HF-1002 3.0E13 vg,1.0,1,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-2003,2003,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-2003,2003,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-2003,2003,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-2006,2006,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,TDOSE,Total Dose Administered (vg),1.0,100000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-2006,2006,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-2006,2006,103,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,Cohort 2 (Mid): HF-1002 1.0E14 vg,2.0,2,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-3003,3003,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-3003,3003,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-3003,3003,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
+HF-1002-CL-101,HF-1002-CL-101-103-3006,3006,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,TDOSE,Total Dose Administered (vg),1.0,300000000000000.0,vg
+HF-1002-CL-101,HF-1002-CL-101-103-3006,3006,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,NDOSES,Number of Doses,2.0,1.0,
+HF-1002-CL-101,HF-1002-CL-101-103-3006,3006,103,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,Cohort 3 (High): HF-1002 3.0E14 vg,3.0,3,Y,EXDUR,Duration of Exposure (days),3.0,1.0,days
