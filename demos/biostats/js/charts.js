@@ -315,7 +315,7 @@ function createTrajectoryPlot(data, containerId) {
       '<extra></extra>'
   };
 
-  // Treatment CI lower bound (drawn first, no fill — the upper trace fills down to it)
+  // Treatment CI lower bound (drawn first, no fill - the upper trace fills down to it)
   const treatmentLower = {
     x: timepointLabels,
     y: treatmentStats.map(s => s.lower),
@@ -650,7 +650,7 @@ function createForestPlot(data, containerId) {
 
   // P-value annotations for each subgroup.
   // Pin x just right of the plot (paper) but anchor y to the DATA row (yref:'y')
-  // so each p-value lines up with its marker — previously y used a paper fraction
+  // so each p-value lines up with its marker - previously y used a paper fraction
   // index/(n-1) that drifted out of alignment with the data rows.
   subgroups.forEach((subgroup, index) => {
     if (subgroup.pValue !== null && subgroup.pValue !== undefined) {
@@ -1539,7 +1539,7 @@ function createKaplanMeierCurve(data, containerId) {
 
   // Add risk numbers at each timepoint.
   // Anchor x to the DATA axis (xref:'x', x = timepoint) so columns line up with
-  // the time axis regardless of plot margins — the previous paper-fraction
+  // the time axis regardless of plot margins - the previous paper-fraction
   // timepoint/xMax ignored the left/right margins and drifted out of alignment.
   riskTimepoints.forEach((timepoint) => {
     const atRiskA = countAtRisk(armA, timepoint);
@@ -4478,7 +4478,7 @@ function createDecisionCurve(containerId, data) {
         const fp = neg.filter(p => p.predicted_probability >= t).length;
 
         // Net benefit = (TP/n) - (FP/n) * (pt/(1-pt))
-        // Net benefit is allowed to be negative by design — that is precisely
+        // Net benefit is allowed to be negative by design - that is precisely
         // how a decision curve shows where a strategy stops being worthwhile.
         // (The previous Math.max(.,0) clamp flattened the "Treat All" line and
         // destroyed the clinical interpretation.)

@@ -1,5 +1,5 @@
 /* =============================================================================
-   Define & Data explorer — vanilla JS, no dependencies.
+   Define & Data explorer - vanilla JS, no dependencies.
    Reads window.DATASETS (embedded metadata) and fetches CSV row data on demand.
    ============================================================================= */
 (function () {
@@ -48,7 +48,7 @@
         ds._layer = g[0];
         var o = document.createElement('option');
         o.value = key(ds);
-        o.textContent = ds.name + ' — ' + ds.label;
+        o.textContent = ds.name + ' - ' + ds.label;
         og.appendChild(o);
       });
       sel.appendChild(og);
@@ -86,7 +86,7 @@
     search.style.display = '';
     var ck = key(current);
     if (!cache[ck]) {
-      // Primary: embedded rows (data/rows.js) — works over file:// and http.
+      // Primary: embedded rows (data/rows.js) - works over file:// and http.
       if (window.DATASET_ROWS && window.DATASET_ROWS[ck] != null) {
         cache[ck] = parseCSV(window.DATASET_ROWS[ck]);
       } else {

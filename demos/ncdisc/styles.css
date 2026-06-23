@@ -1,5 +1,5 @@
 /* =============================================================================
-   HF-1002-CL-101 — Workflow Demo
+   HF-1002-CL-101 - Workflow Demo
    "Clinical instrument" design system. Refined navy/red, IBM Plex, precision grid.
    Authored for a serious clinical presentation: restraint, hairlines, exact rhythm.
    Tokens grounded in Tailwind (type/shadow/tracking) + Open Props (spacing/easing).
@@ -15,14 +15,14 @@
 
 /* ---- Design tokens -------------------------------------------------------- */
 :root{
-  /* Navy — institutional, slightly desaturated, deep */
+  /* Navy - institutional, slightly desaturated, deep */
   --navy-950:#07152E; --navy-900:#0A1F40; --navy-800:#0E2A55; --navy-700:#143A73;
   --navy-600:#1B4A91; --navy-500:#2A63B8; --navy-400:#5E86C9;
   --navy-100:#DCE6F5; --navy-075:#E8EEF8; --navy-050:#F1F5FB;
   --navy:#0E2A55;            /* brand */
   --navy-link:#1A4C92;       /* AA on white */
 
-  /* Red — refined clinical signal; reserved for critical / QC / accent */
+  /* Red - refined clinical signal; reserved for critical / QC / accent */
   --red:#CE1A30; --red-bright:#E23B49; --red-on-dark:#FF8089;
   --red-text:#A4152A;        /* AA on white */
   --red-050:#FBEAEC; --red-100:#F6D3D8;
@@ -31,7 +31,7 @@
   --pass:#157A45; --pass-text:#0E6238; --pass-050:#E6F4EC;
   --warn-text:#8A5A12; --warn-050:#FBF1DD;
 
-  /* Neutrals — cool, faintly navy-tinted */
+  /* Neutrals - cool, faintly navy-tinted */
   --ink:#0E1B30;             /* headings */
   --body:#313D4F;            /* body text */
   --muted:#566479;           /* secondary text (AA on white) */
@@ -93,7 +93,7 @@ code,.mono{font-family:var(--mono)}
 h1,h2,h3,p,ul{margin:0}
 ::selection{background:var(--navy-100); color:var(--ink)}
 
-/* Focus — visible, branded, consistent */
+/* Focus - visible, branded, consistent */
 :focus-visible{outline:2.5px solid var(--navy-500); outline-offset:2px; border-radius:3px}
 .masthead :focus-visible{outline-color:var(--on-navy)}
 
