@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CCS Monitor · Protocol-Driven Risk-Based Monitoring · HF-1002-CL-101 demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --petrol:#0E6E63; --petrol-dk:#0B4F47; --ink:#16242C; --paper:#F3F5F5; --card:#fff;
+  --muted:#566B72; --line:#D8DFDE; --soft:#EAEEEE; --red:#B42318; --amber:#B07A00;
+  --green:#2E7D52; --sea:#8FCFC6; --tint:#ECF4F2; --redtint:#F8ECEA;
+  --serif:'IBM Plex Serif',Georgia,serif; --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(to right,rgba(22,36,44,.035) 1px,transparent 1px),
+  linear-gradient(to bottom,rgba(22,36,44,.035) 1px,transparent 1px);background-size:40px 40px;
+  -webkit-font-smoothing:antialiased;line-height:1.5}
+h1,h2,h3,h4{font-family:var(--serif);letter-spacing:-.015em;margin:0}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
+.kicker{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--petrol)}
+.rule{height:3px;width:38px;background:var(--petrol);border-radius:2px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;
+  padding:12px 26px;background:rgba(255,255,255,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:30px;height:30px;border-radius:7px;background:var(--petrol);display:grid;place-items:center;box-shadow:0 2px 6px rgba(14,110,99,.3)}
+.mark svg{width:17px;height:17px}
+.brand .wm{font-family:var(--serif);font-weight:600;font-size:17px;line-height:1}
+.brand .tg{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.topnav{margin-left:14px;display:flex;gap:4px}
+.topnav a{font-size:13px;color:var(--muted);padding:6px 11px;border-radius:7px;transition:.15s}
+.topnav a:hover{color:var(--ink);background:var(--soft)}
+.pill{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--petrol);border:1px solid var(--petrol);border-radius:999px;padding:5px 12px}
+
+/* hero */
+.hero{position:relative;padding:62px 26px 30px;max-width:1180px;margin:0 auto;overflow:hidden}
+.hero .glow{position:absolute;inset:-30% 20% auto;height:420px;background:radial-gradient(50rem 24rem at 50% 0,rgba(14,110,99,.10),transparent 70%);pointer-events:none}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.04;max-width:16ch;margin-top:16px}
+.hero .sub{font-size:19px;color:var(--muted);max-width:60ch;margin:18px 0 0;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.chip{font-family:var(--mono);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;color:var(--ink)}
+.chip b{color:var(--petrol)}
+.cta{display:inline-flex;align-items:center;gap:8px;margin-top:28px;background:var(--petrol);color:#fff;
+  font-weight:600;font-size:14px;padding:11px 18px;border-radius:9px;transition:.15s;box-shadow:0 4px 14px rgba(14,110,99,.25)}
+.cta:hover{background:var(--petrol-dk);transform:translateY(-1px)}
+
+/* console */
+.consolewrap{max-width:1180px;margin:14px auto 0;padding:0 26px 30px}
+.win{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  box-shadow:0 30px 60px -30px rgba(16,36,44,.35),0 2px 8px rgba(16,36,44,.06)}
+.winbar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);background:#fbfcfc}
+.dot{width:11px;height:11px;border-radius:50%}
+.winurl{margin-left:12px;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--paper);
+  border:1px solid var(--line);border-radius:7px;padding:5px 12px}
+.winurl b{color:var(--ink)}
+.app{display:grid;grid-template-columns:212px 1fr;min-height:600px}
+.side{border-right:1px solid var(--line);padding:14px 12px;background:#fcfdfd}
+.navitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;font-size:13.5px;font-weight:500;
+  color:var(--muted);cursor:pointer;transition:.13s;position:relative}
+.navitem:hover{background:var(--soft);color:var(--ink)}
+.navitem.on{background:var(--tint);color:var(--petrol-dk);font-weight:600}
+.navitem.on::before{content:"";position:absolute;left:-12px;top:7px;bottom:7px;width:3px;background:var(--petrol);border-radius:0 3px 3px 0}
+.navitem .ic{width:16px;height:16px;flex:none;color:currentColor}
+.view{padding:26px 30px;min-width:0}
+.crumb{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.vh{font-size:26px;margin:8px 0 3px}
+.vsub{color:var(--muted);font-size:14px;margin-bottom:20px}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
+.tile{border:1px solid var(--line);border-radius:11px;padding:15px 17px;background:#fff}
+.tile .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tile .big{font-family:var(--serif);font-size:30px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
+.tile .sm{font-size:11.5px;color:var(--muted);margin-top:2px}
+.statdot{width:8px;height:8px;border-radius:50%}
+
+/* cards / panels */
+.panel{border:1px solid var(--line);border-radius:12px;background:#fff;padding:20px 22px;margin-bottom:18px}
+.panel h3{font-size:16px;margin-bottom:10px}
+.metarow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px;margin-top:6px}
+.metarow .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.metarow .v{font-weight:600;margin-top:3px;font-size:14px}
+.label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+
+/* tables */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-bottom:1px solid var(--soft);font-size:13.5px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.tablewrap{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff}
+.dom{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* badges */
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;
+  padding:2px 7px;border-radius:5px;text-transform:uppercase}
+.b-derived{background:var(--tint);color:var(--petrol-dk)}
+.b-baseline{background:var(--soft);color:var(--muted)}
+.tierpill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.t-critical{color:var(--red)} .t-important{color:var(--amber)} .t-non_critical{color:var(--green)}
+
+/* chips/filters */
+.filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fbtn{font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:.13s}
+.fbtn:hover{border-color:var(--petrol);color:var(--petrol)}
+.fbtn.on{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+
+/* heatmap */
+.hmwrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:#fff;padding:4px}
+.hm{border-collapse:separate;border-spacing:3px}
+.hm th{padding:8px 6px;font-size:10px;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;border:none;color:var(--muted)}
+.hm td.site{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink);padding-right:10px;border:none}
+.cell{width:30px;height:30px;border-radius:5px;cursor:pointer;transition:.12s;position:relative}
+.cell:hover{transform:scale(1.18);z-index:2;box-shadow:0 3px 10px rgba(16,36,44,.25)}
+.c-green{background:#39a06b} .c-amber{background:#d9a300} .c-red{background:#cf3b2c} .c-nd{background:#e7ebeb}
+.legend{display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--muted);align-items:center}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
+
+/* bars (kri detail / qtl) */
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.bar{display:grid;grid-template-columns:64px 1fr 54px;align-items:center;gap:10px}
+.bar .bn{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.track{height:18px;background:var(--soft);border-radius:5px;overflow:hidden;position:relative}
+.fill{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.bar .bv{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.limit{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--red)}
+
+/* qtl cards */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.qcard{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff}
+.qcard.breach{border-color:var(--red);background:var(--redtint)}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.qstatus{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px}
+.q-ok{background:var(--tint);color:var(--petrol-dk)} .q-breach{background:var(--red);color:#fff}
+
+/* endpoints */
+.eprole{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;font-weight:600}
+.ep{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:8px;cursor:pointer;transition:.13s;background:#fff}
+.ep:hover{border-color:var(--petrol);box-shadow:0 2px 10px rgba(14,110,99,.08)}
+.ep.sel{border-color:var(--petrol);background:var(--tint)}
+.ep .et{font-size:13.5px;color:var(--ink)}
+.ep .em{margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.code{font-family:var(--mono);font-size:11px;background:var(--soft);color:var(--muted);padding:2px 7px;border-radius:5px}
+.derivebox{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;font-size:12.5px;color:var(--muted)}
+.derivebox b{color:var(--petrol-dk)}
+.derivebox .dl{display:inline-block;background:var(--tint);color:var(--petrol-dk);border-radius:5px;padding:2px 7px;margin:3px 4px 0 0;font-size:11.5px}
+
+/* method */
+.method{max-width:1180px;margin:36px auto;padding:0 26px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.fstep{border:1px solid var(--line);border-radius:11px;background:#fff;padding:16px;position:relative}
+.fstep .n{font-family:var(--mono);font-size:12px;color:var(--petrol);font-weight:600}
+.fstep h4{font-size:15px;margin:6px 0 4px}
+.fstep p{margin:0;font-size:12px;color:var(--muted)}
+.standards{margin-top:16px;border:1px solid var(--line);background:var(--tint);border-radius:11px;padding:16px 18px;font-size:13px;color:var(--ink)}
+
+/* sdv spotlight (highlight band) */
+.spotlight{max-width:1180px;margin:6px auto 0;padding:0 26px}
+.spot{position:relative;overflow:hidden;border-radius:16px;padding:28px 30px;color:#eaf6f3;
+  background:linear-gradient(135deg,var(--petrol-dk) 0%,var(--petrol) 70%,#13877a 100%);
+  box-shadow:0 26px 54px -28px rgba(11,79,71,.6)}
+.spot .sglow{position:absolute;right:-8%;top:-46%;width:480px;height:480px;
+  background:radial-gradient(circle,rgba(143,207,198,.32),transparent 64%);pointer-events:none}
+.spot .skick{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--sea);display:flex;align-items:center;gap:9px}
+.spot h2{color:#fff;font-size:clamp(22px,3vw,30px);margin:11px 0 7px;max-width:22ch;letter-spacing:-.02em}
+.spot p{margin:0;color:#cfe7e2;font-size:14.5px;max-width:58ch;line-height:1.55}
+.spotgrid{display:flex;flex-wrap:wrap;gap:24px 34px;margin-top:22px;align-items:center;justify-content:space-between}
+.spotstats{display:flex;gap:30px}
+.spotstat .sv{font-family:var(--serif);font-size:32px;font-weight:600;font-variant-numeric:tabular-nums;color:#fff;line-height:1}
+.spotstat .sl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sea);margin-top:6px}
+.spotbtn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--petrol-dk);font-weight:600;font-size:14px;
+  padding:11px 18px;border-radius:10px;border:none;cursor:pointer;transition:.15s}
+.spotbtn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.28)}
+.spotnote{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16);font-family:var(--mono);font-size:11px;color:#bfe0d9;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* live pulse dot */
+.livedot{width:7px;height:7px;border-radius:50%;background:var(--sea);flex:none;animation:pulse 2.2s infinite}
+.navlive{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--green);flex:none;animation:pulse 2.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,125,82,.55)}70%{box-shadow:0 0 0 6px rgba(46,125,82,0)}100%{box-shadow:0 0 0 0 rgba(46,125,82,0)}}
+.hero-api{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--petrol);border:1px solid var(--petrol);border-radius:999px;padding:5px 12px;background:var(--tint)}
+
+/* sdv view */
+.connbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.connbar .ci{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600}
+.conn-meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.soon{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:5px 11px}
+.btn-sync{display:inline-flex;align-items:center;gap:7px;background:var(--petrol);color:#fff;font-weight:600;font-size:13px;padding:8px 14px;border-radius:9px;border:none;cursor:pointer;transition:.15s}
+.btn-sync:hover{background:var(--petrol-dk)}
+.btn-sync svg{transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.btn-sync.spin svg{transform:rotate(360deg)}
+.s-on{color:var(--green);font-weight:600}.s-amber{color:var(--amber);font-weight:600}.s-red{color:var(--red);font-weight:600}
+.sitebars .bar{grid-template-columns:138px 1fr 52px}
+.sitebars .bn{font-weight:600;color:var(--ink);font-family:var(--sans);font-size:13px}
+
+footer{max-width:1180px;margin:10px auto 50px;padding:0 26px;color:var(--muted);font-size:12px;font-family:var(--mono)}
+.tooltip{position:fixed;z-index:100;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;
+  padding:8px 11px;border-radius:8px;opacity:0;transition:opacity .12s;max-width:240px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.tooltip .tt-t{font-family:var(--mono);font-size:10px;color:var(--sea);letter-spacing:.05em;text-transform:uppercase}
+.tooltip b{font-variant-numeric:tabular-nums}
+.rise{opacity:0;transform:translateY(8px);animation:rise .5s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(max-width:780px){.app{grid-template-columns:1fr}.side{display:flex;gap:4px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line)}.navitem.on::before{display:none}.flow{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 8-8 11-4.5-3-8-6-8-11V5z"/></svg></span>
+    <div><div class="wm">CCS Monitor</div><div class="tg">Risk-Based Monitoring</div></div>
+  </div>
+  <nav class="topnav">
+    <a href="#top">Overview</a><a href="#console">Console</a><a href="#method">Method</a>
+  </nav>
+  <span class="pill">Interactive demo</span>
+</header>
+
+<section class="hero" id="top">
+  <div class="glow"></div>
+  <div class="rule rise"></div>
+  <div class="rise" style="margin-top:14px;animation-delay:.05s;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <span class="kicker">Protocol-driven · ICH E6(R3)</span>
+    <span class="hero-api"><span class="livedot" style="background:var(--petrol)"></span>Live EDC API</span>
+  </div>
+  <h1 class="rise" style="animation-delay:.1s">Monitoring that matches the protocol.</h1>
+  <p class="sub rise" style="animation-delay:.16s">Critical data, key risk indicators and quality tolerance limits derived from each study's own endpoints, not a generic template. <span style="color:var(--petrol);font-weight:600">Linked to the EDC API, it pulls live SDV coverage and operational metrics as the data lands.</span> Explore it below on a live Phase&nbsp;1 cardiac gene-therapy trial.</p>
+  <div class="chips rise" style="animation-delay:.22s" id="chips"></div>
+  <a class="cta rise" href="#console" style="animation-delay:.28s">Explore the console
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+</section>
+
+<section class="spotlight">
+  <div class="spot rise" style="animation-delay:.32s">
+    <div class="sglow"></div>
+    <div class="skick"><span class="livedot"></span>New · Live EDC API integration</div>
+    <h2>Source-data verification, live from the EDC.</h2>
+    <p>SDV coverage is the metric clinical monitors live by. CCS Monitor connects to the EDC API and grades every field against its protocol-derived plan (100% on critical data, targeted on the rest), so under-verified sites surface the moment the data lands.</p>
+    <div class="spotgrid">
+      <div class="spotstats">
+        <div class="spotstat"><div class="sv" id="spOverall">64.4%</div><div class="sl">Overall SDV</div></div>
+        <div class="spotstat"><div class="sv" id="spCrit">100%</div><div class="sl">Critical verified</div></div>
+        <div class="spotstat"><div class="sv" id="spFields">22</div><div class="sl">Fields tracked</div></div>
+      </div>
+      <button class="spotbtn" onclick="openSDV()">Open SDV Coverage
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+    <div class="spotnote"><span class="livedot" style="background:#9fd9cf"></span>Linked to the Fountayn EDC API (mock) · connected · live feed · queries &amp; data-review coming soon</div>
+  </div>
+</section>
+
+<section class="consolewrap" id="console">
+  <div class="win rise" style="animation-delay:.1s">
+    <div class="winbar">
+      <span class="dot" style="background:#e06a5e"></span><span class="dot" style="background:#e3b341"></span><span class="dot" style="background:#54a06b"></span>
+      <span class="winurl">ccs-monitor.app / studies / <b id="urlproto"></b></span>
+    </div>
+    <div class="app">
+      <aside class="side" id="side"></aside>
+      <main class="view" id="view"></main>
+    </div>
+  </div>
+</section>
+
+<section class="method" id="method">
+  <div class="rule"></div>
+  <div class="kicker" style="margin-top:12px">Method</div>
+  <h2 style="font-size:28px;margin-top:6px">From protocol endpoints to targeted oversight</h2>
+  <div class="flow">
+    <div class="fstep"><div class="n">1</div><h4>Protocol endpoints</h4><p>Endpoints &amp; critical processes captured as structured data.</p></div>
+    <div class="fstep"><div class="n">2</div><h4>Derive artifacts</h4><p>Critical data, KRIs (site-level) &amp; QTLs (trial-level).</p></div>
+    <div class="fstep"><div class="n">3</div><h4>Monitor centrally</h4><p>Statistical &amp; fixed-threshold signal detection.</p></div>
+    <div class="fstep"><div class="n">4</div><h4>Act</h4><p>Targeted, risk-based on-site follow-up.</p></div>
+  </div>
+  <div class="standards"><b>Aligned with the RBQM lifecycle</b>: ICH E6(R3) · FDA (2013 + 2023 Q&amp;A) · EMA · TransCelerate RACT. KRIs assess site performance; QTLs flag systemic, trial-level issues. Every derived artifact traces to the endpoint it came from.</div>
+</section>
+
+<footer>CCS Monitor · Protocol-Driven Risk-Based Monitoring · HF-1002-CL-101 demo · Fictional/synthetic data for demonstration only.</footer>
+
+<div class="tooltip" id="tt"></div>
+
+<script>
+const DATA = {"study": {"protocol_number": "HF-1002-CL-101", "title": "A Phase 1, Open-Label, Sequential Dose-Escalation Study of a Single Intracoronary Infusion of HF-1002 in Adults with Nonischemic Cardiomyopathy and NYHA Class III Heart Failure", "phase": "phase1", "sponsor": "Corvexa Therapeutics, Inc. (fictional)", "area": "Cardiovascular"}, "protocol": {"indication": "Chronic nonischemic dilated cardiomyopathy, NYHA class III, LVEF 15-35%", "design": "Open-label, single-arm, multicenter, sequential dose-escalation (3 dose cohorts; 3.0E13, 1.0E14, 3.0E14 vg) of a single antegrade intracoronary infusion, with a DLT window through Week 4 and Safety Review Committee review between cohorts.", "phase": "1", "sample_size": 18, "sites_planned": 4, "version": "1.0", "effective_date": "2026-06-06", "synopsis": "First-in-human gene therapy (engineered cardiotropic AAV, rAAV-Cx, encoding a constitutively active inhibitor-1 of PP1) delivered by single intracoronary infusion. 12-month primary observation period with long-term follow-up through Month 36. Up to 18 evaluable participants (up to 6 per cohort).", "source": "HF-1002-CL-101_Protocol_v1.0_06Jun2026.docx"}, "endpoints": [{"id": "86e6972c-04b4-4a6a-8815-d51676aa00a2", "role": "primary", "title": "Incidence, severity (CTCAE v5.0), and relatedness of TEAEs and SAEs through Month 12", "measure": "TEAE_SAE", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "d9009d0f-d468-4dc6-a672-0fc816622af7", "role": "primary", "title": "Incidence of protocol-defined DLTs through the DLT window (Week 4)", "measure": "DLT", "timepoints": "Through Week 4", "central_read": false, "adjudicated": true}, {"id": "51c5136f-7170-487e-9966-913de016b252", "role": "primary", "title": "Clinically significant changes in clinical laboratory parameters (incl. liver function)", "measure": "LAB_LFT", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "c33b8ed7-3153-409c-abce-fdb943cb69fc", "role": "primary", "title": "Clinically significant changes in 12-lead ECG", "measure": "ECG", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "97408582-cc4f-4558-a8ed-95700c709070", "role": "primary", "title": "Clinically significant changes in vital signs", "measure": "VITALS", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "dabd160f-e8f9-450f-afa6-ddead812f316", "role": "secondary", "title": "Change from baseline in NYHA functional class", "measure": "NYHA", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "aa6925ca-90e6-4bc7-a840-3c25bf4a64f9", "role": "secondary", "title": "Change from baseline in LVEF (central echocardiography reader)", "measure": "LVEF", "timepoints": "Months 3, 6, 12", "central_read": true, "adjudicated": false}, {"id": "b1aa0bc6-eb65-49bd-9e96-f77b424292d9", "role": "secondary", "title": "Change from baseline in peak oxygen consumption (pVO2, CPET)", "measure": "PVO2", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "d4039558-f96d-4a9a-8baf-9e17876af5b3", "role": "secondary", "title": "Change from baseline in 6-minute walk test distance", "measure": "SIXMWT", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "c85d6720-c016-492e-8c5f-2d16c5dc7a28", "role": "secondary", "title": "Change from baseline in MLHFQ total score (lower = better)", "measure": "MLHFQ", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "4f813832-6b4a-4b65-9667-33d3fab637a8", "role": "secondary", "title": "Change from baseline in KCCQ overall summary score (higher = better)", "measure": "KCCQ", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "6ed12bfd-d67f-4df8-933e-ce9d812169d3", "role": "exploratory", "title": "Change from baseline in NT-proBNP / BNP", "measure": "NTPROBNP", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "9a8f2b33-b2f5-4cd5-9a8b-ebcdd1aeff29", "role": "exploratory", "title": "Change from baseline in troponin I", "measure": "TROPONIN", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "7c620ba9-2c63-4fc3-960a-d555c71b1deb", "role": "exploratory", "title": "Change from baseline in complement C3 and C4", "measure": "COMPLEMENT", "timepoints": "Months 3, 6, 12", "central_read": false, "adjudicated": false}, {"id": "46fdb1ff-2bf1-42a4-8b6c-9b2b1acb2575", "role": "exploratory", "title": "Anti-AAV neutralizing antibody titers over time", "measure": "NAB", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "54c3c190-37ce-4cc4-8e89-2c9d540d7f55", "role": "exploratory", "title": "IFN-gamma ELISpot responses to the rAAV-Cx capsid and the cI-1 transgene", "measure": "ELISPOT", "timepoints": "Through Month 12", "central_read": false, "adjudicated": false}, {"id": "342fc86c-9b84-4203-9071-a6f39c6da458", "role": "exploratory", "title": "Myocardial vector genome copies and PLN Ser16 phosphorylation (optional tissue)", "measure": "TISSUE_VG", "timepoints": "Optional", "central_read": false, "adjudicated": false}], "sites": [{"number": "101", "name": "Bayview", "risk": "medium", "freq": null}, {"number": "102", "name": "Northgate", "risk": "medium", "freq": null}, {"number": "103", "name": "Riverside", "risk": "medium", "freq": null}], "critical_data": [{"domain": "AE", "name": "SAEs, deaths, and cardiac-related hospitalizations", "tier": "critical", "sdv": 100, "source": "derived", "ep": "86e6972c-04b4-4a6a-8815-d51676aa00a2", "rationale": "Primary safety endpoint \u2014 100% verification"}, {"domain": "AE", "name": "All SAEs", "tier": "critical", "sdv": 100, "source": "baseline", "ep": null, "rationale": "Safety reporting \u2014 regulatory requirement"}, {"domain": "AE", "name": "Dose-limiting toxicity (DLT) assessments", "tier": "critical", "sdv": 100, "source": "derived", "ep": "d9009d0f-d468-4dc6-a672-0fc816622af7", "rationale": "DLTs drive dose-escalation decisions \u2014 100% verification"}, {"domain": "EC", "name": "LVEF (central echocardiography reader)", "tier": "critical", "sdv": 100, "source": "derived", "ep": "aa6925ca-90e6-4bc7-a840-3c25bf4a64f9", "rationale": "Key secondary efficacy endpoint \u2014 central read"}, {"domain": "EG", "name": "12-lead ECG at safety visits", "tier": "critical", "sdv": 100, "source": "derived", "ep": "c33b8ed7-3153-409c-abce-fdb943cb69fc", "rationale": "Cardiac safety endpoint"}, {"domain": "EX", "name": "Study drug administration / dosing", "tier": "critical", "sdv": 100, "source": "baseline", "ep": null, "rationale": "Treatment exposure \u2014 defines the analysis sets"}, {"domain": "IC", "name": "Informed consent date and version", "tier": "critical", "sdv": 100, "source": "baseline", "ep": null, "rationale": "Regulatory requirement \u2014 subject rights protection"}, {"domain": "IE", "name": "Key inclusion/exclusion eligibility criteria", "tier": "critical", "sdv": 100, "source": "baseline", "ep": null, "rationale": "Subject eligibility \u2014 directly impacts data integrity"}, {"domain": "IS", "name": "Anti-AAV neutralizing antibody (eligibility <=1:5 + immunogenicity)", "tier": "critical", "sdv": 100, "source": "derived", "ep": "46fdb1ff-2bf1-42a4-8b6c-9b2b1acb2575", "rationale": "Eligibility gate (NAb <=1:5) and key immunogenicity measure"}, {"domain": "LB", "name": "Liver function tests (ALT, AST, ALP, bilirubin)", "tier": "critical", "sdv": 100, "source": "derived", "ep": "51c5136f-7170-487e-9966-913de016b252", "rationale": "Grade >=3 hepatotoxicity is a protocol-defined DLT"}, {"domain": "AE", "name": "Non-serious AEs", "tier": "important", "sdv": 20, "source": "baseline", "ep": null, "rationale": "Safety monitoring \u2014 captured via centralized review"}, {"domain": "CM", "name": "Concomitant medications", "tier": "important", "sdv": 30, "source": "baseline", "ep": null, "rationale": "Relevant to safety and drug interactions"}, {"domain": "DS", "name": "Disposition / discontinuation", "tier": "important", "sdv": 30, "source": "baseline", "ep": null, "rationale": "Completeness and dropout tracking"}, {"domain": "FA", "name": "Peak oxygen consumption (pVO2, CPET)", "tier": "important", "sdv": 30, "source": "derived", "ep": "b1aa0bc6-eb65-49bd-9e96-f77b424292d9", "rationale": "Functional-capacity secondary endpoint"}, {"domain": "FA", "name": "6-minute walk test distance", "tier": "important", "sdv": 30, "source": "derived", "ep": "d4039558-f96d-4a9a-8baf-9e17876af5b3", "rationale": "Functional-capacity secondary endpoint"}, {"domain": "FA", "name": "NYHA functional class", "tier": "important", "sdv": 30, "source": "derived", "ep": "dabd160f-e8f9-450f-afa6-ddead812f316", "rationale": "Secondary functional endpoint"}, {"domain": "LB", "name": "Troponin I", "tier": "important", "sdv": 30, "source": "derived", "ep": "9a8f2b33-b2f5-4cd5-9a8b-ebcdd1aeff29", "rationale": "Exploratory cardiac injury biomarker"}, {"domain": "LB", "name": "Complement C3 / C4", "tier": "important", "sdv": 30, "source": "derived", "ep": "7c620ba9-2c63-4fc3-960a-d555c71b1deb", "rationale": "Exploratory immune-activation biomarker"}, {"domain": "LB", "name": "NT-proBNP / BNP", "tier": "important", "sdv": 30, "source": "derived", "ep": "6ed12bfd-d67f-4df8-933e-ce9d812169d3", "rationale": "Exploratory cardiac biomarker"}, {"domain": "QS", "name": "MLHFQ total score", "tier": "important", "sdv": 20, "source": "derived", "ep": "c85d6720-c016-492e-8c5f-2d16c5dc7a28", "rationale": "Quality-of-life secondary endpoint (lower = better)"}, {"domain": "QS", "name": "KCCQ overall summary score", "tier": "important", "sdv": 20, "source": "derived", "ep": "4f813832-6b4a-4b65-9667-33d3fab637a8", "rationale": "Quality-of-life secondary endpoint (higher = better)"}, {"domain": "VS", "name": "Vital signs at safety visits", "tier": "important", "sdv": 30, "source": "derived", "ep": "97408582-cc4f-4558-a8ed-95700c709070", "rationale": "Routine safety monitoring"}, {"domain": "DM", "name": "Demographics", "tier": "non_critical", "sdv": 0, "source": "baseline", "ep": null, "rationale": "Baseline data \u2014 verifiable via centralized monitoring"}, {"domain": "IS", "name": "IFN-gamma ELISpot (capsid, transgene)", "tier": "non_critical", "sdv": 0, "source": "derived", "ep": "54c3c190-37ce-4cc4-8e89-2c9d540d7f55", "rationale": "Exploratory cellular immunogenicity"}, {"domain": "LB", "name": "Routine hematology", "tier": "non_critical", "sdv": 0, "source": "baseline", "ep": null, "rationale": "Routine labs \u2014 monitored centrally"}, {"domain": "MB", "name": "Optional cardiac tissue (vector genomes, PLN phosphorylation)", "tier": "non_critical", "sdv": 0, "source": "derived", "ep": "342fc86c-9b84-4203-9071-a6f39c6da458", "rationale": "Optional exploratory transduction/pharmacodynamics"}, {"domain": "MH", "name": "Medical / cardiac history", "tier": "non_critical", "sdv": 0, "source": "baseline", "ep": null, "rationale": "Background data \u2014 not endpoint-critical"}], "kris": [{"code": "KRI-6MWT-001", "name": "6-minute walk test assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "d4039558-f96d-4a9a-8baf-9e17876af5b3", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-AE-001", "name": "Adverse Event Reporting Rate", "category": "safety", "direction": "both", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-COMPL-001", "name": "Complement C3/C4 assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "7c620ba9-2c63-4fc3-960a-d555c71b1deb", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-CPET-001", "name": "CPET (pVO2) assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "b1aa0bc6-eb65-49bd-9e96-f77b424292d9", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-CVHOSP-001", "name": "Cardiac-related hospitalization rate", "category": "safety", "direction": "higher_is_worse", "source": "derived", "ep": "86e6972c-04b4-4a6a-8815-d51676aa00a2", "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-DC-001", "name": "Data Change Rate", "category": "data_quality", "direction": "both", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-DE-001", "name": "Outstanding Data Entry Rate", "category": "data_quality", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-DISC-001", "name": "Study Discontinuation Rate", "category": "site_performance", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-DISC-002", "name": "Treatment Discontinuation Rate", "category": "site_performance", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-DLT-001", "name": "DLT reporting & adjudication timeliness", "category": "safety", "direction": "higher_is_worse", "source": "derived", "ep": "d9009d0f-d468-4dc6-a672-0fc816622af7", "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-ECGCMP-001", "name": "12-lead ECG assessment completeness", "category": "safety", "direction": "lower_is_worse", "source": "derived", "ep": "c33b8ed7-3153-409c-abce-fdb943cb69fc", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-ELISPOT-001", "name": "IFN-gamma ELISpot assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "54c3c190-37ce-4cc4-8e89-2c9d540d7f55", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-HEPTOX-001", "name": "Hepatotoxicity (Grade >=3 LFT) alert rate", "category": "safety", "direction": "higher_is_worse", "source": "derived", "ep": "51c5136f-7170-487e-9966-913de016b252", "ttype": "percentage", "amber": 10.0, "red": 15.0}, {"code": "KRI-KCCQ-001", "name": "KCCQ (ePRO) assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "4f813832-6b4a-4b65-9667-33d3fab637a8", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-LAB-001", "name": "Grade 3+ Lab Abnormality Rate", "category": "safety", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-LVEF-001", "name": "LVEF central-read assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "aa6925ca-90e6-4bc7-a840-3c25bf4a64f9", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-MLHFQ-001", "name": "MLHFQ (ePRO) assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "c85d6720-c016-492e-8c5f-2d16c5dc7a28", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-NAB-001", "name": "Anti-AAV NAb assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "46fdb1ff-2bf1-42a4-8b6c-9b2b1acb2575", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-NTBNP-001", "name": "NT-proBNP/BNP assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "6ed12bfd-d67f-4df8-933e-ce9d812169d3", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-NYHA-001", "name": "NYHA class assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "dabd160f-e8f9-450f-afa6-ddead812f316", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-PD-001", "name": "Important Protocol Deviation Rate", "category": "protocol_compliance", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-PD-002", "name": "Non-Important Protocol Deviation Rate", "category": "protocol_compliance", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-QRY-001", "name": "Query Rate", "category": "data_quality", "direction": "both", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-QRY-002", "name": "Outstanding Query Rate", "category": "data_quality", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-SAE-001", "name": "Serious Adverse Event Rate", "category": "safety", "direction": "both", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-SF-001", "name": "Screen Failure Rate", "category": "site_performance", "direction": "higher_is_worse", "source": "baseline", "ep": null, "ttype": "zscore", "amber": 2.0, "red": 3.0}, {"code": "KRI-TROPI-001", "name": "Troponin I assessment completeness", "category": "endpoint", "direction": "lower_is_worse", "source": "derived", "ep": "9a8f2b33-b2f5-4cd5-9a8b-ebcdd1aeff29", "ttype": "percentage", "amber": 90.0, "red": 80.0}, {"code": "KRI-VSCMP-001", "name": "Vital signs assessment completeness", "category": "data_quality", "direction": "lower_is_worse", "source": "derived", "ep": "97408582-cc4f-4558-a8ed-95700c709070", "ttype": "percentage", "amber": 90.0, "red": 80.0}], "kri_values": [{"code": "KRI-NYHA-001", "site": "103", "value": 87.5, "flag": "amber"}, {"code": "KRI-VSCMP-001", "site": "102", "value": 97.0, "flag": "green"}, {"code": "KRI-KCCQ-001", "site": "103", "value": 86.7, "flag": "amber"}, {"code": "KRI-AE-001", "site": "102", "value": 3.8, "flag": "green"}, {"code": "KRI-HEPTOX-001", "site": "103", "value": 0.0, "flag": "green"}, {"code": "KRI-6MWT-001", "site": "103", "value": 87.5, "flag": "amber"}, {"code": "KRI-LVEF-001", "site": "102", "value": 91.7, "flag": "green"}, {"code": "KRI-AE-001", "site": "103", "value": 2.8, "flag": "green"}, {"code": "KRI-LVEF-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-6MWT-001", "site": "102", "value": 91.7, "flag": "green"}, {"code": "KRI-CPET-001", "site": "103", "value": 87.5, "flag": "amber"}, {"code": "KRI-AE-001", "site": "101", "value": 2.8, "flag": "green"}, {"code": "KRI-ECGCMP-001", "site": "102", "value": 95.2, "flag": "green"}, {"code": "KRI-ECGCMP-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-CPET-001", "site": "102", "value": 91.7, "flag": "green"}, {"code": "KRI-MLHFQ-001", "site": "103", "value": 86.7, "flag": "amber"}, {"code": "KRI-CPET-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-HEPTOX-001", "site": "101", "value": 0.0, "flag": "green"}, {"code": "KRI-VSCMP-001", "site": "103", "value": 92.4, "flag": "green"}, {"code": "KRI-NAB-001", "site": "103", "value": 100.0, "flag": "green"}, {"code": "KRI-NAB-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-TROPI-001", "site": "102", "value": 94.4, "flag": "green"}, {"code": "KRI-ELISPOT-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-TROPI-001", "site": "103", "value": 91.7, "flag": "green"}, {"code": "KRI-COMPL-001", "site": "103", "value": 91.7, "flag": "green"}, {"code": "KRI-TROPI-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-NAB-001", "site": "102", "value": 100.0, "flag": "green"}, {"code": "KRI-COMPL-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-VSCMP-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-KCCQ-001", "site": "102", "value": 93.3, "flag": "green"}, {"code": "KRI-MLHFQ-001", "site": "102", "value": 93.3, "flag": "green"}, {"code": "KRI-NYHA-001", "site": "102", "value": 91.7, "flag": "green"}, {"code": "KRI-KCCQ-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-ECGCMP-001", "site": "103", "value": 92.9, "flag": "green"}, {"code": "KRI-LVEF-001", "site": "103", "value": 87.5, "flag": "amber"}, {"code": "KRI-ELISPOT-001", "site": "103", "value": 92.4, "flag": "green"}, {"code": "KRI-SAE-001", "site": "103", "value": 16.7, "flag": "green"}, {"code": "KRI-SAE-001", "site": "101", "value": 0.0, "flag": "green"}, {"code": "KRI-NTBNP-001", "site": "102", "value": 94.4, "flag": "green"}, {"code": "KRI-COMPL-001", "site": "102", "value": 94.4, "flag": "green"}, {"code": "KRI-ELISPOT-001", "site": "102", "value": 97.0, "flag": "green"}, {"code": "KRI-NTBNP-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-NTBNP-001", "site": "103", "value": 91.7, "flag": "green"}, {"code": "KRI-SAE-001", "site": "102", "value": 16.7, "flag": "green"}, {"code": "KRI-6MWT-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-HEPTOX-001", "site": "102", "value": 16.7, "flag": "red"}, {"code": "KRI-NYHA-001", "site": "101", "value": 100.0, "flag": "green"}, {"code": "KRI-MLHFQ-001", "site": "101", "value": 100.0, "flag": "green"}], "qtls": [{"parameter": "Study-wide dropout rate", "description": "Percentage of enrolled subjects who discontinue the study for any reason", "threshold": 20.0, "direction": "less_than_or_equal", "unit": "%", "source": "baseline", "value": 11.1, "breached": false}, {"parameter": "Missing primary endpoint data", "description": "Percentage of enrolled subjects with missing primary endpoint data", "threshold": 5.0, "direction": "less_than_or_equal", "unit": "%", "source": "baseline", "value": 11.1, "breached": true}, {"parameter": "SAE reporting timeliness (within 24h)", "description": "Percentage of SAEs reported to the sponsor within 24 hours of site awareness", "threshold": 95.0, "direction": "greater_than_or_equal", "unit": "%", "source": "baseline", "value": null, "breached": null}, {"parameter": "DLT incidence rate", "description": "Proportion of dosed participants experiencing a protocol-defined DLT", "threshold": 33.0, "direction": "less_than_or_equal", "unit": "%", "source": "derived", "value": 11.1, "breached": false}, {"parameter": "LVEF central-read completeness", "description": "Percentage of expected central-reader LVEF assessments completed", "threshold": 90.0, "direction": "greater_than_or_equal", "unit": "%", "source": "derived", "value": 93.1, "breached": false}]};
+const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1).replace(/_/g,'-') : s;
+const el = (h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;};
+const flagClass = {green:'c-green',amber:'c-amber',red:'c-red'};
+
+// ---- derived metrics ----
+const cd = DATA.critical_data;
+const kris = DATA.kris, kvByCode = {};
+DATA.kri_values.forEach(v=>{(kvByCode[v.code]=kvByCode[v.code]||[]).push(v)});
+const valuedCodes = Object.keys(kvByCode).sort();
+const allFlags = DATA.kri_values.map(v=>v.flag);
+const red = allFlags.filter(f=>f==='red').length, amber = allFlags.filter(f=>f==='amber').length;
+const qBreached = DATA.qtls.filter(q=>q.breached).length;
+const tierCount = t=>cd.filter(c=>c.tier===t).length;
+const epById = {}; DATA.endpoints.forEach(e=>epById[e.id]=e);
+const derivedByEp = {};
+DATA.endpoints.forEach(e=>derivedByEp[e.id]={kris:[],cd:[]});
+kris.forEach(k=>{if(k.ep&&derivedByEp[k.ep])derivedByEp[k.ep].kris.push(k.name)});
+cd.forEach(c=>{if(c.ep&&derivedByEp[c.ep])derivedByEp[c.ep].cd.push(c.name)});
+
+// ---- SDV coverage (live EDC feed, embedded from the API) ----
+const TIER_PLAN={critical:100,important:30,non_critical:0};
+const SDV={
+  connection:{label:'Fountayn (mock)',records:66,lastLabel:'18 Jun 2026, 16:24 UTC'},
+  sites:[{num:'101',name:'Bayview',v:152,r:242},{num:'102',name:'Northgate',v:158,r:244},{num:'103',name:'Riverside',v:164,r:250}],
+  fields:[
+    {n:'Dose-limiting toxicity (DLT) assessments',d:'AE',t:'critical',v:38,r:38},
+    {n:'SAEs, deaths, and cardiac-related hospitalizations',d:'AE',t:'critical',v:36,r:36},
+    {n:'All SAEs',d:'AE',t:'critical',v:33,r:33},
+    {n:'Liver function tests (ALT, AST, ALP, bilirubin)',d:'LB',t:'critical',v:36,r:36},
+    {n:'Anti-AAV neutralizing antibody (eligibility ≤1:5 + immunogenicity)',d:'IS',t:'critical',v:38,r:38},
+    {n:'LVEF (central echocardiography reader)',d:'EC',t:'critical',v:33,r:33},
+    {n:'12-lead ECG at safety visits',d:'EG',t:'critical',v:40,r:40},
+    {n:'Study drug administration / dosing',d:'EX',t:'critical',v:40,r:40},
+    {n:'Informed consent date and version',d:'IC',t:'critical',v:34,r:34},
+    {n:'Key inclusion/exclusion eligibility criteria',d:'IE',t:'critical',v:35,r:35},
+    {n:'6-minute walk test distance',d:'FA',t:'important',v:8,r:29},
+    {n:'Concomitant medications',d:'CM',t:'important',v:8,r:29},
+    {n:'Complement C3 / C4',d:'LB',t:'important',v:9,r:32},
+    {n:'Vital signs at safety visits',d:'VS',t:'important',v:8,r:28},
+    {n:'Disposition / discontinuation',d:'DS',t:'important',v:9,r:31},
+    {n:'Non-serious AEs',d:'AE',t:'important',v:10,r:34},
+    {n:'KCCQ overall summary score',d:'QS',t:'important',v:10,r:32},
+    {n:'MLHFQ total score',d:'QS',t:'important',v:10,r:32},
+    {n:'NT-proBNP / BNP',d:'LB',t:'important',v:9,r:30},
+    {n:'NYHA functional class',d:'FA',t:'important',v:9,r:29},
+    {n:'Peak oxygen consumption (pVO2, CPET)',d:'FA',t:'important',v:11,r:35},
+    {n:'Troponin I',d:'LB',t:'important',v:10,r:32},
+  ],
+};
+const sdvPct=(v,r)=>r?Math.round(v/r*1000)/10:null;
+function sdvAgg(t){let v=0,r=0,p=0;SDV.fields.forEach(f=>{if(!t||f.t===t){v+=f.v;r+=f.r;p+=TIER_PLAN[f.t]*f.r;}});return{v,r,pct:sdvPct(v,r),plan:r?Math.round(p/r*10)/10:0};}
+function sdvClassify(actual,plan){if(actual>=plan)return'on_track';if(actual>=plan-20)return'amber';return'red';}
+function sdvLaggards(){return SDV.fields.filter(f=>sdvClassify(sdvPct(f.v,f.r),TIER_PLAN[f.t])!=='on_track').length;}
+function sdvSync(){
+  SDV.fields.forEach(f=>{if(f.t==='important'){const cap=Math.floor(f.r*(TIER_PLAN.important+9)/100);if(f.v<cap)f.v=Math.min(cap,f.v+1);}});
+  SDV.sites.forEach(s=>{const cap=Math.floor(s.r*0.72);if(s.v<cap)s.v=Math.min(cap,s.v+4);});
+  SDV.connection.records+=2;SDV.connection.lastLabel='just now';fillSpot();
+}
+function fillSpot(){const o=document.getElementById('spOverall');if(!o)return;
+  o.textContent=sdvAgg().pct+'%';
+  document.getElementById('spCrit').textContent=sdvAgg('critical').pct+'%';
+  document.getElementById('spFields').textContent=SDV.fields.length;}
+function openSDV(){active='sdv';buildNav();render();document.getElementById('console').scrollIntoView({behavior:'smooth',block:'start'});}
+
+// ---- chips ----
+document.getElementById('urlproto').textContent = DATA.study.protocol_number;
+document.getElementById('chips').innerHTML =
+  [['Phase','1'],['Participants',DATA.protocol.sample_size],['Sites',DATA.sites.length],['MACE endpoints','0']]
+  .map(([l,v])=>`<span class="chip">${l} · <b>${v}</b></span>`).join('') +
+  `<span class="chip">${cd.length} critical-data · <b>${kris.length} KRIs</b> · ${DATA.qtls.length} QTLs</span>` +
+  `<span class="chip" style="border-color:var(--petrol)"><span class="livedot" style="display:inline-block;vertical-align:0;margin-right:6px"></span>Live SDV · <b>${sdvAgg().pct}%</b> vs plan</span>`;
+
+// ---- nav ----
+const NAV = [
+  ['exec','Executive Summary'],['protocol','Protocol'],['cd','Critical Data'],
+  ['kri','KRI Dashboard'],['sdv','SDV Coverage'],['qtl','QTL Tracker'],['sites','Sites'],
+];
+const ICON = {exec:'M3 3v18h18M7 14l3-3 3 3 5-6',protocol:'M6 2h9l5 5v15H6zM15 2v5h5',cd:'M4 6h16M4 12h16M4 18h10',
+  kri:'M4 20V8M10 20V4M16 20v-8M22 20H2',sdv:'M12 2l8 3v6c0 5-3.5 8-8 11-4.5-3-8-6-8-11V5zM9 12l2 2 4-4',qtl:'M3 12h4l3 8 4-16 3 8h4',sites:'M12 2a10 10 0 100 20 10 10 0 000-20M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20'};
+const side = document.getElementById('side');
+let active='exec';
+function buildNav(){
+  side.innerHTML='';
+  NAV.forEach(([id,label])=>{
+    const n=el(`<div class="navitem ${id===active?'on':''}" data-id="${id}">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="${ICON[id]}"/></svg>${label}${id==='sdv'?'<span class="navlive" title="live EDC feed"></span>':''}</div>`);
+    n.onclick=()=>{active=id;buildNav();render();};
+    side.appendChild(n);
+  });
+}
+
+// ---- tooltip ----
+const tt=document.getElementById('tt');
+function showTT(html,x,y){tt.innerHTML=html;tt.style.opacity=1;tt.style.left=Math.min(x+14,innerWidth-250)+'px';tt.style.top=(y+14)+'px';}
+function hideTT(){tt.style.opacity=0;}
+
+// ---- views ----
+const view=document.getElementById('view');
+function head(title,sub){return `<div class="crumb">${DATA.study.protocol_number} · ${DATA.study.title.slice(0,70)}…</div>
+  <div class="rule" style="margin:10px 0 0"></div><h2 class="vh">${title}</h2><div class="vsub">${sub}</div>`;}
+
+function vExec(){
+  const high=DATA.sites.filter(s=>s.risk==='high').length,med=DATA.sites.filter(s=>s.risk==='medium').length,low=DATA.sites.filter(s=>s.risk==='low').length;
+  return head('Executive Summary','Study-level overview of monitoring status and risk indicators')+
+  `<div class="tiles">
+    <div class="tile"><div class="lab">Study status</div><div class="big">Setup</div><div class="sm">Phase 1 · gene therapy</div></div>
+    <div class="tile"><div class="lab"><span class="statdot" style="background:var(--red)"></span>KRI flags</div><div class="big"><span style="color:var(--red)">${red}</span> / <span style="color:var(--amber)">${amber}</span></div><div class="sm">Red / Amber · ${kris.length} active KRIs</div></div>
+    <div class="tile"><div class="lab"><span class="statdot" style="background:var(--red)"></span>QTL breaches</div><div class="big">${qBreached} / ${DATA.qtls.length}</div><div class="sm">Breached / total</div></div>
+    <div class="tile"><div class="lab">Critical data</div><div class="big">${cd.length}</div><div class="sm">${tierCount('critical')} critical · ${tierCount('important')} important</div></div>
+    <div class="tile" style="cursor:pointer" onclick="openSDV()"><div class="lab"><span class="livedot"></span>SDV coverage</div><div class="big">${sdvAgg().pct}%</div><div class="sm">vs plan ${sdvAgg().plan}% · live EDC →</div></div>
+  </div>
+  <div class="panel"><h3>Protocol-derived monitoring</h3>
+  <p style="color:var(--muted);font-size:14px;margin:0 0 4px">Every artifact below was generated from this protocol's endpoints, producing <b style="color:var(--green)">zero MACE</b> rather than a generic cardiovascular template.</p>
+  <div class="metarow" style="margin-top:14px">
+    <div><div class="k">Indication</div><div class="v">${DATA.protocol.indication}</div></div>
+    <div><div class="k">Design</div><div class="v" style="font-weight:500">${DATA.protocol.design.slice(0,90)}…</div></div>
+  </div></div>
+  <div class="panel" style="background:var(--redtint);border-color:var(--red)"><h3 style="color:var(--red)">Active signal</h3>
+  <p style="margin:0;font-size:14px">Grade&nbsp;3 hepatotoxicity flagged <b style="color:var(--red)">RED</b> at Site&nbsp;102 (a protocol-defined DLT), and the trial-level QTL <b>“Missing primary endpoint data”</b> has breached its limit. Open the KRI Dashboard and QTL Tracker →</p></div>`;
+}
+
+function vProtocol(){
+  let h=head('Protocol','Structured protocol: the source of truth for derived critical data, KRIs &amp; QTLs');
+  const p=DATA.protocol;
+  h+=`<div class="panel"><div class="label">Indication</div><div style="font-weight:600;margin-bottom:12px">${p.indication}</div>
+    <div class="label">Design</div><div style="font-size:14px;margin-bottom:14px">${p.design}</div>
+    <div class="metarow">
+      <div><div class="k">Phase</div><div class="v num">${p.phase}</div></div>
+      <div><div class="k">Sample size</div><div class="v num">${p.sample_size}</div></div>
+      <div><div class="k">Planned sites</div><div class="v num">${p.sites_planned}</div></div>
+      <div><div class="k">Version</div><div class="v num">${p.version}</div></div>
+      <div><div class="k">Effective</div><div class="v num">${p.effective_date}</div></div>
+    </div></div>
+    <p style="font-size:12.5px;color:var(--muted);margin:-6px 2px 14px"><b>Tip:</b> click an endpoint to see the critical data &amp; KRIs it derives.</p>`;
+  ['primary','secondary','exploratory'].forEach(role=>{
+    const eps=DATA.endpoints.filter(e=>e.role===role);
+    if(!eps.length)return;
+    h+=`<div class="eprole">${role} endpoints (${eps.length})</div>`;
+    eps.forEach(e=>{
+      const d=derivedByEp[e.id];
+      h+=`<div class="ep" data-ep="${e.id}">
+        <div class="et">${e.title}</div>
+        <div class="em"><span class="code">${e.measure}</span>
+          <span style="font-size:11.5px;color:var(--muted)">${e.timepoints||''}</span>
+          ${e.central_read?'<span class="badge b-derived">central read</span>':''}
+          ${e.adjudicated?'<span class="badge b-derived">adjudicated</span>':''}</div>
+        <div class="derivebox" id="dv-${e.id}" style="display:none">
+          <b>Derives →</b>
+          ${d.cd.map(x=>`<span class="dl">CD · ${x}</span>`).join('')}
+          ${d.kris.map(x=>`<span class="dl">KRI · ${x}</span>`).join('')}
+          ${(!d.cd.length&&!d.kris.length)?'<span style="color:var(--muted)">baseline-only measure</span>':''}
+        </div></div>`;
+    });
+  });
+  return h;
+}
+
+function vCD(){
+  let h=head('Critical Data Classification','CRF data fields &amp; SDV tier assignments, derived from the protocol');
+  h+=`<div class="tiles">
+    <div class="tile" style="background:var(--redtint)"><div class="lab">Critical</div><div class="big" style="color:var(--red)">${tierCount('critical')}</div><div class="sm">100% SDV</div></div>
+    <div class="tile" style="background:#fbf4e6"><div class="lab">Important</div><div class="big" style="color:var(--amber)">${tierCount('important')}</div><div class="sm">targeted SDV</div></div>
+    <div class="tile" style="background:var(--tint)"><div class="lab">Non-critical</div><div class="big" style="color:var(--green)">${tierCount('non_critical')}</div><div class="sm">central only</div></div>
+  </div>
+  <div class="filters" id="cdf">
+    ${['all','critical','important','non_critical'].map(t=>`<button class="fbtn ${t==='all'?'on':''}" data-t="${t}">${t==='all'?'All':cap(t)}</button>`).join('')}
+  </div>
+  <div class="tablewrap"><table><thead><tr><th>CRF</th><th>Field</th><th>Tier</th><th>SDV %</th><th>Source</th></tr></thead><tbody id="cdbody"></tbody></table></div>`;
+  return h;
+}
+function renderCDBody(filter){
+  const body=document.getElementById('cdbody');
+  const rows=cd.filter(c=>filter==='all'||c.tier===filter);
+  body.innerHTML=rows.map(c=>`<tr>
+    <td class="dom">${c.domain||'n/a'}</td>
+    <td>${c.name} ${c.source==='derived'?'<span class="badge b-derived">derived</span>':''}</td>
+    <td><span class="tierpill t-${c.tier}"><span class="statdot" style="background:currentColor"></span>${cap(c.tier)}</span></td>
+    <td class="num">${c.sdv==null?'n/a':c.sdv}</td>
+    <td><span class="badge b-${c.source==='derived'?'derived':'baseline'}">${c.source}</span></td></tr>`).join('');
+}
+
+function vKRI(){
+  let h=head('KRI Dashboard','Site-level performance monitoring with statistical flagging');
+  h+=`<div class="tiles">
+    <div class="tile"><div class="lab">Active KRIs</div><div class="big">${kris.length}</div><div class="sm">${kris.filter(k=>k.source==='derived').length} protocol-derived</div></div>
+    <div class="tile"><div class="lab"><span class="statdot" style="background:var(--red)"></span>Red flags</div><div class="big" style="color:var(--red)">${red}</div></div>
+    <div class="tile"><div class="lab"><span class="statdot" style="background:var(--amber)"></span>Amber flags</div><div class="big" style="color:var(--amber)">${amber}</div></div>
+  </div>
+  <div class="label">Site × KRI heatmap <span style="text-transform:none;letter-spacing:0;color:var(--muted)">· hover a cell, click to drill down</span></div>
+  <div class="hmwrap"><table class="hm"><thead><tr><th style="writing-mode:initial;transform:none"></th>
+    ${valuedCodes.map(c=>`<th>${c.replace('KRI-','').replace('-001','')}</th>`).join('')}</tr></thead><tbody>
+    ${DATA.sites.map(s=>`<tr><td class="site">${s.number}</td>
+      ${valuedCodes.map(c=>{const v=(kvByCode[c]||[]).find(x=>x.site===s.number);
+        return v?`<td><div class="cell ${flagClass[v.flag]}" data-code="${c}" data-site="${s.number}"></div></td>`:`<td><div class="cell c-nd"></div></td>`;}).join('')}</tr>`).join('')}
+  </tbody></table></div>
+  <div class="legend"><span><i class="c-green"></i>Green</span><span><i class="c-amber"></i>Amber</span><span><i class="c-red"></i>Red</span><span><i class="c-nd"></i>No data</span></div>
+  <div id="kdetail"></div>`;
+  return h;
+}
+function kriDetail(code){
+  const k=kris.find(x=>x.code===code);const vals=kvByCode[code]||[];
+  const max=Math.max(100,...vals.map(v=>v.value));
+  const lower = k.direction==='lower_is_worse';
+  const box=document.getElementById('kdetail');
+  box.innerHTML=`<div class="panel rise" style="margin-top:18px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+      <div><h3 style="margin-bottom:2px">${k.name}</h3>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">${code} · ${cap(k.category)} · ${cap(k.direction)}</div></div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right">${k.ttype==='percentage'?`amber ≤ ${k.amber}% · red ≤ ${k.red}%`:`amber |z|≥${k.amber} · red |z|≥${k.red}`}<br>${k.source==='derived'?'protocol-derived':'baseline'}</div>
+    </div>
+    <div class="bars">${vals.map(v=>{
+      const col=v.flag==='red'?'#cf3b2c':v.flag==='amber'?'#d9a300':'#39a06b';
+      return `<div class="bar"><span class="bn">Site ${v.site}</span>
+        <div class="track"><div class="fill" style="width:${Math.max(2,v.value/max*100)}%;background:${col}"></div></div>
+        <span class="bv" style="color:${col}">${v.value}</span></div>`;}).join('')}</div>
+  </div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function vQTL(){
+  let h=head('Quality Tolerance Limits','Trial-level quality parameters, where a breach signals systemic issues');
+  h+=`<div class="tiles">
+    <div class="tile"><div class="lab">Total QTLs</div><div class="big">${DATA.qtls.length}</div></div>
+    <div class="tile"><div class="lab"><span class="statdot" style="background:var(--green)"></span>Within limit</div><div class="big" style="color:var(--green)">${DATA.qtls.filter(q=>q.value!=null&&!q.breached).length}</div></div>
+    <div class="tile" style="${qBreached?'background:var(--redtint)':''}"><div class="lab"><span class="statdot" style="background:var(--red)"></span>Breached</div><div class="big" style="color:var(--red)">${qBreached}</div></div>
+  </div><div class="qgrid">`;
+  DATA.qtls.forEach(q=>{
+    const has=q.value!=null;
+    const op=q.direction==='less_than_or_equal'?'≤':'≥';
+    const pct=has?Math.min(100,q.value/Math.max(q.threshold*1.4,q.value)*100):0;
+    const lpos=Math.min(100,q.threshold/Math.max(q.threshold*1.4,has?q.value:q.threshold)*100);
+    const col=q.breached?'#cf3b2c':'#39a06b';
+    h+=`<div class="qcard ${q.breached?'breach':''}">
+      <div class="qhead"><h3 style="font-size:15px">${q.parameter}</h3>
+        <span class="qstatus ${q.breached?'q-breach':'q-ok'}">${!has?'no data':q.breached?'breached':'ok'}</span></div>
+      <div style="font-size:12.5px;color:var(--muted);margin:4px 0 12px">${q.description||''}</div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;margin-bottom:5px">
+        <span>limit ${op} ${q.threshold}${q.unit||''}</span><span style="color:${col};font-weight:600">${has?q.value+(q.unit||''):'n/a'}</span></div>
+      <div class="track" style="height:14px">${has?`<div class="fill" style="width:${pct}%;background:${col}"></div><div class="limit" style="left:${lpos}%"></div>`:''}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px">${q.source==='derived'?'protocol-derived':'baseline'}</div>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+function vSites(){
+  let h=head('Sites','Study sites &amp; risk-based monitoring frequency');
+  h+=`<div class="tablewrap"><table><thead><tr><th>Site</th><th>Name</th><th>Risk level</th><th>Monitoring</th></tr></thead><tbody>`;
+  const rc={high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  DATA.sites.forEach(s=>{h+=`<tr><td class="num" style="font-weight:600">${s.number}</td><td>${s.name}</td>
+    <td><span class="tierpill" style="color:${rc[s.risk]||'var(--muted)'}"><span class="statdot" style="background:currentColor"></span>${cap(s.risk)}</span></td>
+    <td style="color:var(--muted);font-size:13px">${s.freq||'every 8 weeks'}</td></tr>`;});
+  return h+'</tbody></table></div>';
+}
+
+function vSDV(){
+  const ov=sdvAgg(),crit=sdvAgg('critical'),imp=sdvAgg('important'),lag=sdvLaggards(),c=SDV.connection;
+  let h=head('SDV Coverage','Source data verification vs the protocol plan, pulled live from the EDC API');
+  h+=`<div class="panel"><div class="connbar">
+    <span class="ci"><span class="livedot"></span>Connected</span>
+    <span class="conn-meta">EDC API · ${c.label}</span>
+    <span class="conn-meta">Last synced ${c.lastLabel}</span>
+    <span class="conn-meta">${c.records} records</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span class="soon">Queries &amp; data-review coming soon</span>
+      <button class="btn-sync" id="sdvSync"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg>Refresh from EDC</button>
+    </div></div></div>
+  <div class="tiles">
+    <div class="tile"><div class="lab">Overall SDV</div><div class="big">${ov.pct}%</div><div class="sm">vs plan ${ov.plan}% · ${ov.v}/${ov.r}</div></div>
+    <div class="tile" style="background:var(--tint)"><div class="lab">Critical</div><div class="big" style="color:var(--green)">${crit.pct}%</div><div class="sm">vs plan ${crit.plan}% · ${crit.v}/${crit.r}</div></div>
+    <div class="tile" style="background:#fbf4e6"><div class="lab">Important</div><div class="big" style="color:var(--amber)">${imp.pct}%</div><div class="sm">vs plan ${imp.plan}% · ${imp.v}/${imp.r}</div></div>
+    <div class="tile" style="${lag?'background:var(--redtint)':''}"><div class="lab">Below plan</div><div class="big" style="color:${lag?'var(--amber)':'var(--green)'}">${lag}</div><div class="sm">fields under tier plan</div></div>
+  </div>
+  <div class="panel"><div class="label">SDV by site</div><div class="bars sitebars">`;
+  SDV.sites.forEach(s=>{const p=sdvPct(s.v,s.r);
+    h+=`<div class="bar"><span class="bn">${s.num} · ${s.name}</span>
+      <div class="track"><div class="fill" style="width:${p}%;background:var(--petrol)"></div></div>
+      <span class="bv">${p}%</span></div>`;});
+  h+=`</div></div>`;
+  const order={red:0,amber:1,on_track:2};
+  const rows=SDV.fields.map(f=>{const ap=sdvPct(f.v,f.r),st=sdvClassify(ap,TIER_PLAN[f.t]);return{...f,ap,st,plan:TIER_PLAN[f.t]};})
+    .sort((a,b)=>order[a.st]-order[b.st]||TIER_PLAN[b.t]-TIER_PLAN[a.t]);
+  const stLabel={on_track:'On track',amber:'Below plan',red:'At risk'},stCls={on_track:'s-on',amber:'s-amber',red:'s-red'};
+  h+=`<div class="label" style="margin-top:4px">Field-level coverage <span style="text-transform:none;letter-spacing:0;color:var(--muted)">· ${SDV.fields.length} tracked fields · laggards first</span></div>
+    <div class="tablewrap"><table><thead><tr><th>CRF</th><th>Field</th><th>Tier</th><th>Plan</th><th>Actual</th><th>Status</th></tr></thead><tbody>`;
+  rows.forEach(f=>{h+=`<tr>
+    <td class="dom">${f.d}</td><td>${f.n}</td>
+    <td><span class="tierpill t-${f.t}"><span class="statdot" style="background:currentColor"></span>${cap(f.t)}</span></td>
+    <td class="num">${f.plan}%</td><td class="num">${f.ap}%</td>
+    <td class="${stCls[f.st]}">${stLabel[f.st]}</td></tr>`;});
+  return h+`</tbody></table></div>
+    <p style="font-size:12.5px;color:var(--muted);margin:12px 2px 0"><b>Try it:</b> click <b>Refresh from EDC</b>. The EDC API streams a fresh pull and under-verified sites climb toward plan, just as a live connection would.</p>`;
+}
+
+const VIEWS={exec:vExec,protocol:vProtocol,cd:vCD,kri:vKRI,sdv:vSDV,qtl:vQTL,sites:vSites};
+function render(){
+  view.innerHTML=VIEWS[active]();
+  view.classList.remove('rise');void view.offsetWidth;view.classList.add('rise');
+  if(active==='cd'){
+    renderCDBody('all');
+    document.querySelectorAll('#cdf .fbtn').forEach(b=>b.onclick=()=>{
+      document.querySelectorAll('#cdf .fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderCDBody(b.dataset.t);});
+  }
+  if(active==='kri'){
+    document.querySelectorAll('.cell[data-code]').forEach(c=>{
+      const v=(kvByCode[c.dataset.code]||[]).find(x=>x.site===c.dataset.site);const k=kris.find(x=>x.code===c.dataset.code);
+      c.onmousemove=(e)=>showTT(`<div class="tt-t">${c.dataset.code} · Site ${c.dataset.site}</div>${k.name}<br><b>${v.value}</b> · ${v.flag.toUpperCase()}`,e.clientX,e.clientY);
+      c.onmouseleave=hideTT;c.onclick=()=>{hideTT();kriDetail(c.dataset.code);};});
+  }
+  if(active==='protocol'){
+    document.querySelectorAll('.ep').forEach(ep=>ep.onclick=()=>{
+      const dv=document.getElementById('dv-'+ep.dataset.ep);const open=dv.style.display!=='none';
+      dv.style.display=open?'none':'block';ep.classList.toggle('sel',!open);});
+  }
+  if(active==='sdv'){
+    const btn=document.getElementById('sdvSync');
+    if(btn)btn.onclick=()=>{btn.classList.add('spin');btn.disabled=true;setTimeout(()=>{sdvSync();render();},560);};
+  }
+}
+buildNav();render();fillSpot();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+STUDYID,DOMAIN,TSSEQ,TSPARMCD,TSPARM,TSVAL,TSVAL1
+HF-1002-CL-101,TS,1.0,TITLE,Trial Title,"A Phase 1, Open-Label, Sequential Dose-Escalation Study to Evaluate the Safety, Tolerability, and Preliminary Efficacy of a Single Intracoronary Infusion of HF-1002 in Adults with Nonischemic Cardiomy",opathy and NYHA Class III Heart Failure
+HF-1002-CL-101,TS,1.0,TPHASE,Trial Phase Classification,PHASE I TRIAL,
+HF-1002-CL-101,TS,1.0,TBLIND,Trial Blinding Schema,OPEN LABEL,
+HF-1002-CL-101,TS,1.0,RANDOM,Trial is Randomized,N,
+HF-1002-CL-101,TS,1.0,TCNTRL,Control Type,UNCONTROLLED,
+HF-1002-CL-101,TS,1.0,ADDON,Added on to Existing Treatments,Y,
+HF-1002-CL-101,TS,1.0,INDIC,Trial Indication,"Nonischemic dilated cardiomyopathy, NYHA class III heart failure",
+HF-1002-CL-101,TS,1.0,TRT,Investigational Therapy or Treatment,HF-1002,
+HF-1002-CL-101,TS,1.0,ROUTE,Route of Administration,INTRACORONARY,
+HF-1002-CL-101,TS,1.0,PLANSUB,Planned Number of Subjects,18,
+HF-1002-CL-101,TS,1.0,AGEMIN,Planned Minimum Age of Subjects,P18Y,
+HF-1002-CL-101,TS,1.0,SEXPOP,Sex of Participants,BOTH,
+HF-1002-CL-101,TS,1.0,NARMS,Planned Number of Arms,3,
+HF-1002-CL-101,TS,1.0,OBJPRIM,Trial Primary Objective,Evaluate the safety and tolerability of a single intracoronary infusion of HF-1002 over a 12-month primary observation period.,
+HF-1002-CL-101,TS,1.0,OBJSEC,Trial Secondary Objective,"Explore the preliminary efficacy of HF-1002 on cardiac function, functional capacity, and quality of life.",
+HF-1002-CL-101,TS,1.0,SSTDTC,Study Start Date,2026-06-05,

@@ -1,0 +1,112 @@
+STUDYID,DOMAIN,USUBJID,CMSEQ,CMTRT,CMDECOD,CMCLAS,CMINDC,CMDOSE,CMDOSU,CMDOSFRQ,CMROUTE,CMSTDTC,CMENDTC,CMSTDY,CMENDY,CMENRTPT,CMENTPT
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,1.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2024-02-13,,-853.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,2.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2024-03-04,,-833.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,3.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-07-26,,-689.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,4.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-07-27,,-688.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,5.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2025-03-27,,-445.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1001,6.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-10-19,,-239.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,1.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-06-23,,-758.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,2.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-11-02,,-626.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,3.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-11-29,,-599.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,4.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-02-17,,-519.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,5.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2025-04-17,,-460.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,6.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-05-11,,-436.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-1004,7.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-02-20,,-151.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,1.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-06-21,,-821.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,2.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-11-10,,-679.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,3.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-04-19,,-519.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,4.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-08-13,,-403.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,5.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-10-08,,-347.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,6.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2025-10-31,,-324.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2001,7.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-04-12,,-161.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,1.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-08-24,,-793.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,2.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2024-12-10,,-685.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,3.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-01-20,,-644.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,4.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-03-01,,-604.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,5.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-11-03,,-357.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-2004,6.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2026-08-02,,-85.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3001,1.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-11-23,,-778.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3001,2.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-09-13,,-484.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3001,3.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-01-04,,-371.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3001,4.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-02-25,,-319.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3001,5.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-03-20,,-296.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,1.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-11-14,,-823.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,2.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-11-29,,-808.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,3.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-08-02,,-562.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,4.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-03-02,,-350.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,5.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-05-03,,-288.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-101-3004,6.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-05-28,,-263.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,1.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-05-24,,-764.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,2.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-09-02,,-663.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,3.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2024-09-05,,-660.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,4.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2025-03-29,,-455.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,5.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-06-02,,-390.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,6.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-12-28,,-181.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1002,7.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2026-03-22,,-97.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,1.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-05-23,,-801.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,2.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2024-08-05,,-727.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,3.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-01-01,,-578.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,4.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2025-02-01,,-547.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,5.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-02-28,,-520.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,6.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-05-12,,-447.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-1005,7.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-01-29,,-185.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,1.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2024-06-17,,-837.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,2.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2024-09-09,,-753.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,3.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-11-08,,-693.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,4.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-12-19,,-652.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,5.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2025-04-06,,-544.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2002,6.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2025-07-02,,-457.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2005,1.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-08-13,,-816.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2005,2.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2025-01-29,,-647.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2005,3.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-04-07,,-579.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2005,4.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-06-30,,-495.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-2005,5.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-12-16,,-326.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,1.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2024-10-01,,-843.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,2.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2025-04-16,,-646.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,3.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-05-09,,-623.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,4.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-07-07,,-564.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,5.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-08-25,,-515.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3002,6.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-11-16,,-432.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,1.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-12-09,,-445.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,2.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2026-02-07,,-385.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,3.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-02-13,,-379.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,4.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2026-04-25,,-308.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,5.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-05-29,,-274.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,6.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2026-06-13,,-259.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-102-3005,7.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-11-29,,-90.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,1.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-05-13,,-787.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,2.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-07-17,,-722.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,3.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-08-22,,-686.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,4.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-08-15,,-328.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,5.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-01-06,,-184.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1003,6.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-02-02,,-157.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1006,1.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-05-10,,-826.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1006,2.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2024-08-03,,-741.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1006,3.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-12-13,,-609.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1006,4.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2025-08-28,,-351.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-1006,5.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-12-02,,-255.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,1.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2024-05-13,,-884.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,2.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-03-26,,-567.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,3.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2025-08-09,,-431.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,4.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-09-09,,-400.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,5.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2026-01-02,,-285.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2003,6.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-02-02,,-254.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2006,1.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2024-09-10,,-800.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2006,2.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2024-11-16,,-733.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2006,3.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2025-04-24,,-574.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2006,4.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2025-05-09,,-559.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-2006,5.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-06-07,,-530.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,1.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2024-11-19,,-806.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,2.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-01-18,,-381.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,3.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-02-23,,-345.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,4.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2026-03-15,,-325.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,5.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2026-04-05,,-304.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,6.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-05-14,,-265.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3003,7.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2026-07-27,,-191.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,1.0,Apixaban,APIXABAN,Direct factor Xa inhibitors,Atrial fibrillation,5.0,mg,BID,ORAL,2025-01-06,,-794.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,2.0,Atorvastatin,ATORVASTATIN,HMG CoA reductase inhibitors,Dyslipidemia,40.0,mg,QD,ORAL,2025-03-08,,-733.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,3.0,Spironolactone,SPIRONOLACTONE,Aldosterone antagonists,Heart failure,25.0,mg,QD,ORAL,2025-06-03,,-646.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,4.0,Empagliflozin,EMPAGLIFLOZIN,Sodium-glucose co-transporter 2 (SGLT2) inhibitors,Heart failure,10.0,mg,QD,ORAL,2026-02-25,,-379.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,5.0,Furosemide,FUROSEMIDE,High-ceiling diuretics,Edema,40.0,mg,QD,ORAL,2026-08-14,,-209.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,6.0,Sacubitril/valsartan,SACUBITRIL AND VALSARTAN,Agents acting on the renin-angiotensin system,Heart failure,,mg,BID,ORAL,2026-10-27,,-135.0,,ONGOING,End of Study
+HF-1002-CL-101,CM,HF-1002-CL-101-103-3006,7.0,Carvedilol,CARVEDILOL,Beta blocking agents,Heart failure,25.0,mg,BID,ORAL,2026-11-05,,-126.0,,ONGOING,End of Study

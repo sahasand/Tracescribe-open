@@ -1,0 +1,5 @@
+STUDYID,DOMAIN,ETCD,ELEMENT,TESTRL,TEENRL
+HF-1002-CL-101,TE,SCRN,Screening,informed consent,HF-1002 infusion (Day 1)
+HF-1002-CL-101,TE,TRT,Treatment,HF-1002 infusion,24 hours after infusion
+HF-1002-CL-101,TE,FUP,Follow-up,end of Treatment,Month 12 (end of primary observation)
+HF-1002-CL-101,TE,LTFU,Long-Term Follow-up,end of Follow-up,Month 36
