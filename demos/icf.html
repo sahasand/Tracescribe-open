@@ -179,7 +179,12 @@
   <div>
     <div class="doc-head">
       <span class="t">Generated document</span>
-      <span id="docBadges"></span>
+      <div style="display:flex;align-items:center;gap:12px;margin-left:auto">
+        <span id="docBadges"></span>
+        <label id="langWrap" class="hidden" style="display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--mut-fg)">Translate
+          <select id="langSel" style="font-family:var(--font);font-size:13px;font-weight:600;padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--card);color:var(--fg);cursor:pointer"></select>
+        </label>
+      </div>
     </div>
     <div class="paper">
       <div class="empty" id="empty">
@@ -191,7 +196,7 @@
     </div>
     <div class="doc-foot hidden" id="docFoot">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <span><b style="color:hsl(38 70% 32%)">Highlighted tokens</b> like <span class="ph">[SITE NAME]</span> are intentionally left as site-specific placeholders for each investigator's site to complete - exactly as the icf-builder skill specifies. In the full TraceScribe app this renders to a formatted <span class="mono">.docx</span> and can be translated into 10 languages.</span>
+      <span><b style="color:hsl(38 70% 32%)">Highlighted tokens</b> like <span class="ph">[SITE NAME]</span> are intentionally left as site-specific placeholders for each investigator's site to complete - exactly as the icf-builder skill specifies. Use the <b>Translate</b> menu above to render the consent form in another language. In the full TraceScribe app it also exports a formatted <span class="mono">.docx</span> and translates into 10 languages.</span>
     </div>
   </div>
 </div>
@@ -305,9 +310,109 @@ async function generate(instant){
   }
   $("#docBadges").innerHTML=`<span class="badge ok">${CHK.replace(/stroke-width="3"/,'stroke-width="3" style="width:11px;height:11px"')} FDA 21 CFR 50.25 compliant</span> <span class="badge ok">Grade 7.2 · ≤8</span>`;
   $("#docFoot").classList.remove("hidden");
+  $("#langWrap").classList.remove("hidden"); $("#langSel").value="en";
   $("#genBtn").innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></svg>Re-generate`;
   $("#genBtn").disabled=false; running=false; done=true;
 }
+
+/* ===== Translation. The full TraceScribe app translates to 10 languages (gpt-class engine);
+   this demo ships a representative set with the consent text translated in full. ===== */
+function sig(c){return `<div class="sig"><div><div class="line"></div><div class="cap">${c[0]}</div></div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px"><div><div class="line"></div><div class="cap">${c[1]}</div></div><div><div class="line"></div><div class="cap">${c[2]}</div></div></div></div>`;}
+const LANGS=[{c:"en",n:"English"},{c:"es",n:"Español"},{c:"fr",n:"Français"},{c:"de",n:"Deutsch"},{c:"zh",n:"中文 (简体)"}];
+const TX={
+ es:{cf:"Formulario de consentimiento informado",
+  title:"Estudio de fase 3, aleatorizado, doble ciego y controlado con placebo para evaluar la eficacia y la seguridad de XYZ-2000 en pacientes con insuficiencia cardíaca con fracción de eyección reducida",
+  lbl:["Número de protocolo","Patrocinador","Institución","Investigador principal","Versión","Fecha de versión"],
+  secs:[
+   {t:"Invitación a participar",h:`<p>Se le invita a participar en un estudio de investigación. Lea este formulario con atención y haga todas las preguntas que necesite. Su participación es voluntaria.</p>`},
+   {t:"¿Por qué se realiza este estudio?",h:`<p>XYZ-2000 es un medicamento en investigación que podría ayudar a que el corazón bombee mejor. Este estudio de fase 3 busca confirmar si es eficaz y seguro.</p>`},
+   {t:"¿Por qué se me ha pedido participar?",h:`<p>Se le pide participar porque tiene insuficiencia cardíaca con fracción de eyección reducida (HFrEF) y cumple los criterios de inclusión del estudio.</p>`},
+   {t:"¿Cuánto tiempo estaré en el estudio?",h:`<p>Participará durante unos 13 meses, con aproximadamente 8 visitas de estudio.</p>`},
+   {t:"¿Qué ocurrirá si participo?",h:`<p>Será asignado al azar a una de tres dosis (una de ellas placebo). Ni usted ni su médico sabrán qué grupo recibe (doble ciego).</p>`},
+   {t:"¿Cuáles son los riesgos y las molestias?",h:`<p>Los efectos secundarios notificados, por frecuencia, incluyen dolor de cabeza y mareos (muy frecuentes) e hipotensión (frecuentes). Puede haber riesgos aún no conocidos.</p>`},
+   {t:"¿Cuáles son los beneficios?",h:`<p>XYZ-2000 podría mejorar su función cardíaca, pero no podemos prometerle un beneficio. Recibirá controles médicos sin costo.</p>`},
+   {t:"¿Qué otras opciones tengo?",h:`<p>Participar es su decisión. Puede continuar con su tratamiento actual o considerar otras opciones con su médico.</p>`},
+   {t:"¿Qué ocurre si sufro una lesión?",h:`<p>Si sufre una lesión como resultado directo de participar, ${PH("[SITE NAME]")} proporcionará o gestionará tratamiento médico.</p>`},
+   {t:"¿Qué sucede con la confidencialidad?",h:`<p>Haremos todo lo posible por mantener su información privada, aunque no podemos garantizar una confidencialidad total. Sus registros podrán ser revisados por el patrocinador y la FDA.</p>`},
+   {t:"¿Cuáles son mis derechos como participante?",h:`<p>Su participación es voluntaria y puede retirarse en cualquier momento, sin penalización y sin que afecte su atención médica.</p>`},
+   {t:"¿Quién puede responder mis preguntas?",h:`<p>Para preguntas sobre el estudio, contacte a ${PH("[INVESTIGATOR NAME]")} en ${PH("[PHONE NUMBER]")}. Para sus derechos, contacte al comité de ética (IRB) en ${PH("[IRB PHONE]")}.</p>`},
+   {t:"Consentimiento para participar",h:`<p>Al firmar, usted confirma que ha leído el formulario, que se han respondido sus preguntas y que acepta participar de forma voluntaria.</p>${sig(["Nombre del participante","Firma del participante","Fecha"])}`}
+  ]},
+ fr:{cf:"Formulaire de consentement éclairé",
+  title:"Étude de phase 3, randomisée, en double aveugle et contrôlée par placebo, évaluant l'efficacité et la sécurité de XYZ-2000 chez des patients atteints d'insuffisance cardiaque à fraction d'éjection réduite",
+  lbl:["Numéro de protocole","Promoteur","Établissement","Investigateur principal","Version","Date de version"],
+  secs:[
+   {t:"Invitation à participer",h:`<p>Vous êtes invité(e) à participer à une étude de recherche. Lisez attentivement ce formulaire et posez toutes vos questions. Votre participation est volontaire.</p>`},
+   {t:"Pourquoi cette étude est-elle menée ?",h:`<p>XYZ-2000 est un médicament expérimental qui pourrait aider le cœur à mieux pomper. Cette étude de phase 3 vise à confirmer son efficacité et sa sécurité.</p>`},
+   {t:"Pourquoi m'a-t-on demandé de participer ?",h:`<p>On vous propose de participer car vous présentez une insuffisance cardiaque à fraction d'éjection réduite (HFrEF) et remplissez les critères d'inclusion.</p>`},
+   {t:"Combien de temps vais-je participer ?",h:`<p>Vous participerez pendant environ 13 mois, avec environ 8 visites d'étude.</p>`},
+   {t:"Que se passera-t-il si je participe ?",h:`<p>Vous serez réparti(e) au hasard dans l'un des trois groupes (dont un placebo). Ni vous ni votre médecin ne saurez lequel (double aveugle).</p>`},
+   {t:"Quels sont les risques et inconvénients ?",h:`<p>Les effets indésirables rapportés, par fréquence, incluent maux de tête et vertiges (très fréquents) et hypotension (fréquents). Des risques encore inconnus sont possibles.</p>`},
+   {t:"Quels sont les bénéfices ?",h:`<p>XYZ-2000 pourrait améliorer votre fonction cardiaque, mais aucun bénéfice ne peut être garanti. Vous bénéficierez d'un suivi médical sans frais.</p>`},
+   {t:"Quelles autres options ai-je ?",h:`<p>Participer est votre choix. Vous pouvez poursuivre votre traitement actuel ou envisager d'autres options avec votre médecin.</p>`},
+   {t:"Que se passe-t-il en cas de blessure ?",h:`<p>Si vous êtes blessé(e) du fait de votre participation, ${PH("[SITE NAME]")} fournira ou organisera des soins médicaux.</p>`},
+   {t:"Qu'en est-il de la confidentialité ?",h:`<p>Nous ferons de notre mieux pour protéger vos informations, sans pouvoir garantir une confidentialité totale. Vos dossiers pourront être consultés par le promoteur et la FDA.</p>`},
+   {t:"Quels sont mes droits en tant que participant ?",h:`<p>Votre participation est volontaire et vous pouvez vous retirer à tout moment, sans pénalité ni conséquence sur vos soins.</p>`},
+   {t:"Qui peut répondre à mes questions ?",h:`<p>Pour des questions sur l'étude, contactez ${PH("[INVESTIGATOR NAME]")} au ${PH("[PHONE NUMBER]")}. Pour vos droits, contactez le comité d'éthique (IRB) au ${PH("[IRB PHONE]")}.</p>`},
+   {t:"Consentement à participer",h:`<p>En signant, vous confirmez avoir lu le formulaire, obtenu des réponses à vos questions et accepter de participer volontairement.</p>${sig(["Nom du participant","Signature du participant","Date"])}`}
+  ]},
+ de:{cf:"Einwilligungserklärung",
+  title:"Eine randomisierte, doppelblinde, placebokontrollierte Phase-3-Studie zur Bewertung der Wirksamkeit und Sicherheit von XYZ-2000 bei Patienten mit Herzinsuffizienz mit reduzierter Ejektionsfraktion",
+  lbl:["Protokollnummer","Sponsor","Einrichtung","Hauptprüfarzt","Version","Versionsdatum"],
+  secs:[
+   {t:"Einladung zur Teilnahme",h:`<p>Sie werden eingeladen, an einer Forschungsstudie teilzunehmen. Bitte lesen Sie dieses Formular sorgfältig und stellen Sie Fragen. Ihre Teilnahme ist freiwillig.</p>`},
+   {t:"Warum wird diese Studie durchgeführt?",h:`<p>XYZ-2000 ist ein Prüfmedikament, das dem Herzen helfen könnte, besser zu pumpen. Diese Phase-3-Studie soll Wirksamkeit und Sicherheit bestätigen.</p>`},
+   {t:"Warum wurde ich um Teilnahme gebeten?",h:`<p>Sie werden gefragt, weil Sie eine Herzinsuffizienz mit reduzierter Ejektionsfraktion (HFrEF) haben und die Einschlusskriterien erfüllen.</p>`},
+   {t:"Wie lange dauert die Studie?",h:`<p>Sie nehmen etwa 13 Monate teil, mit ungefähr 8 Studienvisiten.</p>`},
+   {t:"Was geschieht bei der Teilnahme?",h:`<p>Sie werden nach dem Zufallsprinzip einer von drei Dosierungen zugeteilt (eine davon Placebo). Weder Sie noch Ihr Arzt wissen, welche (Doppelblind).</p>`},
+   {t:"Welche Risiken und Beschwerden gibt es?",h:`<p>Gemeldete Nebenwirkungen nach Häufigkeit: Kopfschmerzen und Schwindel (sehr häufig) sowie niedriger Blutdruck (häufig). Unbekannte Risiken sind möglich.</p>`},
+   {t:"Welchen Nutzen gibt es?",h:`<p>XYZ-2000 könnte Ihre Herzfunktion verbessern, ein Nutzen kann jedoch nicht garantiert werden. Sie erhalten kostenlose medizinische Kontrollen.</p>`},
+   {t:"Welche anderen Möglichkeiten habe ich?",h:`<p>Die Teilnahme ist Ihre Entscheidung. Sie können Ihre derzeitige Behandlung fortsetzen oder andere Optionen mit Ihrem Arzt besprechen.</p>`},
+   {t:"Was passiert, wenn ich verletzt werde?",h:`<p>Werden Sie infolge der Teilnahme verletzt, stellt ${PH("[SITE NAME]")} die medizinische Behandlung bereit oder organisiert sie.</p>`},
+   {t:"Wie steht es um die Vertraulichkeit?",h:`<p>Wir bemühen uns, Ihre Daten vertraulich zu behandeln, können aber keine vollständige Vertraulichkeit garantieren. Ihre Unterlagen können vom Sponsor und der FDA eingesehen werden.</p>`},
+   {t:"Welche Rechte habe ich als Teilnehmer?",h:`<p>Ihre Teilnahme ist freiwillig und Sie können jederzeit ohne Nachteile und ohne Auswirkung auf Ihre Versorgung ausscheiden.</p>`},
+   {t:"Wer kann meine Fragen beantworten?",h:`<p>Bei Fragen zur Studie wenden Sie sich an ${PH("[INVESTIGATOR NAME]")} unter ${PH("[PHONE NUMBER]")}. Zu Ihren Rechten kontaktieren Sie die Ethikkommission (IRB) unter ${PH("[IRB PHONE]")}.</p>`},
+   {t:"Einwilligung zur Teilnahme",h:`<p>Mit Ihrer Unterschrift bestätigen Sie, dass Sie das Formular gelesen haben, Ihre Fragen beantwortet wurden und Sie freiwillig teilnehmen.</p>${sig(["Name des Teilnehmers","Unterschrift des Teilnehmers","Datum"])}`}
+  ]},
+ zh:{cf:"知情同意书",
+  title:"一项3期、随机、双盲、安慰剂对照研究，旨在评估 XYZ-2000 在射血分数降低的心力衰竭患者中的疗效和安全性",
+  lbl:["方案编号","申办方","机构","主要研究者","版本","版本日期"],
+  secs:[
+   {t:"参加邀请",h:`<p>我们邀请您参加一项研究。请仔细阅读本表格并提出任何疑问。您的参加是自愿的。</p>`},
+   {t:"为什么开展这项研究？",h:`<p>XYZ-2000 是一种试验用药物，可能帮助心脏更有效地泵血。这项3期研究旨在确认其疗效和安全性。</p>`},
+   {t:"为什么邀请我参加？",h:`<p>邀请您参加，是因为您患有射血分数降低的心力衰竭（HFrEF）并符合研究的入选标准。</p>`},
+   {t:"我将参加多长时间？",h:`<p>您将参加约13个月，期间约有8次研究访视。</p>`},
+   {t:"如果我参加会发生什么？",h:`<p>您将被随机分配到三个剂量组之一（其中一组为安慰剂）。您和您的医生都不会知道分到哪一组（双盲）。</p>`},
+   {t:"有哪些风险和不适？",h:`<p>已报告的不良反应按发生频率包括：头痛和头晕（很常见）以及低血压（常见）。也可能存在尚未知晓的风险。</p>`},
+   {t:"有哪些获益？",h:`<p>XYZ-2000 可能改善您的心脏功能，但我们无法保证获益。您将免费接受定期医学检查。</p>`},
+   {t:"我还有哪些选择？",h:`<p>是否参加由您决定。您可以继续目前的治疗，或与医生讨论其他方案。</p>`},
+   {t:"如果我受到伤害怎么办？",h:`<p>如果您因参加研究而直接受到伤害，${PH("[SITE NAME]")} 将提供或安排医疗。</p>`},
+   {t:"关于保密？",h:`<p>我们将尽力保护您的信息，但无法保证完全保密。申办方和 FDA 可能查阅您的记录。</p>`},
+   {t:"作为受试者我有哪些权利？",h:`<p>您的参加是自愿的，可随时退出，不会受到处罚，也不会影响您的医疗。</p>`},
+   {t:"谁能回答我的问题？",h:`<p>如对研究有疑问，请联系 ${PH("[INVESTIGATOR NAME]")}，电话 ${PH("[PHONE NUMBER]")}。如涉及您的权利，请联系伦理委员会（IRB），电话 ${PH("[IRB PHONE]")}。</p>`},
+   {t:"参加同意",h:`<p>签字即表示您已阅读本表格、问题已得到解答，并自愿同意参加。</p>${sig(["受试者姓名","受试者签名","日期"])}`}
+  ]}
+};
+function renderStaticEnglish(){
+  $("#docInner").innerHTML=docHeader();
+  SECTIONS.forEach((s,i)=>{const e=renderSection(s,i+1);e.style.animation="none";e.style.opacity="1";e.style.transform="none";$("#docInner").appendChild(e);});
+}
+function renderTranslated(lang){
+  const t=TX[lang];
+  $("#docInner").innerHTML=`<div class="icf-title"><div class="lbl">${t.cf}</div><h1>${t.title}</h1><div class="icf-meta">
+    <div><span class="k">${t.lbl[0]}</span><span>XYZ-301</span></div>
+    <div><span class="k">${t.lbl[1]}</span><span>Cardio Therapeutics, Inc.</span></div>
+    <div><span class="k">${t.lbl[2]}</span><span>${PH("[INSTITUTION NAME]")}</span></div>
+    <div><span class="k">${t.lbl[3]}</span><span>${PH("[INVESTIGATOR NAME, MD]")}</span></div>
+    <div><span class="k">${t.lbl[4]}</span><span>1.0</span></div>
+    <div><span class="k">${t.lbl[5]}</span><span>${PH("[DATE]")}</span></div>
+  </div></div>`;
+  t.secs.forEach((s,i)=>{const e=ce("div","sec");e.style.animation="none";e.innerHTML=`<h3><span class="n">${i+1}</span>${s.t}</h3>${s.h}`;$("#docInner").appendChild(e);});
+}
+function applyLang(lang){ if(lang==="en") renderStaticEnglish(); else renderTranslated(lang); }
+LANGS.forEach(l=>{const o=ce("option",null,l.n);o.value=l.c;$("#langSel").appendChild(o);});
+$("#langSel").addEventListener("change",e=>applyLang(e.target.value));
 
 $("#genBtn").addEventListener("click",()=>generate(false));
 
@@ -315,8 +420,10 @@ $("#genBtn").addEventListener("click",()=>generate(false));
    otherwise auto-play once on load so the value is visible immediately. */
 const params=new URLSearchParams(location.search);
 const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if(params.get("still")==="1"||reduce){ generate(true); }
-else { setTimeout(()=>generate(false),700); }
+const lg=params.get("lang");
+function maybeLang(){ if(lg&&TX[lg]){ $("#langSel").value=lg; applyLang(lg); } }
+if(params.get("still")==="1"||reduce){ generate(true).then(maybeLang); }
+else { setTimeout(()=>generate(false).then(maybeLang),700); }
 </script>
 </body>
 </html>
