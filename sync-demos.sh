@@ -9,7 +9,8 @@ SRC=".."
 copy_dir() { # $1 src dir  $2 dest dir
   if [ ! -d "$1" ]; then echo "MISSING dir: $1" >&2; return 1; fi
   rm -rf "$2"; mkdir -p "$2"; cp -R "$1"/. "$2"/
-  rm -rf "$2/.git"  # strip any nested git repo so it's a plain directory
+  rm -rf "$2/.git" "$2/.gitignore"  # bundles are plain static dirs, not git repos
+  find "$2" -name .DS_Store -delete 2>/dev/null || true  # strip macOS cruft
   echo "bundled $2/"
 }
 copy_file() { # $1 src file  $2 dest file
@@ -21,6 +22,7 @@ copy_dir  "$SRC/ccs-cdisc-demo/site"                   "demos/cdisc"
 copy_dir  "$SRC/ccs-ncdisc-demo/site"                  "demos/ncdisc"
 copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
 copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
+copy_dir  "$SRC/cro-website"                           "demos/cro"
 
 # De-brand: the source projects carry "CCS" / "Cardiovascular Clinical Sciences"
 # institutional branding; this showcase must be CCS-free. Re-applied on every sync so
@@ -38,5 +40,13 @@ debrand() {
   echo "de-branded demos (CCS -> neutral)"
 }
 debrand
+
+# Trim non-website dev scaffolding from the cro bundle. cro-website keeps its source at the
+# repo root (no build/ dir), so a plain copy drags in dev files that are NOT part of the
+# rendered site. Removing them leaves the website (index.html, theme3-warm.html, 2/, 5/, 6/
+# and their css/js) byte-for-byte unchanged.
+rm -rf demos/cro/CLAUDE.md demos/cro/design.md demos/cro/.claude demos/cro/docs \
+       demos/cro/2/CLAUDE.md demos/cro/5/website-copy.md demos/cro/5/website-copy-revised.md
+echo "trimmed cro dev scaffolding (website unchanged)"
 
 echo "Done. Demos bundled into ./demos/"
