@@ -23,6 +23,8 @@ copy_dir  "$SRC/ccs-ncdisc-demo/site"                  "demos/ncdisc"
 copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
 copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
 copy_dir  "$SRC/cro-website"                           "demos/cro"
+# NOTE: demos/icf.html is hand-authored (an in-repo recreation of TraceScribe2's ICF-generation
+# feature — that app is a large backend and is NOT bundled). This script never manages it.
 
 # De-brand: the source projects carry "CCS" / "Cardiovascular Clinical Sciences"
 # institutional branding; this showcase must be CCS-free. Re-applied on every sync so
