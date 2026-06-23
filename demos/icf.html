@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICF Generation — TraceScribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 50%); --info:hsl(199 89% 48%);
+    --radius:10px; --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+    --shadow-lg:0 10px 15px -3px rgb(0 0 0/.1),0 4px 6px -4px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1320px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;color:var(--primary);text-transform:uppercase}
+  .pill{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  /* layout */
+  .grid{max-width:1320px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+  .col-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:78px}
+  @media(max-width:920px){.col-side{position:static}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .card h2{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-fg);padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card h2 svg{width:15px;height:15px;color:var(--primary)}
+  .card .body{padding:14px 16px}
+  /* protocol fields */
+  .file{display:flex;align-items:center;gap:9px;font-size:13px;padding:9px 11px;background:var(--muted);border-radius:8px;margin-bottom:12px}
+  .file svg{width:16px;height:16px;color:var(--primary);flex:none}
+  .file .ok{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--success)}
+  .field{padding:7px 0;border-bottom:1px dashed var(--border)}
+  .field:last-child{border-bottom:0}
+  .field .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut-fg)}
+  .field .v{font-size:13px;font-weight:600;margin-top:1px}
+  .aes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .ae{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:6px;background:hsl(25 95% 53%/.1);color:hsl(25 80% 42%)}
+  /* button */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:var(--font);font-weight:700;font-size:14px;color:#fff;background:var(--primary);border:0;border-radius:9px;padding:12px;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;box-shadow:0 0 0 0 hsl(168 76% 32%/.4)}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px -6px hsl(168 76% 32%/.5)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn svg{width:16px;height:16px}
+  .btn.ghost{background:var(--card);color:var(--fg);border:1px solid var(--border);box-shadow:none}
+  /* pipeline */
+  .pipe{display:flex;flex-direction:column;gap:2px}
+  .step{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--mut-fg);padding:5px 0;transition:color .3s}
+  .step .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center;transition:all .3s}
+  .step .dot svg{width:9px;height:9px;color:#fff;opacity:0}
+  .step.active{color:var(--fg);font-weight:600}
+  .step.active .dot{border-color:var(--primary);animation:spin 1s linear infinite;border-top-color:transparent}
+  .step.done{color:var(--fg)}
+  .step.done .dot{background:var(--primary);border-color:var(--primary);animation:none}
+  .step.done .dot svg{opacity:1}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* intelligence rail */
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:4px 0;opacity:.4;transition:opacity .35s}
+  .chk.on{opacity:1}
+  .chk .ic{width:16px;height:16px;border-radius:50%;flex:none;background:var(--muted);display:flex;align-items:center;justify-content:center;transition:background .35s}
+  .chk.on .ic{background:var(--success)}
+  .chk .ic svg{width:10px;height:10px;color:#fff}
+  .chk .meta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mut-fg)}
+  .meter{height:8px;border-radius:99px;background:var(--muted);overflow:hidden;margin:6px 0 4px}
+  .meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),hsl(160 84% 45%));transition:width 1.1s ease-out;border-radius:99px}
+  .meter-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--mut-fg)}
+  .swap{display:flex;align-items:center;gap:7px;font-size:11.5px;padding:4px 0}
+  .swap .from{font-family:var(--mono);color:var(--mut-fg);text-decoration:line-through;text-decoration-color:hsl(0 70% 60%/.6)}
+  .swap svg{width:12px;height:12px;color:var(--primary);flex:none}
+  .swap .to{font-weight:600;color:var(--primary)}
+  /* document */
+  .doc-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .doc-head .t{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-fg)}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;padding:4px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .badge.ok{background:hsl(160 84% 36%/.12);color:var(--success)}
+  .badge.live{background:hsl(199 89% 48%/.12);color:var(--info)}
+  .paper{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);min-height:60vh}
+  .paper-inner{padding:38px clamp(20px,4vw,56px) 48px;max-width:760px;margin:0 auto}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:56vh;color:var(--mut-fg);padding:30px}
+  .empty svg{width:46px;height:46px;color:var(--border);margin-bottom:14px}
+  .empty h3{font-size:18px;font-weight:700;color:var(--fg);margin-bottom:5px}
+  .empty p{font-size:14px;max-width:330px}
+  /* icf content */
+  .icf-title{text-align:center;border-bottom:2px solid var(--fg);padding-bottom:16px;margin-bottom:8px}
+  .icf-title .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--mut-fg);text-transform:uppercase}
+  .icf-title h1{font-size:21px;font-weight:800;letter-spacing:-.01em;margin:8px 0 12px;line-height:1.3}
+  .icf-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:12.5px;text-align:left;max-width:560px;margin:0 auto}
+  .icf-meta div{display:flex;gap:6px}
+  .icf-meta .k{color:var(--mut-fg);min-width:118px}
+  .sec{padding:18px 0;border-bottom:1px solid var(--border);opacity:0;transform:translateY(8px);animation:reveal .5s ease-out forwards}
+  @keyframes reveal{to{opacity:1;transform:none}}
+  .sec:last-child{border-bottom:0}
+  .sec h3{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .sec h3 .n{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--primary);min-width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  .sec p{font-size:13.5px;margin:6px 0;color:hsl(222 30% 22%)}
+  .sec .h4{font-size:13px;font-weight:700;margin:10px 0 3px}
+  .sec ul{margin:5px 0 5px 4px;list-style:none;display:grid;gap:4px}
+  .sec ul li{font-size:13px;padding-left:18px;position:relative;color:hsl(222 30% 22%)}
+  .sec ul li::before{content:"";position:absolute;left:3px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .freq{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin:9px 0 2px}
+  .ph{background:hsl(38 92% 50%/.18);color:hsl(38 70% 32%);border-radius:4px;padding:0 4px;font-weight:600;font-family:var(--mono);font-size:.85em;white-space:nowrap}
+  .pl{background:var(--primary-soft);color:var(--primary);border-radius:4px;padding:0 3px;font-weight:600}
+  .doc-foot{margin-top:14px;padding:12px 14px;background:var(--muted);border-radius:10px;font-size:12px;color:var(--mut-fg);display:flex;gap:9px;align-items:flex-start}
+  .doc-foot svg{width:15px;height:15px;color:var(--warning);flex:none;margin-top:1px}
+  .sig{display:grid;gap:14px;margin-top:10px}
+  .sig .line{border-bottom:1.5px solid var(--fg);height:26px}
+  .sig .cap{font-size:11px;color:var(--mut-fg);margin-top:3px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg></span>
+  <span class="brand">TraceScribe<small>ICF Generation</small></span>
+  <span class="pill">Phase 3 · Protocol XYZ-301</span>
+</div></header>
+
+<div class="grid">
+  <!-- LEFT: input + intelligence -->
+  <div class="col-side">
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Source protocol</h2>
+      <div class="body">
+        <div class="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span>Sample_Protocol_XYZ-301.pdf</span><span class="ok">✓ PARSED</span>
+        </div>
+        <div class="field"><div class="k">Study title</div><div class="v">A Phase 3, Randomized, Double-Blind, Placebo-Controlled Study of XYZ-2000 in HFrEF</div></div>
+        <div class="field"><div class="k">Protocol number</div><div class="v">XYZ-301</div></div>
+        <div class="field"><div class="k">Sponsor</div><div class="v">Cardio Therapeutics, Inc.</div></div>
+        <div class="field"><div class="k">Investigational product</div><div class="v">XYZ-2000 (oral, 100/200 mg BID)</div></div>
+        <div class="field"><div class="k">Design · Enrollment</div><div class="v">Randomized 1:1:1 · ~1,200 participants · 120 sites</div></div>
+        <div class="field"><div class="k">Duration</div><div class="v">~13 months · 8 visits</div></div>
+        <div class="field"><div class="k">Adverse events extracted</div>
+          <div class="aes"><span class="ae">Headache</span><span class="ae">Dizziness</span><span class="ae">Hypotension</span><span class="ae">Nausea</span><span class="ae">Palpitations</span><span class="ae">Fatigue</span><span class="ae">Diarrhea</span><span class="ae">↑ Troponin</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" id="genBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5z"/></svg>
+      Generate ICF
+    </button>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg>Generation pipeline</h2>
+      <div class="body"><div class="pipe" id="pipe"></div></div>
+    </div>
+
+    <div class="card" id="fdaCard">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>FDA 21 CFR 50.25</h2>
+      <div class="body"><div id="fda"></div></div>
+    </div>
+
+    <div class="card" id="qualCard">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-4 4 3 5-6"/></svg>Readability &amp; quality</h2>
+      <div class="body">
+        <div class="meter-row"><span>Reading level (Flesch-Kincaid)</span><span id="glabel">—</span></div>
+        <div class="meter"><span id="gbar"></span></div>
+        <div class="meter-row" style="margin-bottom:10px"><span>Target ≤ Grade 8</span><span id="gpass"></span></div>
+        <div id="plain"></div>
+        <div id="valid" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: generated document -->
+  <div>
+    <div class="doc-head">
+      <span class="t">Generated document</span>
+      <span id="docBadges"></span>
+    </div>
+    <div class="paper">
+      <div class="empty" id="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg>
+        <h3>Ready to generate</h3>
+        <p>Click <b>Generate ICF</b> to turn the parsed XYZ-301 protocol into an FDA-compliant, plain-language Informed Consent Form.</p>
+      </div>
+      <div class="paper-inner hidden" id="docInner"></div>
+    </div>
+    <div class="doc-foot hidden" id="docFoot">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span><b style="color:hsl(38 70% 32%)">Highlighted tokens</b> like <span class="ph">[SITE NAME]</span> are intentionally left as site-specific placeholders for each investigator's site to complete — exactly as the icf-builder skill specifies. In the full TraceScribe app this renders to a formatted <span class="mono">.docx</span> and can be translated into 10 languages.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Real XYZ-301 ICF content (extracted from a TraceScribe-generated sample) ===== */
+const PH = s => `<span class="ph">${s}</span>`;
+const PL = (s,t)=>`<span class="pl" title="plain-language for &quot;${t}&quot;">${s}</span>`;
+
+const SECTIONS = [
+ {t:"Invitation to participate", h:`<p>You are being invited to take part in a research study. This form provides important information to help you decide whether to participate.</p><p>Please read this form carefully. Ask questions about anything that is not clear. You can take this form home to think about it and discuss it with family, friends, or your doctor before deciding. Your participation is voluntary — you do not have to join this study if you do not want to.</p>`},
+ {t:"Why is this study being done?", h:`<p>Heart failure is a condition where your heart does not pump blood as well as it should. This can cause shortness of breath, tiredness, and swelling in your legs. Many people continue to have symptoms even when taking their current medications.</p><p>XYZ-2000 is an experimental drug that may help the heart pump more effectively. This is a ${PL("Phase 3","phase 3")} study, which means the drug has been tested in earlier studies and researchers now want to confirm whether it works and is safe in a larger group of people.</p>`},
+ {t:"Why have I been asked to take part?", h:`<p>You are being asked to participate because you have heart failure with reduced ejection fraction (HFrEF) and meet the study's entry criteria, including:</p><ul><li>You are between 18 and 85 years old</li><li>Your heart's pumping ability (ejection fraction) is 40% or less</li><li>You have symptoms of heart failure (NYHA Class II–IV)</li><li>You have been on stable heart failure medications for at least 4 weeks</li></ul>`},
+ {t:"How long will I be in the study?", h:`<p>If you decide to join, you will be in the study for about <b>13 months</b>. This includes a screening period of up to 4 weeks, a treatment period of 48 weeks, and a follow-up visit about 30 days after your last dose. You will have about <b>8 study visits</b>, each lasting 1–2 hours.</p>`},
+ {t:"What will happen if I take part?", h:`<p>If you qualify, you will be ${PL("assigned by chance","randomized")} — like rolling dice — to one of three groups:</p><ul><li>XYZ-2000 100 mg twice daily</li><li>XYZ-2000 200 mg twice daily</li><li>${PL("Inactive substance","placebo")} (placebo) twice daily</li></ul><p>You have an equal 1-in-3 chance of any group. ${PL("Neither you nor your study doctor will know","double-blind")} which group you are in, which helps make the results accurate. In a medical emergency, your doctor can find out which treatment you are receiving.</p>`},
+ {t:"What are the risks and discomforts?", h:`<p>Based on earlier studies with about 800 people, the following ${PL("side effects","adverse events")} have been reported, organized by how often they occur:</p>
+  <div class="freq">Very common (more than 1 in 10)</div><ul><li>Headache — usually mild, goes away within the first 2 weeks</li><li>Dizziness — often related to blood pressure changes</li></ul>
+  <div class="freq">Common (1 to 10 in 100)</div><ul><li>Low blood pressure — you may feel lightheaded or faint</li><li>Nausea, palpitations, and fatigue — usually mild</li></ul>
+  <div class="freq">Uncommon (fewer than 1 in 100)</div><ul><li>Diarrhea, and elevated troponin (a blood marker of heart stress requiring monitoring)</li></ul>
+  <p class="h4">Unknown risks</p><p>XYZ-2000 has not been approved by the FDA. There may be risks we do not know about yet. You will be told about any new information that might affect your decision to stay in the study.</p>`},
+ {t:"What are the benefits?", h:`<p>XYZ-2000 may help improve your heart function and reduce symptoms — but we cannot promise you will benefit. The drug might not work for you, or you might be assigned to the placebo group. You will receive regular medical check-ups at no cost. The information learned may help doctors better treat heart failure in the future.</p>`},
+ {t:"What other choices do I have?", h:`<p>Taking part is your choice. Instead, you could continue your current heart failure medications, talk to your doctor about other treatment options, take part in a different research study, or choose not to receive additional treatment at this time.</p>`},
+ {t:"What happens if I am injured?", h:`<p>If you are injured as a direct result of taking part in this study, ${PH("[SITE NAME]")} will provide or arrange for medical treatment. For questions about costs of treatment for a research injury, contact ${PH("[INVESTIGATOR NAME]")}.</p>`},
+ {t:"What about confidentiality?", h:`<p>We will do our best to keep your information private, but we cannot guarantee complete privacy. Your records may be reviewed by the sponsor (Cardio Therapeutics, Inc.), the FDA, and the ${PH("[INSTITUTION IRB NAME]")}. Study results may be published, but you will not be identified.</p>`},
+ {t:"What are my rights as a research participant?", h:`<p class="h4">Your participation is voluntary.</p><p>If you choose not to participate, it will not affect your regular medical care, your relationship with your doctor, or any benefits you normally receive.</p><p class="h4">You can stop at any time.</p><p>You can leave the study at any time without penalty. The study doctor may also remove you if the treatment seems to be harming you or it is in your best interest.</p>`},
+ {t:"Who can answer my questions?", h:`<p>For questions about the study, contact ${PH("[INVESTIGATOR NAME]")} at ${PH("[PHONE NUMBER]")}. For a medical emergency, call ${PH("[24-HOUR PHONE]")}.</p><p>For questions about your rights as a research participant, contact the ${PH("[INSTITUTION NAME]")} Institutional Review Board at ${PH("[IRB PHONE]")}. The IRB is a group that reviews research to protect participants' rights.</p>`},
+ {t:"Consent to participate", sig:true, h:`<p>By signing below, you are agreeing that you have read this form, had your questions answered, were given enough time to decide, understand that participation is voluntary, and that you may leave at any time.</p>
+  <div class="sig"><div><div class="line"></div><div class="cap">Print name of participant</div></div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px"><div><div class="line"></div><div class="cap">Signature of participant</div></div><div><div class="line"></div><div class="cap">Date</div></div></div></div>`}
+];
+
+const FDA = ["Study purpose","Procedures","Risks (by frequency)","Benefits","Alternatives","Confidentiality","Compensation for injury","Voluntary participation","Contacts for questions"];
+const PLAIN = [["Randomized","Assigned by chance"],["Double-blind","Neither you nor your doctor knows"],["Placebo","Inactive substance"],["Adverse event","Side effect"]];
+const VALID = ["No exculpatory language","No coercive language","All 8 protocol AEs covered in Risks"];
+const PIPE = [
+  {l:"Parse protocol → ExtractedProtocol JSON", ms:700},
+  {l:"Generate 29 ICF subsections", ms:1500},
+  {l:"Polish for readability (Claude)", ms:900},
+  {l:"Validate FDA 21 CFR 50.25 compliance", ms:700}
+];
+
+/* ===== build static scaffolding (checklists, etc.) ===== */
+const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const CHK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+
+PIPE.forEach((s,i)=>{const e=ce("div","step",`<span class="dot">${CHK}</span><span>${s.l}</span>`);e.id="st"+i;$("#pipe").appendChild(e);});
+FDA.forEach((f,i)=>{const e=ce("div","chk",`<span class="ic">${CHK}</span><span>${f}</span><span class="meta">§50.25</span>`);e.id="fda"+i;$("#fda").appendChild(e);});
+PLAIN.forEach(([f,t])=>{const e=ce("div","swap",`<span class="from">${f}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="to">${t}</span>`);$("#plain").appendChild(e);});
+VALID.forEach((v,i)=>{const e=ce("div","chk",`<span class="ic">${CHK}</span><span>${v}</span>`);e.id="val"+i;$("#valid").appendChild(e);});
+
+/* ===== render the document ===== */
+function docHeader(){
+  return `<div class="icf-title"><div class="lbl">Informed Consent Form</div>
+    <h1>A Phase 3, Randomized, Double-Blind, Placebo-Controlled Study to Evaluate the Efficacy and Safety of XYZ-2000 in Patients with Heart Failure with Reduced Ejection Fraction</h1>
+    <div class="icf-meta">
+      <div><span class="k">Protocol number</span><span>XYZ-301</span></div>
+      <div><span class="k">Sponsor</span><span>Cardio Therapeutics, Inc.</span></div>
+      <div><span class="k">Institution</span><span>${PH("[INSTITUTION NAME]")}</span></div>
+      <div><span class="k">Principal investigator</span><span>${PH("[INVESTIGATOR NAME, MD]")}</span></div>
+      <div><span class="k">Version</span><span>1.0</span></div>
+      <div><span class="k">Version date</span><span>${PH("[DATE]")}</span></div>
+    </div></div>`;
+}
+function renderSection(s,i){
+  const e=ce("div","sec");
+  e.innerHTML=`<h3><span class="n">${i}</span>${s.t}</h3>${s.h}`;
+  return e;
+}
+
+let running=false, done=false;
+function reset(){
+  $("#docInner").classList.add("hidden"); $("#docInner").innerHTML="";
+  $("#empty").classList.remove("hidden"); $("#docFoot").classList.add("hidden");
+  $("#docBadges").innerHTML="";
+  document.querySelectorAll(".step").forEach(s=>s.className="step");
+  document.querySelectorAll(".chk").forEach(c=>c.classList.remove("on"));
+  $("#gbar").style.width="0"; $("#glabel").textContent="—"; $("#gpass").textContent="";
+}
+
+async function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function generate(instant){
+  if(running) return; running=true; done=false;
+  reset();
+  $("#genBtn").disabled=true;
+  $("#empty").classList.add("hidden");
+  $("#docInner").classList.remove("hidden");
+  $("#docInner").innerHTML=docHeader();
+  $("#docBadges").innerHTML=`<span class="badge live">● generating…</span>`;
+
+  const stepMs = instant?0:1;
+  // run pipeline steps; reveal document sections during the "generate" step
+  for(let i=0;i<PIPE.length;i++){
+    const st=$("#st"+i); st.classList.add("active");
+    if(i===1){ // generate subsections → reveal ICF sections + tick FDA items
+      for(let s=0;s<SECTIONS.length;s++){
+        $("#docInner").appendChild(renderSection(SECTIONS[s],s+1));
+        if(!instant) await wait(140);
+        // light up an FDA item roughly in step with sections
+        const f=$("#fda"+Math.min(s,FDA.length-1)); if(f)f.classList.add("on");
+      }
+      FDA.forEach((_,k)=>$("#fda"+k).classList.add("on"));
+    } else {
+      if(!instant) await wait(PIPE[i].ms);
+    }
+    st.classList.remove("active"); st.classList.add("done");
+    if(i===2){ // polish → readability meter + plain-language confirmed
+      $("#gbar").style.width="72%"; $("#glabel").textContent="Grade 7.2"; $("#gpass").innerHTML=`<span style="color:var(--success)">✓ passes</span>`;
+    }
+    if(i===3){ VALID.forEach((_,k)=>$("#val"+k).classList.add("on")); }
+  }
+  $("#docBadges").innerHTML=`<span class="badge ok">${CHK.replace(/stroke-width="3"/,'stroke-width="3" style="width:11px;height:11px"')} FDA 21 CFR 50.25 compliant</span> <span class="badge ok">Grade 7.2 · ≤8</span>`;
+  $("#docFoot").classList.remove("hidden");
+  $("#genBtn").innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></svg>Re-generate`;
+  $("#genBtn").disabled=false; running=false; done=true;
+}
+
+$("#genBtn").addEventListener("click",()=>generate(false));
+
+/* still=1 → render completed state instantly (screenshots / reduced motion).
+   otherwise auto-play once on load so the value is visible immediately. */
+const params=new URLSearchParams(location.search);
+const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(params.get("still")==="1"||reduce){ generate(true); }
+else { setTimeout(()=>generate(false),700); }
+</script>
+</body>
+</html>
