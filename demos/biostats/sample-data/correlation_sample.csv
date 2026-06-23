@@ -1,0 +1,13 @@
+subject_id,biomarker_a,biomarker_b,outcome_score,group,age
+C001,2.5,15.3,78,Control,45
+C002,3.1,18.2,82,Treatment,52
+C003,1.8,12.1,65,Control,38
+C004,4.2,22.5,91,Treatment,61
+C005,2.9,16.8,75,Control,44
+C006,3.5,19.4,88,Treatment,55
+C007,2.1,13.5,68,Control,42
+C008,3.8,20.1,85,Treatment,58
+C009,2.3,14.2,72,Control,47
+C010,4.0,21.8,89,Treatment,53
+C011,2.7,15.9,76,Control,50
+C012,3.3,17.6,84,Treatment,48

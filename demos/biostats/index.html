@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Clinical Trial Results Dashboard - Executive Presentation">
+    <title>Clinical Trial Results Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- CDN Libraries: pinned versions, Subresource Integrity (SRI), and defer.
+         If a CDN is compromised the hash mismatch blocks execution; defer keeps
+         them non-render-blocking while preserving execution order. -->
+    <script defer
+            src="https://cdn.plot.ly/plotly-2.27.0.min.js"
+            integrity="sha384-Hl48Kq2HifOWdXEjMsKo6qxqvRLTYqIGbvlENBmkHAxZKIGCXv43H6W1jA671RzC"
+            crossorigin="anonymous"></script>
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"
+            integrity="sha384-D/t0ZMqQW31H3az8ktEiNb39wyKnS82iFY52QPACM+IjKW3jDUhyIgh2PApRqJZs"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+
+        <!-- Brand / masthead -->
+        <header class="masthead" role="banner">
+            <div class="masthead-mark" aria-hidden="true">
+                <svg viewBox="0 0 32 32" class="masthead-glyph">
+                    <path d="M3 26 L11 16 L17 20 L29 6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="3" cy="26" r="2"/><circle cx="29" cy="6" r="2"/>
+                </svg>
+            </div>
+            <div class="masthead-text">
+                <span class="masthead-title">Clinical Trial Analytics</span>
+                <span class="masthead-sub">Biostatistics Evidence Platform</span>
+            </div>
+            <div class="masthead-meta">
+                <span class="masthead-badge" id="masthead-status">Data locked</span>
+            </div>
+        </header>
+
+        <!-- Study Tab Navigation (ARIA tablist with keyboard support) -->
+        <nav class="study-tabs" aria-label="Study selection">
+            <div role="tablist" aria-label="Studies" class="study-tablist">
+                <button class="tab-btn active" id="tab-home" role="tab" data-study="home" aria-selected="true" aria-controls="home-content" tabindex="0">
+                    Home
+                </button>
+                <button class="tab-btn" id="tab-1" role="tab" data-study="1" aria-selected="false" aria-controls="study-1" tabindex="-1">
+                    Efficacy &amp; Safety
+                </button>
+                <button class="tab-btn" id="tab-2" role="tab" data-study="2" aria-selected="false" aria-controls="study-2" tabindex="-1">
+                    Diagnostic Imaging
+                </button>
+                <button class="tab-btn" id="tab-3" role="tab" data-study="3" aria-selected="false" aria-controls="study-3" tabindex="-1">
+                    Oncology Survival
+                </button>
+                <button class="tab-btn" id="tab-4" role="tab" data-study="4" aria-selected="false" aria-controls="study-4" tabindex="-1">
+                    Advanced Analytics
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-main" role="main">
+
+            <!-- Home Content Section -->
+            <div id="home-content" class="study-content active" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
+
+                <!-- Animated Background Grid -->
+                <div class="grid-background" aria-hidden="true"></div>
+
+                <!-- Hero Section -->
+                <section class="hero-section">
+                    <div class="hero-accent-line"></div>
+                    <h1 class="hero-title">
+                        <span class="title-line">Clinical Trial</span>
+                        <span class="title-line">Analytics</span>
+                    </h1>
+                    <p class="hero-tagline">From interim analyses to boardroom presentations to journal figures.</p>
+                </section>
+
+                <!-- Use Case Icons Section -->
+                <section class="use-cases">
+                    <div class="use-case-card" data-index="0">
+                        <div class="card-glow"></div>
+                        <svg class="use-case-svg" viewBox="0 0 64 64" aria-label="Interim Analysis">
+                            <path class="icon-path" d="M8 56 L24 32 L40 40 L56 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle class="icon-dot" cx="8" cy="56" r="3"/>
+                            <circle class="icon-dot" cx="24" cy="32" r="3"/>
+                            <circle class="icon-dot" cx="40" cy="40" r="3"/>
+                            <circle class="icon-dot" cx="56" cy="12" r="3"/>
+                        </svg>
+                        <h3 class="use-case-title">Interim Analysis</h3>
+                    </div>
+
+                    <div class="use-case-card" data-index="1">
+                        <div class="card-glow"></div>
+                        <svg class="use-case-svg" viewBox="0 0 64 64" aria-label="Top Line Results">
+                            <circle class="icon-ring" cx="32" cy="32" r="24" fill="none"/>
+                            <circle class="icon-ring" cx="32" cy="32" r="16" fill="none"/>
+                            <circle class="icon-ring" cx="32" cy="32" r="8" fill="none"/>
+                            <circle class="icon-dot icon-pulse" cx="32" cy="32" r="4"/>
+                        </svg>
+                        <h3 class="use-case-title">Top Line Results</h3>
+                    </div>
+
+                    <div class="use-case-card" data-index="2">
+                        <div class="card-glow"></div>
+                        <svg class="use-case-svg" viewBox="0 0 64 64" aria-label="Executive Dashboards">
+                            <rect class="icon-shape" x="12" y="12" width="40" height="28" rx="2"/>
+                            <line class="icon-path" x1="12" y1="20" x2="52" y2="20"/>
+                            <rect class="icon-shape" x="18" y="26" width="28" height="4" rx="1"/>
+                            <rect class="icon-shape" x="18" y="32" width="20" height="4" rx="1"/>
+                            <circle class="icon-dot" cx="32" cy="50" r="6"/>
+                        </svg>
+                        <h3 class="use-case-title">Executive Dashboards</h3>
+                    </div>
+
+                    <div class="use-case-card" data-index="3">
+                        <div class="card-glow"></div>
+                        <svg class="use-case-svg" viewBox="0 0 64 64" aria-label="Publication-Ready Figures">
+                            <path class="icon-path" d="M32 8 L40 24 L56 26 L44 38 L48 54 L32 46 L16 54 L20 38 L8 26 L24 24 Z" stroke-linejoin="round"/>
+                            <circle class="icon-dot icon-pulse" cx="32" cy="32" r="4"/>
+                        </svg>
+                        <h3 class="use-case-title">Publication-Ready</h3>
+                    </div>
+                </section>
+
+                <!-- Animated Stats Section -->
+                <section class="stats-section">
+                    <div class="stat-item" data-index="0">
+                        <div class="stat-decoration"></div>
+                        <div class="stat-number" data-target="4">0</div>
+                        <div class="stat-label">Studies</div>
+                        <div class="stat-bar"></div>
+                    </div>
+                    <div class="stat-item" data-index="1">
+                        <div class="stat-decoration"></div>
+                        <div class="stat-number" data-target="162">0</div>
+                        <div class="stat-label">Patients</div>
+                        <div class="stat-bar"></div>
+                    </div>
+                    <div class="stat-item" data-index="2">
+                        <div class="stat-decoration"></div>
+                        <div class="stat-number" data-target="24">0</div>
+                        <div class="stat-label">Endpoints</div>
+                        <div class="stat-bar"></div>
+                    </div>
+                </section>
+
+                <!-- Footer Tagline -->
+                <section class="footer-tagline">
+                    <div class="footer-decoration"></div>
+                    <p>One platform. Every stakeholder that matters.</p>
+                </section>
+
+            </div>
+            <!-- End Home Content -->
+
+            <!-- Study 1: Treatment Efficacy Study -->
+            <div id="study-1" class="study-content" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
+
+            <div class="study-header">
+                <div>
+                    <h1 class="study-eyebrow">Study 01</h1>
+                    <p class="study-headline">Efficacy &amp; Safety Analysis</p>
+                </div>
+                <button type="button" id="ae-export-btn" class="toolbar-btn">
+                    <span aria-hidden="true">↓</span> Export cohort (CSV)
+                </button>
+            </div>
+
+            <!-- Summary Statistics Section -->
+            <section class="summary-section" aria-labelledby="summary-title">
+                <h2 id="summary-title" class="section-title visually-hidden">Summary Statistics</h2>
+                <div class="kpi-cards">
+
+                    <!-- KPI Card 1: Total Patients -->
+                    <article class="kpi-card" id="stat-patients">
+                        <div class="kpi-icon" aria-hidden="true">👥</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Total Patients</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Change indicator">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 2: Treatment Effect -->
+                    <article class="kpi-card" id="stat-treatment-effect">
+                        <div class="kpi-icon" aria-hidden="true">💊</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Treatment Effect</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Effect size indicator">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 3: Completion Rate -->
+                    <article class="kpi-card" id="stat-completion">
+                        <div class="kpi-icon" aria-hidden="true">✓</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Completion Rate</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Completion percentage">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 4: P-Value -->
+                    <article class="kpi-card" id="stat-pvalue">
+                        <div class="kpi-icon" aria-hidden="true">📈</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">P-Value</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Statistical significance">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 5: NNT -->
+                    <article class="kpi-card" id="stat-nnt">
+                        <div class="kpi-icon" aria-hidden="true">🎯</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Number Needed to Treat</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="NNT indicator">--</span>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Main Visualization Grid Section -->
+            <section class="visualization-section" aria-labelledby="viz-title">
+                <h2 id="viz-title" class="section-title visually-hidden">Primary Analysis Visualizations</h2>
+                <div class="chart-grid">
+
+                    <!-- Chart 1: Treatment Comparison -->
+                    <article class="chart-card" aria-labelledby="treatment-chart-title">
+                        <h3 id="treatment-chart-title" class="chart-title">Treatment Comparison</h3>
+                        <div class="chart-container" id="treatment-chart" role="img" aria-label="Treatment comparison bar chart with error bars">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📊</div>
+                                <p class="placeholder-text">Load data to view treatment comparison</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chart 2: Patient Trajectory -->
+                    <article class="chart-card" aria-labelledby="trajectory-chart-title">
+                        <h3 id="trajectory-chart-title" class="chart-title">Patient Trajectory Over Time</h3>
+                        <div class="chart-container" id="trajectory-chart" role="img" aria-label="Patient trajectory line chart showing outcomes over time">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📈</div>
+                                <p class="placeholder-text">Load data to view patient trajectories</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chart 3: Forest Plot -->
+                    <article class="chart-card" aria-labelledby="forest-plot-title">
+                        <h3 id="forest-plot-title" class="chart-title">Subgroup Analysis (Forest Plot)</h3>
+                        <div class="chart-container" id="forest-plot" role="img" aria-label="Forest plot showing treatment effect across subgroups">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🌲</div>
+                                <p class="placeholder-text">Load data to view subgroup analysis</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Chart 4: Waterfall Plot -->
+                    <article class="chart-card" aria-labelledby="waterfall-chart-title">
+                        <h3 id="waterfall-chart-title" class="chart-title">Individual Patient Response (Waterfall)</h3>
+                        <div class="chart-container" id="waterfall-chart" role="img" aria-label="Waterfall plot showing individual patient responses">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">💧</div>
+                                <p class="placeholder-text">Load data to view patient responses</p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- NNT Visualization Section -->
+            <section class="visualization-section" aria-labelledby="nnt-viz-title">
+                <h2 id="nnt-viz-title" class="section-title">Number Needed to Treat (NNT)</h2>
+                <article class="chart-card full-width" aria-labelledby="nnt-array-title">
+                    <h3 id="nnt-array-title" class="chart-title">NNT Icon Array</h3>
+                    <div class="chart-container" id="nnt-icon-array" role="img" aria-label="Icon array visualization showing number needed to treat">
+                        <div class="chart-placeholder">
+                            <div class="placeholder-icon">👤</div>
+                            <p class="placeholder-text">Load data to view NNT visualization</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Adverse Events Section -->
+            <section class="adverse-events-section" aria-labelledby="ae-title">
+                <h2 id="ae-title" class="section-title">Adverse Events Profile</h2>
+                <article class="chart-card ae-chart-card">
+                    <div class="chart-container" id="adverse-events-chart" role="img" aria-label="Adverse events comparison chart by treatment group">
+                        <div class="chart-placeholder">
+                            <div class="placeholder-icon">⚠️</div>
+                            <p class="placeholder-text">Load data to view adverse events profile</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            </div>
+            <!-- End Study 1 -->
+
+            <!-- Study 2: Diagnostic Imaging Study -->
+            <div id="study-2" class="study-content" role="tabpanel" aria-labelledby="tab-2" tabindex="0">
+
+            <div class="study-header">
+                <div>
+                    <h1 class="study-eyebrow">Study 02</h1>
+                    <p class="study-headline">Diagnostic Imaging Study</p>
+                </div>
+            </div>
+
+            <!-- Gauge Charts Row - Key Metrics -->
+            <section class="summary-section" aria-labelledby="gauge-metrics-title">
+                <h2 id="gauge-metrics-title" class="section-title">Model Performance Metrics</h2>
+                <div class="gauge-row" id="diagnostic-gauges">
+                    <!-- 4 gauge charts will be rendered here by JS -->
+                    <div class="gauge-placeholder">
+                        <div class="placeholder-icon">🎯</div>
+                        <p class="placeholder-text">Loading metrics...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROC and PR Curves Section -->
+            <section class="visualization-section" aria-labelledby="curves-title">
+                <h2 id="curves-title" class="section-title">Diagnostic Curves</h2>
+                <div class="chart-grid">
+                    <!-- ROC Curve -->
+                    <article class="chart-card" aria-labelledby="roc-curve-title">
+                        <h3 id="roc-curve-title" class="chart-title">ROC Curve</h3>
+                        <div class="chart-container" id="roc-curve" role="img" aria-label="Receiver Operating Characteristic curve">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📈</div>
+                                <p class="placeholder-text">Load data to view ROC curve</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Precision-Recall Curve -->
+                    <article class="chart-card" aria-labelledby="pr-curve-title">
+                        <h3 id="pr-curve-title" class="chart-title">Precision-Recall Curve</h3>
+                        <div class="chart-container" id="pr-curve" role="img" aria-label="Precision-Recall curve">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📊</div>
+                                <p class="placeholder-text">Load data to view PR curve</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Score Distribution Section -->
+            <section class="visualization-section" aria-labelledby="distribution-title">
+                <h2 id="distribution-title" class="section-title">Score Distribution Analysis</h2>
+                <div class="chart-grid">
+                    <!-- Score Distribution Overlap -->
+                    <article class="chart-card" aria-labelledby="score-dist-title">
+                        <h3 id="score-dist-title" class="chart-title">Prediction Score Distribution</h3>
+                        <div class="chart-container" id="score-distribution" role="img" aria-label="Score distribution by disease status">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📉</div>
+                                <p class="placeholder-text">Load data to view score distribution</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Calibration Plot -->
+                    <article class="chart-card" aria-labelledby="calibration-title">
+                        <h3 id="calibration-title" class="chart-title">Calibration Plot</h3>
+                        <div class="chart-container" id="calibration-plot" role="img" aria-label="Model calibration plot">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🎚️</div>
+                                <p class="placeholder-text">Load data to view calibration</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Interactive Threshold Explorer -->
+            <section class="visualization-section" aria-labelledby="threshold-title">
+                <h2 id="threshold-title" class="section-title">Interactive Threshold Explorer</h2>
+                <article class="chart-card full-width">
+                    <div class="threshold-explorer" id="threshold-explorer">
+                        <div class="threshold-controls">
+                            <label for="threshold-slider" class="threshold-label">Classification Threshold: <span id="threshold-value">0.50</span></label>
+                            <input type="range" id="threshold-slider" class="threshold-slider" min="0" max="100" value="50" step="1">
+                        </div>
+                        <div class="threshold-metrics" id="threshold-metrics">
+                            <!-- Metrics will be rendered here -->
+                        </div>
+                        <div class="threshold-matrix" id="threshold-matrix">
+                            <!-- Confusion matrix will be rendered here -->
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Decision Curve Analysis -->
+            <section class="adverse-events-section" aria-labelledby="dca-title">
+                <h2 id="dca-title" class="section-title">Decision Curve Analysis</h2>
+                <article class="chart-card ae-chart-card">
+                    <div class="chart-container" id="decision-curve" role="img" aria-label="Decision curve analysis showing clinical utility">
+                        <div class="chart-placeholder">
+                            <div class="placeholder-icon">⚖️</div>
+                            <p class="placeholder-text">Load data to view decision curve analysis</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            </div>
+            <!-- End Study 2 -->
+
+            <!-- Study 3: Oncology Survival Study -->
+            <div id="study-3" class="study-content" role="tabpanel" aria-labelledby="tab-3" tabindex="0">
+
+            <div class="study-header">
+                <div>
+                    <h1 class="study-eyebrow">Study 03</h1>
+                    <p class="study-headline">Oncology Survival Study</p>
+                </div>
+            </div>
+
+            <!-- Patient Characteristics -->
+            <section class="summary-section" aria-labelledby="survival-demographics-title">
+                <h2 id="survival-demographics-title" class="section-title visually-hidden">Patient Characteristics</h2>
+                <div class="kpi-cards" id="survival-demographics">
+                    <!-- Demographics cards populated by JS -->
+                </div>
+            </section>
+
+            <!-- RMST Analysis Section -->
+            <section class="summary-section" aria-labelledby="rmst-title">
+                <h2 id="rmst-title" class="section-title visually-hidden">Restricted Mean Survival Time</h2>
+                <div class="kpi-cards">
+                    <!-- RMST Card -->
+                    <article class="kpi-card" id="stat-rmst">
+                        <div class="kpi-icon" aria-hidden="true">⏱️</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">RMST Difference (24 months)</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="RMST detail">--</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Survival Analysis Section -->
+            <section class="visualization-section" aria-labelledby="survival-title">
+                <h2 id="survival-title" class="section-title">Survival Analysis</h2>
+                <div class="chart-grid">
+                    <!-- Kaplan-Meier Curve -->
+                    <article class="chart-card" aria-labelledby="km-curve-title">
+                        <h3 id="km-curve-title" class="chart-title">Kaplan-Meier Survival Curves</h3>
+                        <div class="chart-container" id="km-curve" role="img" aria-label="Kaplan-Meier survival curves by treatment arm">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📈</div>
+                                <p class="placeholder-text">Load data to view survival curves</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Survival Summary -->
+                    <article class="chart-card" aria-labelledby="survival-summary-title">
+                        <h3 id="survival-summary-title" class="chart-title">Median Survival by Treatment</h3>
+                        <div class="chart-container" id="survival-summary" role="img" aria-label="Median survival comparison">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📊</div>
+                                <p class="placeholder-text">Load data to view survival summary</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Hazard Ratio Forest Plot -->
+            <section class="visualization-section" aria-labelledby="hr-forest-title">
+                <h2 id="hr-forest-title" class="section-title">Subgroup Analysis</h2>
+                <div class="chart-grid">
+                    <article class="chart-card full-width" aria-labelledby="hr-plot-title">
+                        <h3 id="hr-plot-title" class="chart-title">Hazard Ratio Forest Plot</h3>
+                        <div class="chart-container" id="hr-forest-plot" role="img" aria-label="Hazard ratio forest plot by subgroup">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🌲</div>
+                                <p class="placeholder-text">Load data to view hazard ratio analysis</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Events Summary -->
+            <section class="adverse-events-section" aria-labelledby="events-title">
+                <h2 id="events-title" class="section-title">Event Summary</h2>
+                <article class="chart-card ae-chart-card">
+                    <div class="chart-container" id="events-summary" role="img" aria-label="Events and censoring summary">
+                        <div class="chart-placeholder">
+                            <div class="placeholder-icon">⚠️</div>
+                            <p class="placeholder-text">Load data to view event summary</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Patient Swimmer Plot -->
+            <section class="visualization-section" aria-labelledby="swimmer-title">
+                <h2 id="swimmer-title" class="section-title">Patient Timeline Analysis</h2>
+                <div class="chart-grid">
+                    <article class="chart-card full-width" aria-labelledby="survival-swimmer-title">
+                        <h3 id="survival-swimmer-title" class="chart-title">Patient Swimmer Plot</h3>
+                        <div class="chart-container" id="survival-swimmer-plot" role="img" aria-label="Swimmer plot showing individual patient timelines by treatment arm">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🏊</div>
+                                <p class="placeholder-text">Load data to view patient timelines</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Cumulative Events Analysis -->
+            <section class="visualization-section" aria-labelledby="cumulative-events-title">
+                <h2 id="cumulative-events-title" class="section-title">Event Accumulation Over Time</h2>
+                <div class="chart-grid">
+                    <article class="chart-card full-width" aria-labelledby="cumulative-events-chart-title">
+                        <h3 id="cumulative-events-chart-title" class="chart-title">Cumulative Events Curve</h3>
+                        <div class="chart-container" id="cumulative-events-chart" role="img" aria-label="Cumulative events curve showing event accumulation over time by treatment arm">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">📈</div>
+                                <p class="placeholder-text">Load data to view cumulative events</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            </div>
+            <!-- End Study 3 -->
+
+            <!-- Study 4: Advanced Analytics Showcase -->
+            <div id="study-4" class="study-content" role="tabpanel" aria-labelledby="tab-4" tabindex="0">
+
+            <div class="study-header">
+                <div>
+                    <h1 class="study-eyebrow">Study 04</h1>
+                    <p class="study-headline">Advanced Analytics Showcase</p>
+                </div>
+            </div>
+
+            <!-- Executive KPIs Section -->
+            <section class="summary-section" aria-labelledby="advanced-kpi-title">
+                <h2 id="advanced-kpi-title" class="section-title visually-hidden">Executive KPIs</h2>
+                <div class="kpi-cards" id="advanced-demographics">
+
+                    <!-- KPI Card 1: Total Enrolled -->
+                    <article class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">👥</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Total Enrolled</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Enrollment indicator">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 2: Response Rate -->
+                    <article class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">🎯</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Response Rate</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Response percentage">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 3: Safety Signal -->
+                    <article class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">🛡️</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Safety Signal</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Safety status">--</span>
+                        </div>
+                    </article>
+
+                    <!-- KPI Card 4: Study Progress -->
+                    <article class="kpi-card">
+                        <div class="kpi-icon" aria-hidden="true">⏱️</div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-label">Study Progress</h3>
+                            <p class="kpi-value" data-value="0">--</p>
+                            <span class="kpi-trend" aria-label="Progress percentage">--</span>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Visualization Grid Section (2x2) -->
+            <section class="visualization-section" aria-labelledby="advanced-viz-title">
+                <h2 id="advanced-viz-title" class="section-title">Patient Response Analysis</h2>
+                <div class="chart-grid">
+
+                    <!-- Swimmer Plot -->
+                    <article class="chart-card" aria-labelledby="swimmer-plot-title">
+                        <h3 id="swimmer-plot-title" class="chart-title">Individual Patient Journeys</h3>
+                        <div class="chart-container" id="swimmer-plot" role="img" aria-label="Swimmer plot showing individual patient treatment journeys">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🏊</div>
+                                <p class="placeholder-text">Load data to view patient journeys</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Waterfall Plot -->
+                    <article class="chart-card" aria-labelledby="advanced-waterfall-title">
+                        <h3 id="advanced-waterfall-title" class="chart-title">Best Tumor Response</h3>
+                        <div class="chart-container" id="advanced-waterfall" role="img" aria-label="Waterfall plot showing best tumor response per patient">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">💧</div>
+                                <p class="placeholder-text">Load data to view tumor response</p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Patient Flow Section -->
+            <section class="visualization-section" aria-labelledby="patient-flow-title">
+                <h2 id="patient-flow-title" class="section-title">Patient Flow Analysis</h2>
+                <div class="chart-grid">
+
+                    <!-- Sankey Diagram -->
+                    <article class="chart-card full-width" aria-labelledby="sankey-diagram-title">
+                        <h3 id="sankey-diagram-title" class="chart-title">Patient Flow from Screening to Outcome</h3>
+                        <div class="chart-container" id="sankey-diagram" role="img" aria-label="Sankey diagram showing patient flow through study stages">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🔀</div>
+                                <p class="placeholder-text">Load data to view patient flow</p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Biomarker Analysis Section (2x2) -->
+            <section class="visualization-section" aria-labelledby="biomarker-title">
+                <h2 id="biomarker-title" class="section-title">Biomarker Analysis</h2>
+                <div class="chart-grid">
+
+                    <!-- Volcano Plot -->
+                    <article class="chart-card" aria-labelledby="volcano-plot-title">
+                        <h3 id="volcano-plot-title" class="chart-title">Biomarker Significance</h3>
+                        <div class="chart-container" id="volcano-plot" role="img" aria-label="Volcano plot showing biomarker significance and fold change">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🌋</div>
+                                <p class="placeholder-text">Load data to view biomarker analysis</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Ridgeline Plot -->
+                    <article class="chart-card" aria-labelledby="ridgeline-plot-title">
+                        <h3 id="ridgeline-plot-title" class="chart-title">Tumor Size Distribution Over Time</h3>
+                        <div class="chart-container" id="ridgeline-plot" role="img" aria-label="Ridgeline plot showing tumor size distributions over time">
+                            <div class="chart-placeholder">
+                                <div class="placeholder-icon">🏔️</div>
+                                <p class="placeholder-text">Load data to view distributions</p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Safety Analysis Section -->
+            <section class="adverse-events-section" aria-labelledby="ae-network-title">
+                <h2 id="ae-network-title" class="section-title">Safety Analysis</h2>
+                <article class="chart-card ae-chart-card">
+                    <h3 id="chord-diagram-title" class="chart-title">Adverse Event Co-occurrence Network</h3>
+                    <div class="chart-container" id="chord-diagram" role="img" aria-label="Chord diagram showing adverse event co-occurrence patterns">
+                        <div class="chart-placeholder">
+                            <div class="placeholder-icon">🔗</div>
+                            <p class="placeholder-text">Load data to view adverse event network</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            </div>
+            <!-- End Study 4 -->
+
+        </main>
+
+        <!-- Footer Section -->
+        <footer class="dashboard-footer" role="contentinfo">
+            <div class="footer-content">
+                <dl class="footer-meta">
+                    <div class="footer-meta-item">
+                        <dt>Protocol</dt>
+                        <dd id="protocol-id">—</dd>
+                    </div>
+                    <div class="footer-meta-item">
+                        <dt>Phase</dt>
+                        <dd id="trial-phase">—</dd>
+                    </div>
+                    <div class="footer-meta-item">
+                        <dt>Status</dt>
+                        <dd id="trial-status">—</dd>
+                    </div>
+                    <div class="footer-meta-item">
+                        <dt>Data lock</dt>
+                        <dd id="data-lock-date">—</dd>
+                    </div>
+                </dl>
+                <p class="footer-copyright">
+                    &copy; 2026 Clinical Trial Analytics Platform · For investigational use
+                </p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" aria-live="polite" aria-busy="false" hidden>
+        <div class="loading-spinner" role="status">
+            <div class="spinner"></div>
+            <p class="loading-text">Loading clinical trial data...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules (deferred: execute in order after the CDN libs,
+         before DOMContentLoaded) -->
+    <script defer src="js/stats.js"></script>
+    <script defer src="js/data-loader.js"></script>
+    <script defer src="js/charts.js"></script>
+    <script defer src="js/main.js"></script>
+</body>
+</html>

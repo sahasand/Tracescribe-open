@@ -1,0 +1,13 @@
+patient_id,time_months,event,treatment_arm,age,stage,ecog,biomarker_positive
+S001,24,0,Arm_A,62,III,1,1
+S002,18,1,Arm_A,55,II,0,0
+S003,12,1,Arm_B,68,IV,2,1
+S004,36,0,Arm_A,49,II,0,1
+S005,8,1,Arm_B,71,IV,2,0
+S006,28,0,Arm_A,58,III,1,1
+S007,15,1,Arm_B,64,III,1,0
+S008,32,0,Arm_A,52,II,0,1
+S009,6,1,Arm_B,73,IV,2,0
+S010,22,1,Arm_A,60,III,1,1
+S011,30,0,Arm_A,45,II,0,1
+S012,10,1,Arm_B,67,IV,2,0
