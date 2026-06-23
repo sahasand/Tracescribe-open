@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eCTD Publishing - CSR Publishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 45%); --info:hsl(199 89% 48%);
+    --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+    --shadow-lg:0 10px 15px -3px rgb(0 0 0/.1),0 4px 6px -4px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1320px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;color:var(--primary);text-transform:uppercase}
+  .pill{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .grid{max-width:1320px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+  .col-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:78px}
+  @media(max-width:920px){.col-side{position:static}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .card h2{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-fg);padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card h2 svg{width:15px;height:15px;color:var(--primary)}
+  .card .body{padding:14px 16px}
+  .field{padding:7px 0;border-bottom:1px dashed var(--border)}
+  .field:last-child{border-bottom:0}
+  .field .k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut-fg)}
+  .field .v{font-size:13px;font-weight:600;margin-top:1px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:var(--font);font-weight:700;font-size:14px;color:#fff;background:var(--primary);border:0;border-radius:9px;padding:12px;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px -6px hsl(168 76% 32%/.5)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn svg{width:16px;height:16px}
+  .pipe{display:flex;flex-direction:column;gap:2px}
+  .step{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--mut-fg);padding:5px 0;transition:color .3s}
+  .step .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center;transition:all .3s}
+  .step .dot svg{width:9px;height:9px;color:#fff;opacity:0}
+  .step.active{color:var(--fg);font-weight:600}
+  .step.active .dot{border-color:var(--primary);animation:spin 1s linear infinite;border-top-color:transparent}
+  .step.done{color:var(--fg)}
+  .step.done .dot{background:var(--primary);border-color:var(--primary);animation:none}
+  .step.done .dot svg{opacity:1}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vsum{display:flex;gap:8px}
+  .vstat{flex:1;text-align:center;border:1px solid var(--border);border-radius:10px;padding:9px 4px}
+  .vstat .num{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1}
+  .vstat .lab{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut-fg);margin-top:3px}
+  .vstat.pass .num{color:var(--success)} .vstat.warn .num{color:var(--warning)} .vstat.err .num{color:var(--fg)}
+  .rulecat{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 0;opacity:.4;transition:opacity .35s}
+  .rulecat.on{opacity:1}
+  .rulecat .ic{width:15px;height:15px;border-radius:50%;flex:none;background:var(--muted);display:flex;align-items:center;justify-content:center;transition:background .35s}
+  .rulecat.on .ic{background:var(--success)}
+  .rulecat .ic svg{width:9px;height:9px;color:#fff}
+  .rulecat .meta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mut-fg)}
+  .doc-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .doc-head .t{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mut-fg)}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:600;padding:4px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .badge.ok{background:hsl(160 84% 36%/.12);color:var(--success)}
+  .badge.live{background:hsl(199 89% 48%/.12);color:var(--info)}
+  .paper{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);padding:18px clamp(14px,2.5vw,24px) 24px;min-height:60vh}
+  /* tree */
+  .mod{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.04em;padding:8px 10px;border-radius:8px;background:var(--muted);color:var(--fg);margin:10px 0 4px;display:flex;align-items:center;gap:8px}
+  .mod .c{color:var(--primary)}
+  .mod.sub{background:transparent;font-size:11px;color:var(--mut-fg);padding:8px 10px 2px;margin-top:8px}
+  .leaf{display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px;opacity:0;transform:translateY(6px);animation:reveal .4s ease-out forwards}
+  @keyframes reveal{to{opacity:1;transform:none}}
+  .leaf.body-doc{background:var(--primary-soft);border-radius:8px;border-bottom:0;margin:2px 0}
+  .leaf .code{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--primary)}
+  .leaf .title{font-weight:500}
+  .leaf .title .req{font-family:var(--mono);font-size:9px;color:var(--accent);margin-left:6px;letter-spacing:.05em}
+  .leaf .meta{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-width:0}
+  .type{font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:var(--muted);color:var(--mut-fg)}
+  .sum{font-family:var(--mono);font-size:10px;color:var(--mut-fg)}
+  .ck{font-family:var(--mono);font-size:10px;color:var(--mut-fg);opacity:0;transition:opacity .4s}
+  .ck.on{opacity:1}
+  .vst{width:16px;height:16px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:var(--muted);transition:background .3s}
+  .vst svg{width:9px;height:9px;color:#fff;opacity:0;transition:opacity .3s}
+  .vst.pass{background:var(--success)} .vst.warn{background:var(--warning)}
+  .vst.on svg{opacity:1}
+  .xmlbox{margin-top:16px;background:hsl(222 47% 11%);border-radius:12px;overflow:hidden;opacity:0;transition:opacity .5s}
+  .xmlbox.on{opacity:1}
+  .xmlbox .bar{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:hsl(215 20% 65%);padding:9px 14px;border-bottom:1px solid hsl(217 33% 20%);display:flex;align-items:center;gap:7px}
+  .xmlbox .bar svg{width:13px;height:13px;color:var(--primary)}
+  .xmlbox pre{margin:0;padding:14px;overflow-x:auto;font-family:var(--mono);font-size:11px;line-height:1.6;color:hsl(210 40% 90%)}
+  .xmlbox .tag{color:hsl(199 80% 68%)} .xmlbox .at{color:hsl(38 90% 70%)} .xmlbox .vl{color:hsl(160 60% 65%)}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:56vh;color:var(--mut-fg);padding:30px}
+  .empty svg{width:46px;height:46px;color:var(--border);margin-bottom:14px}
+  .empty h3{font-size:18px;font-weight:700;color:var(--fg);margin-bottom:5px}
+  .empty p{font-size:14px;max-width:340px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+  <span class="brand">TraceScribe<small>eCTD Publishing</small></span>
+  <span class="pill">CSR - Study XYZ-301</span>
+</div></header>
+
+<div class="grid">
+  <div class="col-side">
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Submission</h2>
+      <div class="body">
+        <div class="field"><div class="k">Study</div><div class="v">XYZ-301 - Phase 3 HFrEF (XYZ-2000)</div></div>
+        <div class="field"><div class="k">Sponsor</div><div class="v">Cardio Therapeutics, Inc.</div></div>
+        <div class="field"><div class="k">eCTD module</div><div class="v">5.3.5.1 Clinical Study Report</div></div>
+        <div class="field"><div class="k">Sequence · Region</div><div class="v">0000 · FDA</div></div>
+        <div class="field"><div class="k">Documents</div><div class="v">19 (ICH E3 §16 + CSR body)</div></div>
+      </div>
+    </div>
+
+    <button class="btn" id="buildBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+      Build eCTD package
+    </button>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg>Publishing pipeline</h2>
+      <div class="body"><div class="pipe" id="pipe"></div></div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Validation</h2>
+      <div class="body">
+        <div class="vsum" style="margin-bottom:12px">
+          <div class="vstat pass"><div class="num" id="vPass">0</div><div class="lab">Passed</div></div>
+          <div class="vstat warn"><div class="num" id="vWarn">0</div><div class="lab">Warnings</div></div>
+          <div class="vstat err"><div class="num" id="vErr">0</div><div class="lab">Errors</div></div>
+        </div>
+        <div id="rulecats"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg>Package manifest</h2>
+      <div class="body">
+        <div class="field"><div class="k">Leaves</div><div class="v" id="mLeaves">-</div></div>
+        <div class="field"><div class="k">Total size</div><div class="v" id="mSize">-</div></div>
+        <div class="field"><div class="k">Checksum</div><div class="v" id="mCk">MD5 (per leaf)</div></div>
+        <div class="field"><div class="k">Backbone</div><div class="v" id="mBack">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="doc-head">
+      <span class="t">eCTD package</span>
+      <span id="docBadges"></span>
+    </div>
+    <div class="paper">
+      <div class="empty" id="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+        <h3>Ready to publish</h3>
+        <p>Click <b>Build eCTD package</b> to validate the 19 CSR documents, compute checksums, and assemble a submission-ready eCTD package.</p>
+      </div>
+      <div class="hidden" id="tree"></div>
+      <div class="xmlbox" id="xmlbox">
+        <div class="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>index.xml (eCTD backbone)</div>
+        <pre id="xml"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ICH E3 Module 16 sections (from CSR Publishing standard-sections.ts) + the CSR body.
+   val: validation outcome we surface in the demo (pass / warn). 0 errors -> submission-ready. */
+const DOCS = [
+  {code:"CSR",   title:"Clinical Study Report (Body)", type:"PDF", req:true, body:true, val:"pass"},
+  {group:"16.1 Study Information"},
+  {code:"16.1.1", title:"Study Protocol and Amendments", type:"PDF", req:true, val:"pass"},
+  {code:"16.1.2", title:"Sample Case Report Form", type:"PDF", req:true, val:"pass"},
+  {code:"16.1.3", title:"Informed Consent Form", type:"PDF", req:true, val:"pass"},
+  {code:"16.1.4", title:"List of Investigators", type:"PDF", req:false, val:"warn", warn:"ectd-bookmarks-exist: no navigation bookmarks"},
+  {code:"16.1.5", title:"Signatures of Principal Investigators", type:"PDF", req:false, val:"pass"},
+  {code:"16.1.6", title:"Listing of Patients Receiving Test Drug", type:"LISTING", req:false, val:"pass"},
+  {code:"16.1.7", title:"Randomization Scheme", type:"PDF", req:false, val:"pass"},
+  {code:"16.1.8", title:"Audit Certificates", type:"PDF", req:false, val:"pass"},
+  {code:"16.1.9", title:"Statistical Analysis Plan", type:"PDF", req:true, val:"pass"},
+  {group:"16.2 Patient Data Listings"},
+  {code:"16.2.1", title:"Patient Demographics", type:"DATASET", req:true, val:"pass"},
+  {code:"16.2.2", title:"Protocol Deviations", type:"LISTING", req:false, val:"pass"},
+  {code:"16.2.3", title:"Patients Excluded from Analysis", type:"LISTING", req:false, val:"pass"},
+  {code:"16.2.4", title:"Demographic Data Listings", type:"LISTING", req:false, val:"warn", warn:"ectd-page-size: non-standard page size"},
+  {code:"16.2.5", title:"Efficacy Data Listings", type:"LISTING", req:true, val:"pass"},
+  {code:"16.2.6", title:"Safety Data Listings", type:"LISTING", req:true, val:"pass"},
+  {code:"16.2.7", title:"Adverse Events Listings", type:"LISTING", req:true, val:"pass"},
+  {group:"16.3 Publications"},
+  {code:"16.3.1", title:"Publications Based on Study", type:"PDF", req:false, val:"warn", warn:"pdfa-compliance: not PDF/A-2b"},
+  {code:"16.3.2", title:"Important Publications Referenced", type:"PDF", req:false, val:"pass"}
+];
+const RULECATS = [
+  {n:"PDF compliance", meta:"6 rules"},
+  {n:"eCTD structure", meta:"5 rules"},
+  {n:"File naming", meta:"§16 codes"},
+  {n:"Checksums (MD5)", meta:"per leaf"}
+];
+const PIPE = [
+  {l:"Validate documents (PDF + eCTD rules)", ms:1400},
+  {l:"Compute MD5 checksums", ms:900},
+  {l:"Generate eCTD backbone (index.xml)", ms:800},
+  {l:"Assemble Module 5 structure", ms:700},
+  {l:"Package submission (.zip)", ms:700}
+];
+
+const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const CHK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+const leaves = DOCS.filter(d=>d.code);
+const leafId = c => "leaf-"+c.toLowerCase().replace(/\./g,"-");
+// deterministic 32-char hex "checksum" derived from the code (looks like MD5; not real)
+function md5ish(seed){let h=2166136261>>>0,out="";for(let k=0;k<8;k++){for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}h=Math.imul(h^k,16777619)>>>0;out+=("00000000"+h.toString(16)).slice(-8);}return out.slice(0,32);}
+function sizeFor(d){const base={PDF:1.8,LISTING:0.6,DATASET:1.1}[d.type]||1;const n=parseInt(md5ish(d.code).slice(0,4),16)/65535;return (base+n*2.4);}
+
+// build scaffolding
+PIPE.forEach((s,i)=>{const e=ce("div","step",`<span class="dot">${CHK}</span><span>${s.l}</span>`);e.id="st"+i;$("#pipe").appendChild(e);});
+RULECATS.forEach((r,i)=>{const e=ce("div","rulecat",`<span class="ic">${CHK}</span><span>${r.n}</span><span class="meta">${r.meta}</span>`);e.id="rc"+i;$("#rulecats").appendChild(e);});
+
+function moduleHeader(){
+  const h=ce("div");
+  h.innerHTML=`<div class="mod"><span class="c">m5</span> Module 5 - Clinical Study Reports</div>
+    <div class="mod" style="margin-left:14px"><span class="c">5.3.5</span> Reports of Efficacy and Safety Studies</div>
+    <div class="mod" style="margin-left:28px"><span class="c">5.3.5.1</span> Study Report: XYZ-301</div>`;
+  return h;
+}
+function leafRow(d){
+  const e=ce("div","leaf"+(d.body?" body-doc":""));
+  const ck=md5ish(d.code), sz=sizeFor(d).toFixed(1);
+  e.innerHTML=`<span class="code">${d.body?"5.3.5.1":d.code}</span>
+    <span class="title">${d.title}${d.req?'<span class="req">REQ</span>':''}</span>
+    <span class="meta">
+      <span class="ck">${ck.slice(0,10)}…</span>
+      <span class="type">${d.type}</span>
+      <span class="sum">${sz} MB</span>
+      <span class="vst ${d.val}" title="${d.warn||'all checks passed'}">${CHK}</span>
+    </span>`;
+  return e;
+}
+
+let running=false;
+function reset(){
+  $("#tree").classList.add("hidden"); $("#tree").innerHTML=""; $("#empty").classList.remove("hidden");
+  $("#xmlbox").classList.remove("on"); $("#xml").innerHTML=""; $("#docBadges").innerHTML="";
+  document.querySelectorAll(".step").forEach(s=>s.className="step");
+  document.querySelectorAll(".rulecat").forEach(c=>c.classList.remove("on"));
+  $("#vPass").textContent="0"; $("#vWarn").textContent="0"; $("#vErr").textContent="0";
+  ["mLeaves","mSize","mBack"].forEach(id=>$("#"+id).textContent="-");
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+function buildXml(){
+  const ex=leaves.slice(0,4).map(d=>{
+    const href = d.body ? "m5/53-clin-stud-rep/5351-xyz-301/csr-body.pdf"
+      : "m5/53-clin-stud-rep/5351-xyz-301/16/"+d.code.replace(/\./g,"-")+"-"+d.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,28)+".pdf";
+    const id = d.body ? "leaf-csr-body" : leafId(d.code);
+    return `  <span class="tag">&lt;leaf</span> <span class="at">ID</span>=<span class="vl">"${id}"</span> <span class="at">operation</span>=<span class="vl">"new"</span>\n`
+      +`        <span class="at">checksum-type</span>=<span class="vl">"md5"</span> <span class="at">checksum</span>=<span class="vl">"${md5ish(d.code)}"</span>\n`
+      +`        <span class="at">xlink:href</span>=<span class="vl">"${href}"</span><span class="tag">&gt;</span>\n`
+      +`    <span class="tag">&lt;title&gt;</span>${d.title}<span class="tag">&lt;/title&gt;</span>\n`
+      +`  <span class="tag">&lt;/leaf&gt;</span>`;
+  }).join("\n");
+  return `<span class="tag">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>\n`
+    +`<span class="tag">&lt;ectd:ectd</span> <span class="at">xmlns:ectd</span>=<span class="vl">"http://www.ich.org/ectd"</span> <span class="at">xmlns:xlink</span>=<span class="vl">"http://www.w3.org/1999/xlink"</span><span class="tag">&gt;</span>\n`
+    +`<span class="tag">&lt;m5-3-5-rep-effic-safety-stud&gt;</span>\n`+ex+`\n    <span style="color:hsl(215 20% 55%)">… 15 more leaves …</span>\n`
+    +`<span class="tag">&lt;/m5-3-5-rep-effic-safety-stud&gt;</span>\n<span class="tag">&lt;/ectd:ectd&gt;</span>`;
+}
+
+async function build(instant){
+  if(running) return; running=true; reset();
+  $("#buildBtn").disabled=true; $("#empty").classList.add("hidden");
+  $("#tree").classList.remove("hidden"); $("#tree").appendChild(moduleHeader());
+  $("#docBadges").innerHTML=`<span class="badge live">● publishing…</span>`;
+
+  // render the tree rows (groups + leaves)
+  const rowEls={};
+  for(const d of DOCS){
+    if(d.group){ $("#tree").appendChild(ce("div","mod sub",d.group)); continue; }
+    const r=leafRow(d); rowEls[d.code]=r; $("#tree").appendChild(r);
+    if(!instant) await wait(70);
+  }
+
+  let pass=0,warn=0;
+  for(let i=0;i<PIPE.length;i++){
+    const st=$("#st"+i); st.classList.add("active");
+    if(i===0){ // validate: tick statuses + tally
+      for(const d of leaves){
+        const v=rowEls[d.code].querySelector(".vst"); v.classList.add("on");
+        if(d.val==="warn"){warn++;} else {pass++;}
+        $("#vPass").textContent=pass; $("#vWarn").textContent=warn;
+        if(!instant) await wait(90);
+      }
+      RULECATS.forEach((_,k)=>$("#rc"+k).classList.add("on"));
+    } else if(i===1){ // checksums reveal
+      leaves.forEach(d=>rowEls[d.code].querySelector(".ck").classList.add("on"));
+      $("#mLeaves").textContent = leaves.length+" leaves";
+      $("#mSize").textContent = leaves.reduce((a,d)=>a+sizeFor(d),0).toFixed(1)+" MB";
+      if(!instant) await wait(PIPE[i].ms);
+    } else if(i===2){ $("#xml").innerHTML=buildXml(); $("#xmlbox").classList.add("on"); $("#mBack").textContent="index.xml + regional"; if(!instant) await wait(PIPE[i].ms); }
+    else { if(!instant) await wait(PIPE[i].ms); }
+    st.classList.remove("active"); st.classList.add("done");
+  }
+  $("#docBadges").innerHTML = `<span class="badge ok">${CHK} eCTD valid</span> <span class="badge ok">0 errors · ${warn} warnings</span> <span class="badge ok">submission-ready</span>`;
+  $("#buildBtn").innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></svg>Rebuild package`;
+  $("#buildBtn").disabled=false; running=false;
+}
+$("#buildBtn").addEventListener("click",()=>build(false));
+
+const params=new URLSearchParams(location.search);
+const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(params.get("still")==="1"||reduce){ build(true); } else { setTimeout(()=>build(false),700); }
+</script>
+</body>
+</html>
