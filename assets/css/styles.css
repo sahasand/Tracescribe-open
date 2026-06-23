@@ -89,6 +89,7 @@ a{color:inherit;text-decoration:none}
 .btn-primary:hover{transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--fg);border-color:var(--border)}
 .btn-ghost:hover{background:var(--muted)}
+.btn:focus-visible,.bento:focus-visible,.theme-toggle:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 
 /* ===== Badges / status ===== */
 .badge-row{display:flex;flex-wrap:wrap;gap:8px}

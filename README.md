@@ -18,6 +18,7 @@ server requirement.)
 - `demos/` — the bundled, self-contained live demos (copied in by `sync-demos.sh`)
 - `assets/` — design system (`css`, `js`), bundled `fonts`, and `img` screenshots
 - `mydesign.md` — the TraceScribe design system this site is built on
+- `docs/` — the design spec and implementation plan
 
 ## Updating the demos
 
