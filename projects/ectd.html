@@ -24,7 +24,7 @@
     <section class="project-head">
       <span class="eyebrow">REGULATORY PUBLISHING · CSR</span>
       <h1>CSR eCTD Publishing</h1>
-      <p class="lede">Assemble a clinical study report's documents into a validated, submission-ready eCTD package. This is the CSR Publishing tool, recreated here as a standalone, in-browser demo.</p>
+      <p class="lede">An interactive eCTD submission builder: configure the study, region, and documents, watch the package tree and validation update live, then copy a build-ready prompt. Based on the CSR Publishing tool, recreated here as a standalone playground.</p>
     </section>
 
     <div class="detail-actions">
@@ -40,9 +40,9 @@
       <p>Organizes a clinical study report's documents into the ICH E3 / eCTD Module 5 structure, validates them against PDF and eCTD rules, computes a checksum per document, and generates the eCTD backbone (index.xml) for a regulatory submission.</p>
       <h2>How it works</h2>
       <ul>
-        <li>Places each document into the eCTD tree (Module 5.3.5.1) by its ICH E3 Section 16 code.</li>
-        <li>Validates against PDF-compliance and eCTD-specific rules (file naming, bookmark depth, PDF/A, page size), flagged by severity (error or warning).</li>
-        <li>Computes an MD5 checksum per leaf and writes the eCTD backbone XML, yielding a submission-ready package.</li>
+        <li>Toggle which CSR documents (ICH E3 Section 16) to include, and set the region, sequence, and compliance options.</li>
+        <li>The eCTD tree (Module 5.3.5.1), per-leaf checksums, and validation (PDF and eCTD rules, severity-graded) update live as you configure.</li>
+        <li>Copy a build-ready prompt that captures the whole submission spec, ready to paste back into the tool or an assistant.</li>
       </ul>
       <div class="badge-row" style="margin-top:8px">
         <span class="badge">eCTD</span><span class="badge">ICH E3</span>
