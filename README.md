@@ -8,17 +8,17 @@ A static showcase of clinical-trial software, each project running live in your 
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
-(Opening `index.html` directly via `file://` also works — there is no build step and no
+(Opening `index.html` directly via `file://` also works - there is no build step and no
 server requirement.)
 
 ## Structure
 
-- `index.html` — landing page (hero + project cards)
-- `projects/*.html` — one detail page per project, each with a "Launch live demo" button
-- `demos/` — the bundled, self-contained live demos (copied in by `sync-demos.sh`)
-- `assets/` — design system (`css`, `js`), bundled `fonts`, and `img` screenshots
-- `mydesign.md` — the TraceScribe design system this site is built on
-- `docs/` — the design spec and implementation plan
+- `index.html` - landing page (hero + project cards)
+- `projects/*.html` - one detail page per project, each with a "Launch live demo" button
+- `demos/` - the bundled, self-contained live demos (copied in by `sync-demos.sh`)
+- `assets/` - design system (`css`, `js`), bundled `fonts`, and `img` screenshots
+- `mydesign.md` - the TraceScribe design system this site is built on
+- `docs/` - the design spec and implementation plan
 
 ## Updating the demos
 

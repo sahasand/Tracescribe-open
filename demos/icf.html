@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ICF Generation — TraceScribe</title>
+<title>ICF Generation - TraceScribe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -166,7 +166,7 @@
     <div class="card" id="qualCard">
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-4 4 3 5-6"/></svg>Readability &amp; quality</h2>
       <div class="body">
-        <div class="meter-row"><span>Reading level (Flesch-Kincaid)</span><span id="glabel">—</span></div>
+        <div class="meter-row"><span>Reading level (Flesch-Kincaid)</span><span id="glabel">-</span></div>
         <div class="meter"><span id="gbar"></span></div>
         <div class="meter-row" style="margin-bottom:10px"><span>Target ≤ Grade 8</span><span id="gpass"></span></div>
         <div id="plain"></div>
@@ -191,7 +191,7 @@
     </div>
     <div class="doc-foot hidden" id="docFoot">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <span><b style="color:hsl(38 70% 32%)">Highlighted tokens</b> like <span class="ph">[SITE NAME]</span> are intentionally left as site-specific placeholders for each investigator's site to complete — exactly as the icf-builder skill specifies. In the full TraceScribe app this renders to a formatted <span class="mono">.docx</span> and can be translated into 10 languages.</span>
+      <span><b style="color:hsl(38 70% 32%)">Highlighted tokens</b> like <span class="ph">[SITE NAME]</span> are intentionally left as site-specific placeholders for each investigator's site to complete - exactly as the icf-builder skill specifies. In the full TraceScribe app this renders to a formatted <span class="mono">.docx</span> and can be translated into 10 languages.</span>
     </div>
   </div>
 </div>
@@ -202,17 +202,17 @@ const PH = s => `<span class="ph">${s}</span>`;
 const PL = (s,t)=>`<span class="pl" title="plain-language for &quot;${t}&quot;">${s}</span>`;
 
 const SECTIONS = [
- {t:"Invitation to participate", h:`<p>You are being invited to take part in a research study. This form provides important information to help you decide whether to participate.</p><p>Please read this form carefully. Ask questions about anything that is not clear. You can take this form home to think about it and discuss it with family, friends, or your doctor before deciding. Your participation is voluntary — you do not have to join this study if you do not want to.</p>`},
+ {t:"Invitation to participate", h:`<p>You are being invited to take part in a research study. This form provides important information to help you decide whether to participate.</p><p>Please read this form carefully. Ask questions about anything that is not clear. You can take this form home to think about it and discuss it with family, friends, or your doctor before deciding. Your participation is voluntary - you do not have to join this study if you do not want to.</p>`},
  {t:"Why is this study being done?", h:`<p>Heart failure is a condition where your heart does not pump blood as well as it should. This can cause shortness of breath, tiredness, and swelling in your legs. Many people continue to have symptoms even when taking their current medications.</p><p>XYZ-2000 is an experimental drug that may help the heart pump more effectively. This is a ${PL("Phase 3","phase 3")} study, which means the drug has been tested in earlier studies and researchers now want to confirm whether it works and is safe in a larger group of people.</p>`},
  {t:"Why have I been asked to take part?", h:`<p>You are being asked to participate because you have heart failure with reduced ejection fraction (HFrEF) and meet the study's entry criteria, including:</p><ul><li>You are between 18 and 85 years old</li><li>Your heart's pumping ability (ejection fraction) is 40% or less</li><li>You have symptoms of heart failure (NYHA Class II–IV)</li><li>You have been on stable heart failure medications for at least 4 weeks</li></ul>`},
  {t:"How long will I be in the study?", h:`<p>If you decide to join, you will be in the study for about <b>13 months</b>. This includes a screening period of up to 4 weeks, a treatment period of 48 weeks, and a follow-up visit about 30 days after your last dose. You will have about <b>8 study visits</b>, each lasting 1–2 hours.</p>`},
- {t:"What will happen if I take part?", h:`<p>If you qualify, you will be ${PL("assigned by chance","randomized")} — like rolling dice — to one of three groups:</p><ul><li>XYZ-2000 100 mg twice daily</li><li>XYZ-2000 200 mg twice daily</li><li>${PL("Inactive substance","placebo")} (placebo) twice daily</li></ul><p>You have an equal 1-in-3 chance of any group. ${PL("Neither you nor your study doctor will know","double-blind")} which group you are in, which helps make the results accurate. In a medical emergency, your doctor can find out which treatment you are receiving.</p>`},
+ {t:"What will happen if I take part?", h:`<p>If you qualify, you will be ${PL("assigned by chance","randomized")} - like rolling dice - to one of three groups:</p><ul><li>XYZ-2000 100 mg twice daily</li><li>XYZ-2000 200 mg twice daily</li><li>${PL("Inactive substance","placebo")} (placebo) twice daily</li></ul><p>You have an equal 1-in-3 chance of any group. ${PL("Neither you nor your study doctor will know","double-blind")} which group you are in, which helps make the results accurate. In a medical emergency, your doctor can find out which treatment you are receiving.</p>`},
  {t:"What are the risks and discomforts?", h:`<p>Based on earlier studies with about 800 people, the following ${PL("side effects","adverse events")} have been reported, organized by how often they occur:</p>
-  <div class="freq">Very common (more than 1 in 10)</div><ul><li>Headache — usually mild, goes away within the first 2 weeks</li><li>Dizziness — often related to blood pressure changes</li></ul>
-  <div class="freq">Common (1 to 10 in 100)</div><ul><li>Low blood pressure — you may feel lightheaded or faint</li><li>Nausea, palpitations, and fatigue — usually mild</li></ul>
+  <div class="freq">Very common (more than 1 in 10)</div><ul><li>Headache - usually mild, goes away within the first 2 weeks</li><li>Dizziness - often related to blood pressure changes</li></ul>
+  <div class="freq">Common (1 to 10 in 100)</div><ul><li>Low blood pressure - you may feel lightheaded or faint</li><li>Nausea, palpitations, and fatigue - usually mild</li></ul>
   <div class="freq">Uncommon (fewer than 1 in 100)</div><ul><li>Diarrhea, and elevated troponin (a blood marker of heart stress requiring monitoring)</li></ul>
   <p class="h4">Unknown risks</p><p>XYZ-2000 has not been approved by the FDA. There may be risks we do not know about yet. You will be told about any new information that might affect your decision to stay in the study.</p>`},
- {t:"What are the benefits?", h:`<p>XYZ-2000 may help improve your heart function and reduce symptoms — but we cannot promise you will benefit. The drug might not work for you, or you might be assigned to the placebo group. You will receive regular medical check-ups at no cost. The information learned may help doctors better treat heart failure in the future.</p>`},
+ {t:"What are the benefits?", h:`<p>XYZ-2000 may help improve your heart function and reduce symptoms - but we cannot promise you will benefit. The drug might not work for you, or you might be assigned to the placebo group. You will receive regular medical check-ups at no cost. The information learned may help doctors better treat heart failure in the future.</p>`},
  {t:"What other choices do I have?", h:`<p>Taking part is your choice. Instead, you could continue your current heart failure medications, talk to your doctor about other treatment options, take part in a different research study, or choose not to receive additional treatment at this time.</p>`},
  {t:"What happens if I am injured?", h:`<p>If you are injured as a direct result of taking part in this study, ${PH("[SITE NAME]")} will provide or arrange for medical treatment. For questions about costs of treatment for a research injury, contact ${PH("[INVESTIGATOR NAME]")}.</p>`},
  {t:"What about confidentiality?", h:`<p>We will do our best to keep your information private, but we cannot guarantee complete privacy. Your records may be reviewed by the sponsor (Cardio Therapeutics, Inc.), the FDA, and the ${PH("[INSTITUTION IRB NAME]")}. Study results may be published, but you will not be identified.</p>`},
@@ -268,7 +268,7 @@ function reset(){
   $("#docBadges").innerHTML="";
   document.querySelectorAll(".step").forEach(s=>s.className="step");
   document.querySelectorAll(".chk").forEach(c=>c.classList.remove("on"));
-  $("#gbar").style.width="0"; $("#glabel").textContent="—"; $("#gpass").textContent="";
+  $("#gbar").style.width="0"; $("#glabel").textContent="-"; $("#gpass").textContent="";
 }
 
 async function wait(ms){return new Promise(r=>setTimeout(r,ms));}
