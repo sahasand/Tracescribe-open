@@ -697,7 +697,7 @@ function handleTabSwitch(event) {
     // Update current study in state
     appState.currentStudy = studyNumber;
 
-    // Render lazily and only once per data load (cached) — avoids rebuilding
+    // Render lazily and only once per data load (cached) - avoids rebuilding
     // every Plotly chart on each tab visit. Then reflow to the new panel size.
     renderStudy(studyNumber);
     requestAnimationFrame(() => handleWindowResize());

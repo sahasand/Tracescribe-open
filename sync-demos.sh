@@ -51,4 +51,12 @@ rm -rf demos/cro/CLAUDE.md demos/cro/design.md demos/cro/.claude demos/cro/docs 
        demos/cro/2/CLAUDE.md demos/cro/5/website-copy.md demos/cro/5/website-copy-revised.md
 echo "trimmed cro dev scaffolding (website unchanged)"
 
+# House style (CLAUDE.md rule 3: no em dashes). Bundles are re-copied from source on every sync,
+# so strip em dashes (U+2014) here to keep everything committed in this repo em-dash-free.
+find demos -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.md' \
+       -o -name '*.csv' -o -name '*.json' -o -name '*.svg' -o -name '*.txt' \
+       -o -name '*.py' -o -name '*.xml' \) -print0 \
+  | xargs -0 perl -i -pe 's/\xe2\x80\x94/-/g'
+echo "stripped em dashes from bundled demos (rule 3)"
+
 echo "Done. Demos bundled into ./demos/"

@@ -4,3 +4,7 @@
 
 # Logs
 *.log
+
+# Python cruft (bundled demos contain .py scripts)
+__pycache__/
+*.pyc

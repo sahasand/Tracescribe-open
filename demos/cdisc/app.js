@@ -1,5 +1,5 @@
 /* =============================================================================
-   HF-1002-CL-101 — Workflow Demo : router + accessible tab/toolbar behavior.
+   HF-1002-CL-101 - Workflow Demo : router + accessible tab/toolbar behavior.
    Vanilla JS, no dependencies. show()/showTbl() are global (inline onclick hooks).
    Accessibility: roving tabindex + manual activation (arrows move focus only;
    Enter / Space / click activate). Deep-linkable via hash. No build step.

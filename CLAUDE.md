@@ -24,10 +24,11 @@ opened directly via `file://` (double-click `index.html`) **and** served over HT
    **sources**. `sync-demos.sh` only ever copies *from* them; nothing in this repo writes back
    to them. All changes (de-branding, fixes, content tweaks) go in the bundled `demos/` copies
    or in `sync-demos.sh`, never upstream.
-3. **No em dashes.** Do not use em dashes (U+2014) in any content authored here: pages, detail
-   copy, README, code comments, commit messages, and this file. Use commas, colons, parentheses,
-   or a spaced hyphen instead. Bundled third-party demos under `demos/` are copies (not authored
-   here), so their own punctuation is left as-is.
+3. **No em dashes.** Do not use em dashes (U+2014) anywhere committed in this repo: pages, detail
+   copy, README, code comments, commit messages, this file, and the bundled demos under `demos/`.
+   Use commas, colons, parentheses, or a spaced hyphen instead. Because the bundled demos are
+   re-copied from their sources on every sync, `sync-demos.sh` strips their em dashes
+   automatically (hand-editing a copy will not stick). The source folders are never modified (rule 2).
 
 ## Commands
 

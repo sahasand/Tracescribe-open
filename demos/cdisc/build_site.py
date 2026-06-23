@@ -307,7 +307,7 @@ def qc_section():
 def copy_data():
     """Copy the SDTM/ADaM CSV+XPT, define.xml, and spec workbooks into site/data/.
 
-    site/data/ is regenerable (gitignored) — the committed site stays lightweight.
+    site/data/ is regenerable (gitignored) - the committed site stays lightweight.
     """
     if os.path.isdir(DATA):
         shutil.rmtree(DATA)
@@ -317,7 +317,7 @@ def copy_data():
             src = os.path.join(ROOT, outdir, kind)
             dst = os.path.join(DATA, layer, kind)
             shutil.copytree(src, dst)
-        # Copy define.xml but drop the dangling <?xml-stylesheet?> PI — the
+        # Copy define.xml but drop the dangling <?xml-stylesheet?> PI - the
         # CDISC define2-1.xsl isn't shipped, so with it the file renders blank;
         # without it the browser shows the raw XML tree. (Themed view = define.html.)
         with open(os.path.join(ROOT, outdir, "define.xml")) as f:
@@ -395,7 +395,7 @@ def define_html(layer, manifest):
 
     page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>define.xml — {esc(layer.upper())} — HF-1002-CL-101</title>
+<title>define.xml - {esc(layer.upper())} - HF-1002-CL-101</title>
 <link rel="stylesheet" href="../../styles.css"></head>
 <body><div class="wrap">
 <header class="masthead">

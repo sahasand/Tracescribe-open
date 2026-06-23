@@ -61,7 +61,7 @@
   h1, h2, h3, h4 { color: var(--white); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
   :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 4px; }
 
-  /* custom scrollbar — part of the instrument chrome */
+  /* custom scrollbar - part of the instrument chrome */
   ::-webkit-scrollbar { width: 11px; }
   ::-webkit-scrollbar-track { background: #030911; }
   ::-webkit-scrollbar-thumb { background: #16304f; border-radius: 6px; border: 3px solid #030911; }
@@ -604,10 +604,10 @@
     </svg>
   </a>
   <div class="ts-sep"></div>
-  <a href="../6/index.html" class="ts-dot active" aria-label="Holographic Deck" aria-current="page"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#02060F 50%,#E63946 50%)"></span><span class="ts-tip">01 — Holographic Deck</span></a>
-  <a href="../theme3-warm.html" class="ts-dot" aria-label="Organic Flow"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#faf8f5 50%,#e8634a 50%)"></span><span class="ts-tip">02 — Organic Flow</span></a>
-  <a href="../5/index.html" class="ts-dot" aria-label="Natural Authority"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#f3efe5 50%,#0a8d80 50%)"></span><span class="ts-tip">03 — Natural Authority</span></a>
-  <a href="../2/index.html" class="ts-dot" aria-label="Clinical Evidence"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#0A1628 50%,#C41E3A 50%)"></span><span class="ts-tip">04 — Clinical Evidence</span></a>
+  <a href="../6/index.html" class="ts-dot active" aria-label="Holographic Deck" aria-current="page"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#02060F 50%,#E63946 50%)"></span><span class="ts-tip">01 - Holographic Deck</span></a>
+  <a href="../theme3-warm.html" class="ts-dot" aria-label="Organic Flow"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#faf8f5 50%,#e8634a 50%)"></span><span class="ts-tip">02 - Organic Flow</span></a>
+  <a href="../5/index.html" class="ts-dot" aria-label="Natural Authority"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#f3efe5 50%,#0a8d80 50%)"></span><span class="ts-tip">03 - Natural Authority</span></a>
+  <a href="../2/index.html" class="ts-dot" aria-label="Clinical Evidence"><span class="ts-dot-inner" style="background:linear-gradient(135deg,#0A1628 50%,#C41E3A 50%)"></span><span class="ts-tip">04 - Clinical Evidence</span></a>
 </nav>
 
 <!-- HUD instrument frame -->
@@ -676,7 +676,7 @@
     </div>
   </div>
   <div class="holo-tag" id="holoTag" aria-hidden="true">
-    Fig. 01 — Myocardial point volume<br />
+    Fig. 01 - Myocardial point volume<br />
     <span id="holoSamples">24,000 samples</span> · 62 BPM<br />
     <span class="rec">● scan · conduction · perfusion</span>
   </div>
@@ -1146,7 +1146,7 @@
 </footer>
 <script>
 /* ============================================================
-   LAYER 1 · DOM interactivity (no dependencies — always runs,
+   LAYER 1 · DOM interactivity (no dependencies - always runs,
    even if the WebGL module or CDN fails)
    ============================================================ */
 (function () {
@@ -1351,7 +1351,7 @@
 /* ============================================================
    LAYER 2 · The holographic scene (three.js)
    A single persistent WebGL world choreographed by scroll:
-     · particle heart (Taubin implicit surface) — hero & finale
+     · particle heart (Taubin implicit surface) - hero & finale
      · 3D ECG ribbon with a travelling pulse
      · CRO/ARO data streams converging into a fused core
      · capability lattice · chain-of-custody nodes
@@ -1435,7 +1435,7 @@ try {
   }
 
   /* ============================================================
-     MOTIF 1 · Particle heart — Taubin implicit surface
+     MOTIF 1 · Particle heart - Taubin implicit surface
      (x² + 9/4·y² + z² − 1)³ − x²z³ − 9/80·y²z³ = 0
      Three layers in one draw call:
        aKind 0 · lit myocardial surface shell (rim + diffuse)
@@ -1666,7 +1666,7 @@ try {
           float core = smoothstep(0.16, 0.0, d);
           vec3 col; float a;
           if (vKind > 1.5) {
-            /* coronary vessels — scarlet threads, white-hot under perfusion */
+            /* coronary vessels - scarlet threads, white-hot under perfusion */
             col = vec3(1.0, 0.30, 0.34) * (0.6 + 0.4 * vTw)
                 + vec3(1.0, 0.92, 0.85) * vPerfG * 1.5
                 + vec3(1.0, 0.62, 0.62) * core * 0.7;
@@ -1769,7 +1769,7 @@ try {
   }
 
   /* ============================================================
-     MOTIF 3 · CRO + ARO FUSION RAIL — the brand story in 3D
+     MOTIF 3 · CRO + ARO FUSION RAIL - the brand story in 3D
      A red commercial-CRO conduit (fast, many packets) and a navy
      academic-ARO conduit (slow, deliberate pulses) run an arced
      rail and fuse at the Tracescribe core every 5.4s cycle: core flash,
@@ -1883,7 +1883,7 @@ try {
     const sparks = new THREE.InstancedMesh(new THREE.SphereGeometry(0.09, 6, 6), spkMat, N_SPK);
     group.add(sparks);
 
-    /* labels — mirror the original rail's typography */
+    /* labels - mirror the original rail's typography */
     const lCro  = makeLabel('COMMERCIAL CRO', '#FF8D96', 9.6);  lCro.position.set(-27.5, 2.1, 0);  group.add(lCro);
     const lCroS = makeLabel('SPEED · SCALE', '#D49AA1', 6.6);   lCroS.position.set(-17, -2.0, 0);  group.add(lCroS);
     const lAro  = makeLabel('ACADEMIC ARO', '#9FB6DA', 9.6);    lAro.position.set(27.5, 2.1, 0);   group.add(lAro);
@@ -2012,7 +2012,7 @@ try {
   }
 
   /* ============================================================
-     MOTIF 5 · Chain of custody — CRF → CEC → DATABASE
+     MOTIF 5 · Chain of custody - CRF → CEC → DATABASE
      ============================================================ */
   function buildChain() {
     const group = new THREE.Group();
@@ -2322,7 +2322,7 @@ try {
     for (const k in a.v) cur[k] = a.v[k] + (b.v[k] - a.v[k]) * p;
   }
 
-  /* heartbeat envelope — lub-dub at 62 bpm */
+  /* heartbeat envelope - lub-dub at 62 bpm */
   const T_BEAT = 60 / 62;
   function beatEnv(t) {
     const p = (t % T_BEAT) / T_BEAT;
