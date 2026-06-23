@@ -12,6 +12,28 @@
     });
   }
 
+  // Inline-embed the demo when served over http(s). On file:// browsers block local-file
+  // iframes, so there we keep the static preview + new-tab launch instead.
+  function embedDemoIfOnline() {
+    if (location.protocol === "file:") return;
+    var link = document.querySelector(".shot-strip .shot-link");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (!href) return;
+    var box = document.createElement("div");
+    box.className = "demo-embed";
+    var bar = document.createElement("div");
+    bar.className = "demo-embed-bar";
+    bar.innerHTML = '<span>Live demo</span><a href="' + href + '" target="_blank" rel="noopener">Open in new tab ↗</a>';
+    var frame = document.createElement("iframe");
+    frame.src = href;
+    frame.title = "Live demo";
+    frame.loading = "lazy";
+    box.appendChild(bar);
+    box.appendChild(frame);
+    link.parentNode.replaceChild(box, link);
+  }
+
   function init() {
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
@@ -37,6 +59,8 @@
     } else {
       staggers.forEach(function (s) { s.classList.add("in"); });
     }
+
+    embedDemoIfOnline();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
