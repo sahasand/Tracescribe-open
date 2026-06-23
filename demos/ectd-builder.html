@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eCTD Submission Builder - CSR Publishing</title>
+<style>
+  :root{
+    --bg:#0a0f15; --panel:#111922; --panel2:#0d141c; --border:#1f2a36; --border2:#2a3845;
+    --fg:#e7eef6; --mut:#8a98a8; --mut2:#5f6e7e;
+    --primary:#22c8b0; --primary-dim:#0f3b39; --accent:#fb923c;
+    --ok:#34d399; --warn:#fbbf24; --err:#f87171;
+    --ui:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--ui);background:var(--bg);color:var(--fg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  /* top bar */
+  .top{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--panel2);position:sticky;top:0;z-index:10;flex-wrap:wrap}
+  .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex:none}
+  .logo svg{width:15px;height:15px;color:#04110f}
+  .ttl{font-weight:700;letter-spacing:-.01em}
+  .ttl small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--mut);text-transform:uppercase;font-weight:500}
+  .presets{display:flex;gap:7px;margin-left:auto;flex-wrap:wrap}
+  .preset{font-family:var(--mono);font-size:11px;color:var(--mut);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:5px 12px;cursor:pointer;transition:all .15s}
+  .preset:hover{color:var(--fg);border-color:var(--border2)}
+  .preset.active{color:#04110f;background:var(--primary);border-color:var(--primary);font-weight:600}
+  /* layout */
+  .wrap{display:grid;grid-template-columns:380px 1fr;gap:0;height:calc(100vh - 51px);min-height:560px}
+  @media(max-width:880px){.wrap{grid-template-columns:1fr;height:auto}}
+  .controls{overflow-y:auto;border-right:1px solid var(--border);padding:16px}
+  .right{display:grid;grid-template-rows:1fr auto;overflow:hidden}
+  @media(max-width:880px){.right{grid-template-rows:auto auto}}
+  .preview{overflow-y:auto;padding:18px 20px}
+  /* control groups */
+  .grp{margin-bottom:18px}
+  .grp>.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .grp>.lbl::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--primary)}
+  .row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .row label{font-size:12px;color:var(--mut);flex:none;width:78px}
+  input[type=text],select{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--fg);border-radius:7px;padding:7px 9px;font-family:var(--ui);font-size:13px;outline:none}
+  input[type=text]:focus,select:focus{border-color:var(--primary)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--mono);font-size:11px;color:var(--mut);background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:5px 10px;cursor:pointer;transition:all .12s;user-select:none}
+  .chip:hover{border-color:var(--border2);color:var(--fg)}
+  .chip.on{background:var(--primary-dim);border-color:var(--primary);color:var(--primary)}
+  .chip .rq{color:var(--accent);font-size:9px;margin-left:3px}
+  .toggle{display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer}
+  .toggle span{font-size:13px}
+  .sw{width:36px;height:20px;border-radius:99px;background:var(--border);position:relative;transition:background .15s;flex:none}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--mut);transition:all .15s}
+  .toggle.on .sw{background:var(--primary)} .toggle.on .sw::after{left:18px;background:#04110f}
+  .slider{display:flex;align-items:center;gap:10px}
+  .slider input[type=range]{flex:1;accent-color:var(--primary)}
+  .slider .val{font-family:var(--mono);font-size:12px;color:var(--primary);width:62px;text-align:right}
+  .seg{display:flex;gap:0;border:1px solid var(--border);border-radius:7px;overflow:hidden}
+  .seg button{flex:1;background:var(--panel);border:0;color:var(--mut);font-family:var(--mono);font-size:11px;padding:6px 4px;cursor:pointer}
+  .seg button.on{background:var(--primary);color:#04110f;font-weight:600}
+  /* preview */
+  .sub-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--mut);margin-bottom:14px}
+  .sub-banner b{color:var(--fg)}
+  .vbanner{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:10px;margin-bottom:16px;font-size:13px;border:1px solid var(--border)}
+  .vbanner.ready{background:hsl(160 60% 40%/.1);border-color:hsl(160 60% 40%/.4)}
+  .vbanner.blocked{background:hsl(0 70% 60%/.08);border-color:hsl(0 70% 60%/.4)}
+  .vbanner .ic{width:20px;height:20px;flex:none}
+  .vbanner .ic svg{width:20px;height:20px}
+  .vcounts{margin-left:auto;display:flex;gap:12px;font-family:var(--mono);font-size:11px}
+  .vcounts .c-ok{color:var(--ok)} .vcounts .c-wn{color:var(--warn)} .vcounts .c-er{color:var(--err)}
+  .mod{font-family:var(--mono);font-size:12px;color:var(--mut);padding:6px 0 4px}
+  .mod .c{color:var(--primary)}
+  .leaf{display:grid;grid-template-columns:50px 1fr auto;gap:9px;align-items:center;padding:6px 10px;border-radius:7px;font-size:12.5px}
+  .leaf:hover{background:var(--panel)}
+  .leaf.csr{background:var(--primary-dim)}
+  .leaf .code{font-family:var(--mono);font-size:11px;color:var(--primary)}
+  .leaf .ti{color:var(--fg)} .leaf .ti .rq{color:var(--accent);font-family:var(--mono);font-size:9px;margin-left:5px}
+  .leaf .mt{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--mut2)}
+  .leaf .typ{padding:1px 5px;border-radius:4px;background:var(--panel);color:var(--mut)}
+  .leaf .vi{width:8px;height:8px;border-radius:50%;flex:none}
+  .vi.pass{background:var(--ok)} .vi.warn{background:var(--warn)} .vi.err{background:var(--err)}
+  .grpsub{font-family:var(--mono);font-size:10px;color:var(--mut2);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 2px 10px}
+  .xmlwrap{margin-top:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .xmlwrap .bar{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);padding:8px 12px;background:var(--panel2);border-bottom:1px solid var(--border)}
+  .xmlwrap pre{margin:0;padding:12px;overflow-x:auto;font-family:var(--mono);font-size:11px;line-height:1.65;background:var(--panel2)}
+  .xk{color:#7dd3fc} .xa{color:#fcd34d} .xv{color:#86efac} .xc{color:var(--mut2)}
+  /* prompt */
+  .promptbox{border-top:1px solid var(--border);background:var(--panel2);padding:14px 18px}
+  .promptbox .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .promptbox .ph .t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+  .copy{margin-left:auto;font-family:var(--ui);font-size:12px;font-weight:600;color:#04110f;background:var(--primary);border:0;border-radius:7px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .copy:hover{filter:brightness(1.08)} .copy svg{width:14px;height:14px}
+  .prompt{font-size:13px;line-height:1.6;color:#cdd9e5;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px 14px;max-height:148px;overflow-y:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+  <span class="ttl">eCTD Submission Builder<small>CSR Publishing</small></span>
+  <div class="presets" id="presets"></div>
+</div>
+
+<div class="wrap">
+  <div class="controls" id="controls"></div>
+  <div class="right">
+    <div class="preview" id="preview"></div>
+    <div class="promptbox">
+      <div class="ph"><span class="t">Build prompt</span>
+        <button class="copy" id="copyBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy prompt</button>
+      </div>
+      <div class="prompt" id="prompt"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ICH E3 Module 16 sections (from CSR Publishing standard-sections.ts) + CSR body */
+const DOCS = [
+  {code:"CSR",  g:"body", title:"Clinical Study Report (Body)", type:"PDF", req:true},
+  {code:"16.1.1", g:"16.1", title:"Study Protocol and Amendments", type:"PDF", req:true},
+  {code:"16.1.2", g:"16.1", title:"Sample Case Report Form", type:"PDF", req:true},
+  {code:"16.1.3", g:"16.1", title:"Informed Consent Form", type:"PDF", req:true},
+  {code:"16.1.4", g:"16.1", title:"List of Investigators", type:"PDF", req:false},
+  {code:"16.1.5", g:"16.1", title:"Signatures of Principal Investigators", type:"PDF", req:false},
+  {code:"16.1.6", g:"16.1", title:"Listing of Patients Receiving Test Drug", type:"LISTING", req:false},
+  {code:"16.1.7", g:"16.1", title:"Randomization Scheme", type:"PDF", req:false},
+  {code:"16.1.8", g:"16.1", title:"Audit Certificates", type:"PDF", req:false},
+  {code:"16.1.9", g:"16.1", title:"Statistical Analysis Plan", type:"PDF", req:true},
+  {code:"16.2.1", g:"16.2", title:"Patient Demographics", type:"DATASET", req:true},
+  {code:"16.2.2", g:"16.2", title:"Protocol Deviations", type:"LISTING", req:false},
+  {code:"16.2.3", g:"16.2", title:"Patients Excluded from Analysis", type:"LISTING", req:false},
+  {code:"16.2.4", g:"16.2", title:"Demographic Data Listings", type:"LISTING", req:false},
+  {code:"16.2.5", g:"16.2", title:"Efficacy Data Listings", type:"LISTING", req:true},
+  {code:"16.2.6", g:"16.2", title:"Safety Data Listings", type:"LISTING", req:true},
+  {code:"16.2.7", g:"16.2", title:"Adverse Events Listings", type:"LISTING", req:true},
+  {code:"16.3.1", g:"16.3", title:"Publications Based on Study", type:"PDF", req:false},
+  {code:"16.3.2", g:"16.3", title:"Important Publications Referenced", type:"PDF", req:false}
+];
+const GROUPS = {"16.1":"16.1 Study Information","16.2":"16.2 Patient Data Listings","16.3":"16.3 Publications"};
+const REGIONS = ["FDA","EMA","PMDA","Health Canada"];
+
+const DEFAULTS = {
+  studyId:"XYZ-301", sponsor:"Cardio Therapeutics, Inc.", phase:"3",
+  region:"FDA", sequence:"0000", subType:"Original",
+  included:Object.fromEntries(DOCS.map(d=>[d.code,true])),
+  pdfa:true, bookmarks:true, checksum:"MD5", maxSize:100, bookmarkDepth:4, strictness:"Standard"
+};
+let state = structuredClone(DEFAULTS);
+
+const PRESETS = {
+  "FDA original": ()=>structuredClone(DEFAULTS),
+  "EMA submission": ()=>({...structuredClone(DEFAULTS), region:"EMA"}),
+  "Minimal (required)": ()=>{const s=structuredClone(DEFAULTS); DOCS.forEach(d=>s.included[d.code]=d.req); return s;},
+  "Strict QC": ()=>({...structuredClone(DEFAULTS), strictness:"Strict", pdfa:true, bookmarks:true}),
+  "Amendment 0001": ()=>{const s=structuredClone(DEFAULTS); s.subType="Amendment"; s.sequence="0001";
+     ["16.1.4","16.1.5","16.1.7","16.1.8","16.3.1","16.3.2"].forEach(c=>s.included[c]=false); return s;}
+};
+
+const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+function md5ish(seed){let h=2166136261>>>0,out="";for(let k=0;k<8;k++){for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}h=Math.imul(h^k,16777619)>>>0;out+=("00000000"+h.toString(16)).slice(-8);}return out.slice(0,state.checksum==="MD5"?32:40);}
+const incl = ()=>DOCS.filter(d=>state.included[d.code]);
+
+/* ---------- controls ---------- */
+function buildControls(){
+  const c=$("#controls"); c.innerHTML="";
+  // submission
+  let g=ce("div","grp"); g.appendChild(ce("div","lbl","Submission"));
+  g.appendChild(textRow("Study", "studyId"));
+  g.appendChild(textRow("Sponsor", "sponsor"));
+  g.appendChild(selRow("Phase","phase",["1","2","3","4"]));
+  // region chips
+  const rg=ce("div","row"); rg.appendChild(Object.assign(ce("label"),{textContent:"Region"}));
+  const rchips=ce("div","chips"); REGIONS.forEach(r=>{const ch=ce("div","chip"+(state.region===r?" on":""),r);ch.onclick=()=>{state.region=r;updateAll();buildControls();};rchips.appendChild(ch);}); rg.appendChild(rchips); g.appendChild(rg);
+  g.appendChild(textRow("Sequence","sequence"));
+  g.appendChild(selRow("Type","subType",["Original","Amendment","Supplement"]));
+  c.appendChild(g);
+  // documents
+  g=ce("div","grp"); g.appendChild(ce("div","lbl",`Documents (${incl().length}/${DOCS.length})`));
+  const chips=ce("div","chips");
+  DOCS.forEach(d=>{const ch=ce("div","chip"+(state.included[d.code]?" on":""),`${d.code==="CSR"?"CSR":d.code}${d.req?'<span class="rq">REQ</span>':''}`);ch.title=d.title;ch.onclick=()=>{state.included[d.code]=!state.included[d.code];updateAll();buildControls();};chips.appendChild(ch);});
+  g.appendChild(chips); c.appendChild(g);
+  // compliance
+  g=ce("div","grp"); g.appendChild(ce("div","lbl","Compliance"));
+  g.appendChild(toggleRow("PDF/A-2b compliance","pdfa"));
+  g.appendChild(toggleRow("Navigation bookmarks","bookmarks"));
+  // checksum seg
+  const cs=ce("div","row"); cs.appendChild(Object.assign(ce("label"),{textContent:"Checksum"}));
+  const seg=ce("div","seg"); ["MD5","SHA-256"].forEach(v=>{const b=ce("button",state.checksum===v?"on":"",v);b.onclick=()=>{state.checksum=v;updateAll();buildControls();};seg.appendChild(b);}); cs.appendChild(seg); g.appendChild(cs);
+  g.appendChild(sliderRow("Max file size","maxSize",50,200,10,"MB"));
+  g.appendChild(sliderRow("Bookmark depth","bookmarkDepth",1,6,1,"levels"));
+  c.appendChild(g);
+  // validation
+  g=ce("div","grp"); g.appendChild(ce("div","lbl","Validation"));
+  g.appendChild(selRow("Strictness","strictness",["Lenient","Standard","Strict"]));
+  c.appendChild(g);
+}
+function textRow(lbl,key){const r=ce("div","row");r.appendChild(Object.assign(ce("label"),{textContent:lbl}));const i=ce("input");i.type="text";i.value=state[key];i.oninput=()=>{state[key]=i.value;updateAll();};r.appendChild(i);return r;}
+function selRow(lbl,key,opts){const r=ce("div","row");r.appendChild(Object.assign(ce("label"),{textContent:lbl}));const s=ce("select");opts.forEach(o=>{const op=ce("option",null,o);op.value=o;if(state[key]===o)op.selected=true;s.appendChild(op);});s.onchange=()=>{state[key]=s.value;updateAll();};r.appendChild(s);return r;}
+function toggleRow(lbl,key){const t=ce("div","toggle"+(state[key]?" on":""),`<span>${lbl}</span><span class="sw"></span>`);t.onclick=()=>{state[key]=!state[key];updateAll();buildControls();};return t;}
+function sliderRow(lbl,key,min,max,step,unit){const r=ce("div","row");r.appendChild(Object.assign(ce("label"),{textContent:lbl}));const w=ce("div","slider");const i=ce("input");i.type="range";i.min=min;i.max=max;i.step=step;i.value=state[key];const v=ce("span","val",state[key]+" "+unit);i.oninput=()=>{state[key]=+i.value;v.textContent=state[key]+" "+unit;updateAll();};w.appendChild(i);w.appendChild(v);r.appendChild(w);return r;}
+
+/* ---------- validation ---------- */
+function validate(){
+  const errors=[], warnings=[];
+  DOCS.forEach(d=>{ if(d.req && !state.included[d.code]) errors.push(`Missing required document ${d.code==="CSR"?"CSR body":d.code} (${d.title})`); });
+  if(state.bookmarkDepth>4) errors.push(`Bookmark depth ${state.bookmarkDepth} exceeds eCTD maximum of 4 (ectd-bookmark-depth)`);
+  if(!state.pdfa) warnings.push("PDFs are not PDF/A-2b compliant (pdfa-compliance)");
+  if(!state.bookmarks) warnings.push("Documents lack navigation bookmarks (ectd-bookmarks-exist)");
+  if(state.maxSize>100) warnings.push(`Max file size ${state.maxSize}MB is above the 100MB norm (pdf-file-size)`);
+  // strictness: Strict promotes warnings to errors; Lenient suppresses warnings
+  if(state.strictness==="Strict"){ return {errors:errors.concat(warnings), warnings:[]}; }
+  if(state.strictness==="Lenient"){ return {errors, warnings:[]}; }
+  return {errors, warnings};
+}
+function docStatus(d,v){
+  if(d.req && !state.included[d.code]) return "err";
+  let warn = (!state.pdfa && d.type==="PDF") || !state.bookmarks;
+  if(warn) return state.strictness==="Strict" ? "err" : (state.strictness==="Lenient" ? "pass" : "warn");
+  return "pass";
+}
+
+/* ---------- preview ---------- */
+function renderPreview(){
+  const p=$("#preview"); p.innerHTML="";
+  const v=validate(); const items=incl();
+  const totMB=items.reduce((a,d)=>a+({PDF:1.8,LISTING:0.6,DATASET:1.1}[d.type]||1)+ (parseInt(md5ish(d.code).slice(0,3),16)/4095*2),0);
+  // banner
+  p.appendChild(ce("div","sub-banner",`<b>${state.studyId}</b> · ${state.sponsor} · Phase ${state.phase}<span style="color:var(--mut2)">|</span>eCTD ${state.region} · seq ${state.sequence} · ${state.subType} · Module 5.3.5.1`));
+  const ready=v.errors.length===0;
+  const banner=ce("div","vbanner "+(ready?"ready":"blocked"));
+  banner.innerHTML=`<span class="ic">${ready
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>'}</span>
+    <span>${ready?"<b>Submission-ready.</b> All required documents present and validation passed.":`<b>Blocked.</b> ${v.errors.length} issue(s) must be resolved before submission.`}</span>
+    <span class="vcounts"><span class="c-ok">${items.length-items.filter(d=>docStatus(d,v)!=="pass").length} pass</span><span class="c-wn">${v.warnings.length} warn</span><span class="c-er">${v.errors.length} err</span></span>`;
+  p.appendChild(banner);
+  if(v.errors.length){ const e=ce("div","",v.errors.map(x=>`<div style="font-size:12px;color:var(--err);padding:2px 0">• ${x}</div>`).join("")); p.appendChild(e); }
+  // structure tree
+  p.appendChild(ce("div","mod",`<span class="c">m5</span> Module 5 · Clinical Study Reports &nbsp; <span class="c">5.3.5.1</span> Study Report: ${state.studyId}`));
+  let lastG=null;
+  items.forEach(d=>{
+    if(d.g!=="body" && d.g!==lastG){ lastG=d.g; p.appendChild(ce("div","grpsub",GROUPS[d.g])); }
+    const st=docStatus(d,v); const ck=md5ish(d.code);
+    const leaf=ce("div","leaf"+(d.code==="CSR"?" csr":""),
+      `<span class="code">${d.code==="CSR"?"5.3.5.1":d.code}</span>
+       <span class="ti">${d.title}${d.req?'<span class="rq">REQ</span>':''}</span>
+       <span class="mt"><span>${state.checksum.toLowerCase()}:${ck.slice(0,8)}…</span><span class="typ">${d.type}</span><span class="vi ${st}"></span></span>`);
+    p.appendChild(leaf);
+  });
+  // index.xml
+  const ex=items.slice(0,3).map(d=>{
+    const id=d.code==="CSR"?"leaf-csr-body":"leaf-"+d.code.replace(/\./g,"-");
+    return `  <span class="xk">&lt;leaf</span> <span class="xa">ID</span>=<span class="xv">"${id}"</span> <span class="xa">operation</span>=<span class="xv">"new"</span> <span class="xa">checksum-type</span>=<span class="xv">"${state.checksum.toLowerCase()}"</span>\n        <span class="xa">checksum</span>=<span class="xv">"${md5ish(d.code)}"</span> <span class="xa">xlink:href</span>=<span class="xv">"m5/53-clin-stud-rep/${d.code==="CSR"?"csr-body":d.code.replace(/\./g,"-")}.pdf"</span><span class="xk">&gt;</span>\n    <span class="xk">&lt;title&gt;</span>${d.title}<span class="xk">&lt;/title&gt;</span>\n  <span class="xk">&lt;/leaf&gt;</span>`;
+  }).join("\n");
+  const xw=ce("div","xmlwrap");
+  xw.innerHTML=`<div class="bar">index.xml · eCTD backbone (${state.region})</div><pre><span class="xk">&lt;ectd:ectd</span> <span class="xa">xmlns:xlink</span>=<span class="xv">"http://www.w3.org/1999/xlink"</span><span class="xk">&gt;</span>\n<span class="xk">&lt;m5-3-5-rep-effic-safety-stud&gt;</span>\n${ex}\n  <span class="xc">… ${Math.max(items.length-3,0)} more leaves …</span>\n<span class="xk">&lt;/m5-3-5-rep-effic-safety-stud&gt;</span>\n<span class="xk">&lt;/ectd:ectd&gt;</span></pre>`;
+  p.appendChild(xw);
+}
+
+/* ---------- prompt ---------- */
+function updatePrompt(){
+  const items=incl(), v=validate();
+  const parts=[];
+  parts.push(`Build an eCTD submission package for Study ${state.studyId} (${state.sponsor}, Phase ${state.phase}), region ${state.region}, sequence ${state.sequence} (${state.subType.toLowerCase()} submission). Place the clinical study report under eCTD Module 5.3.5.1.`);
+  // documents
+  if(items.length===DOCS.length){
+    parts.push(`Include the CSR body and all 18 ICH E3 Section 16 appendices.`);
+  } else {
+    const list=items.filter(d=>d.code!=="CSR").map(d=>`${d.code} ${d.title}`);
+    const csr=state.included["CSR"]?"the CSR body and ":"";
+    parts.push(`Include ${csr}these ICH E3 Section 16 appendices: ${list.join("; ")}.`);
+  }
+  // compliance (qualitative + values)
+  const comp=[];
+  comp.push(state.pdfa?"require PDF/A-2b compliance":"do not require PDF/A compliance");
+  comp.push(state.bookmarks?`require navigation bookmarks (max ${state.bookmarkDepth} levels)`:"bookmarks optional");
+  comp.push(`compute ${state.checksum} checksums per leaf`);
+  comp.push(`reject any file larger than ${state.maxSize} MB`);
+  parts.push(`Compliance: ${comp.join(", ")}.`);
+  parts.push(`Validate with ${state.strictness.toLowerCase()} strictness and generate the eCTD backbone (index.xml) plus the ${state.region} regional metadata.`);
+  if(v.errors.length) parts.push(`Note: the current selection has ${v.errors.length} blocking issue(s) to resolve first.`);
+  $("#prompt").textContent = parts.join("\n\n");
+}
+
+/* ---------- presets + glue ---------- */
+function buildPresets(){
+  const box=$("#presets"); box.innerHTML="";
+  Object.keys(PRESETS).forEach((name,i)=>{const b=ce("div","preset"+(i===0?" active":""),name);b.onclick=()=>{state=PRESETS[name]();document.querySelectorAll(".preset").forEach(x=>x.classList.remove("active"));b.classList.add("active");buildControls();updateAll();};box.appendChild(b);});
+}
+function updateAll(){ renderPreview(); updatePrompt(); }
+function copyText(text){
+  // navigator.clipboard is blocked on file:// (non-secure context); fall back to execCommand
+  if(navigator.clipboard && window.isSecureContext){ return navigator.clipboard.writeText(text); }
+  return new Promise((resolve,reject)=>{
+    try{ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); resolve();
+    }catch(e){ reject(e); }
+  });
+}
+$("#copyBtn").addEventListener("click",()=>{
+  const btn=$("#copyBtn"); copyText($("#prompt").textContent).then(()=>{
+    const o=btn.innerHTML; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Copied!';
+    setTimeout(()=>btn.innerHTML=o,1400);
+  }).catch(()=>{});
+});
+buildPresets(); buildControls(); updateAll();
+</script>
+</body>
+</html>
