@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, and `demos/edc-capture.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, and `demos/safety-pv.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -87,7 +87,12 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   to AT01-301D; `data-reconciliation.html` recreates the EDC-vs-central-lab reconciliation dashboard from
   **TraceScribe2** (`frontend/app/(dashboard)/data-reconciliation/`), modeled on the CDISC SDTM `LB` domain (real
   `LBTESTCD`/`LBCAT`/`LBSPEC`, ISO-8601 `LBDTC`) and reconciling on `USUBJID + VISIT + LBTESTCD` with a +/-2 day
-  date tolerance. `sync-demos.sh` never touches them; all use real source data/structure and are `file://`-safe
+  date tolerance; `safety-pv.html` is a from-scratch pharmacovigilance command center (the **one demo with no source
+  app** - built from PV-standards research: ICH E2A/E2B(R3)/E2F, MedDRA v27.1 SOC/PT terms, WHO-UMC causality, the
+  SUSAR 7/15-day expedited-reporting clock, and PRR/ROR disproportionality with the EMA signal threshold `PRR>=2 &
+  chi-square>=4 & cases>=3`), a deterministic generator over a synthetic cumulative safety database, with ICSR
+  line-listing + click-to-expand E2B case detail, and `?tab=<view>`. `sync-demos.sh` never touches them; all use real
+  source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
   (every view reconciles: e.g. matched + EDC-only + lab-only = expected records, gap counts sum to open
   discrepancies). Both render charts with **ApexCharts loaded from CDN** (the showcase is served online, so the
