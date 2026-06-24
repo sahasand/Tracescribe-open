@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, and `demos/safety-pv.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, and `demos/rtsm-irt.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -91,7 +91,12 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   app** - built from PV-standards research: ICH E2A/E2B(R3)/E2F, MedDRA v27.1 SOC/PT terms, WHO-UMC causality, the
   SUSAR 7/15-day expedited-reporting clock, and PRR/ROR disproportionality with the EMA signal threshold `PRR>=2 &
   chi-square>=4 & cases>=3`), a deterministic generator over a synthetic cumulative safety database, with ICSR
-  line-listing + click-to-expand E2B case detail, and `?tab=<view>`. `sync-demos.sh` never touches them; all use real
+  line-listing + click-to-expand E2B case detail, and `?tab=<view>`. `rtsm-irt.html` is the other from-scratch demo
+  (no source app) - an RTSM/IRT randomization + trial-supply system built from RTSM research: a stratified
+  permuted-block randomization (2:2:1, NYHA x Region = 6 strata, seed-reproducible, each block a verified 4:4:2
+  split), an **interactive "randomize next subject"** action, a **blinding toggle** (kit codes vs arms; emergency
+  unblinding writes an audited code-break log), and depot-to-site supply (par-level + predictive resupply, expiry,
+  cold-chain quarantine, accountability). Takes `?tab=<view>` and `?blind=1`. `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
   (every view reconciles: e.g. matched + EDC-only + lab-only = expected records, gap counts sum to open
