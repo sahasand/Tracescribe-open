@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copies each clinical project's self-contained static demo into ./demos/.
-# This is the ONLY script that reads from the sibling ../ccs-* folders. Re-run when a
+# This is the ONLY script that reads from the sibling source project folders. Re-run when a
 # source project changes. Safe & idempotent.
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -23,6 +23,10 @@ copy_dir  "$SRC/ccs-ncdisc-demo/site"                  "demos/ncdisc"
 copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
 copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
 copy_dir  "$SRC/cro-website"                           "demos/cro"
+# clinical-intelligence is a LIVE single-file tool (calls the public ClinicalTrials.gov API v2 + loads
+# ApexCharts/SheetJS/Google Fonts via CDN), so unlike every other bundle it is NOT file://-safe and needs
+# internet to run. Its detail page offers it as a download + new-tab launch, never an inline embed.
+copy_file "$SRC/clinical-intelligence/index.html"      "demos/clinical-intelligence.html"
 # NOTE: demos/icf.html, demos/ectd.html, and demos/sites.html are hand-authored (in-repo recreations of
 # features from large backend apps that are NOT bundled: TraceScribe2's ICF generation, CSR Publishing's
 # eCTD packaging, site-tracker's site activation). This script never manages them.

@@ -134,12 +134,12 @@ a{color:inherit;text-decoration:none}
 .detail-body ul{padding-left:20px;color:var(--muted-fg);display:grid;gap:6px}
 .shot-strip{padding:8px 0 80px}
 .shot{display:block;width:100%;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-card)}
-.shot-link{display:block;text-decoration:none}
-.shot-link .shot{transition:box-shadow .3s,transform .3s}
-.shot-link:hover .shot{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+.shot-link,.shot-launch{display:block;text-decoration:none}
+.shot-link .shot,.shot-launch .shot{transition:box-shadow .3s,transform .3s}
+.shot-link:hover .shot,.shot-launch:hover .shot{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
 .shot-caption{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;
   font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted-fg)}
-.shot-link:hover .shot-caption{color:var(--primary)}
+.shot-link:hover .shot-caption,.shot-launch:hover .shot-caption{color:var(--primary)}
 .shot-caption svg{width:14px;height:14px}
 /* Inline demo embed (used when served over http; see main.js embedDemoIfOnline) */
 .demo-embed{border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-card);background:var(--card)}
