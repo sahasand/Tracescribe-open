@@ -82,7 +82,9 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   EDC API), **generalized to be multi-study** (a study switcher) instead of tied to AT01-301D. `sync-demos.sh`
   never touches them; all use real source data/structure and are `file://`-safe (no fetch). `dm-dashboard.html`
   is a deterministic synthetic-data generator (every view reconciles: status counts sum to enrollment, query
-  aging sums to the open total). `icf.html`/`ectd.html`/`dm-dashboard.html` support `?still=1` for the
+  aging sums to the open total). Its charts use **ApexCharts inlined into the file** (offline-capable, the way
+  the source dashboard's own bundle ships it), so the demo is ~0.6 MB; chart animations are disabled so the
+  `?still=1` screenshot captures the final state. `icf.html`/`ectd.html`/`dm-dashboard.html` support `?still=1` for the
   screenshot, and `dm-dashboard.html` also takes `?study=<id>` and `?tab=<view>`. Pattern for the next such app:
   read the source to learn the feature (never edit it, rule 2), then build a standalone static recreation here.
 - **Live-tool exception - `demos/clinical-intelligence.html`** is a bundled single-file app (synced by
