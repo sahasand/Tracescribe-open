@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## What this is
 
@@ -73,18 +73,14 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   `.git`/`.gitignore`/`.DS_Store`, de-brands CCS (see rule 1), and trims `demos/cro` to website
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
-- **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, and `demos/dm-dashboard.html` are
-  hand-authored**, not synced. Each is an in-repo, self-contained recreation of a feature from a large backend
-  app that is *not* bundled: `icf.html` recreates ICF generation from **TraceScribe2**; `ectd.html` recreates
-  eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`); `sites.html` recreates site-activation
-  tracking from **site-tracker** (`~/Documents/site-tracker`); `dm-dashboard.html` recreates the EDC
-  data-management dashboard from **301d-api** (`~/Documents/301d-api`, a tool that pulls live from the Fountayn
-  EDC API), **generalized to be multi-study** (a study switcher) instead of tied to AT01-301D. `sync-demos.sh`
-  never touches them; all use real source data/structure and are `file://`-safe (no fetch). `dm-dashboard.html`
-  is a deterministic synthetic-data generator (every view reconciles: status counts sum to enrollment, query
-  aging sums to the open total). `icf.html`/`ectd.html`/`dm-dashboard.html` support `?still=1` for the
-  screenshot, and `dm-dashboard.html` also takes `?study=<id>` and `?tab=<view>`. Pattern for the next such app:
-  read the source to learn the feature (never edit it, rule 2), then build a standalone static recreation here.
+- **Exception - `demos/icf.html`, `demos/ectd.html`, and `demos/sites.html` are hand-authored**, not
+  synced. Each is an in-repo, self-contained recreation of a feature from a large backend app that is
+  *not* bundled: `icf.html` recreates ICF generation from **TraceScribe2**; `ectd.html` recreates eCTD
+  packaging from **CSR Publishing** (`~/Documents/csr-publishing`); `sites.html` recreates site-activation
+  tracking from **site-tracker** (`~/Documents/site-tracker`). `sync-demos.sh` never touches them; all use
+  real source data/structure and are `file://`-safe (no fetch). `icf.html`/`ectd.html` support `?still=1`
+  for the screenshot. Pattern for the next such app: read the source to learn the feature (never edit it,
+  rule 2), then build a standalone static recreation here.
 - **Live-tool exception - `demos/clinical-intelligence.html`** is a bundled single-file app (synced by
   `sync-demos.sh` from `~/Documents/clinical-intelligence`, em dashes stripped like the other bundles), but
   unlike every other demo it is **not `file://`-safe**: it calls the public ClinicalTrials.gov API v2 and
