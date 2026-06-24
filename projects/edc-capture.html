@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EDC Data Capture - TraceScribe Open</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="container">
+    <a class="brand" href="../index.html"><span class="brand-mark"></span>TraceScribe Open</a>
+    <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+      <svg data-icon="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg data-icon="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+    </button>
+  </div></header>
+
+  <main class="container">
+    <a class="breadcrumb" href="../index.html">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      All projects
+    </a>
+
+    <section class="project-head">
+      <span class="eyebrow">DATA MANAGEMENT · EDC / eCRF</span>
+      <h1>EDC Data Capture</h1>
+      <p class="lede">An electronic data-capture system: a schema-defined eCRF you actually fill in, with live conditional branching, validation, repeating visits, and an append-only audit trail. Modeled on a Next.js + Postgres internal capture app.</p>
+    </section>
+
+    <div class="detail-actions">
+      <a class="btn btn-primary btn-lg" href="../demos/edc-capture.html">
+        Launch live demo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <span class="status-pill">Runs in your browser</span>
+    </div>
+
+    <section class="detail-body">
+      <h2>What it does</h2>
+      <p>Captures clinical data the way a site does. Forms are defined by a schema rather than hand-coded, so conditional branching and validation run live in the browser as you type, and every saved change lands in an append-only audit trail. In the real app the same validation code is also the server's trust boundary, the browser and server never drift.</p>
+      <h2>How it works</h2>
+      <ul>
+        <li>The Health Assessment form is compiled from a schema with <b>8 field types</b> (date, text + regex, number, choice, multichoice, boolean, textarea, file) and per-field rules (required, ranges, patterns, length).</li>
+        <li><b>show_if branching</b>: fields appear, disappear, and cascade live as you answer (a current smoker reveals packs/day; a chest-pain symptom reveals severity, which reveals urgent referral). Hidden fields are stripped to a fixed point so they never submit stale data.</li>
+        <li><b>Repeating instances</b>: each visit is its own instance with its own data, status, and audit.</li>
+        <li><b>Save draft vs Mark complete</b>: drafts accept partial data; completing enforces every visible required field.</li>
+        <li><b>Append-only audit trail</b>: each save writes one row per changed field (field, old to new value, who, when), the 21 CFR Part 11 story. The real app enforces append-only at the database level.</li>
+        <li>A <b>schemaHash</b> pins every submission to the exact form version it was captured under.</li>
+      </ul>
+      <div class="badge-row" style="margin-top:8px">
+        <span class="badge">EDC / eCRF</span><span class="badge">21 CFR Part 11</span>
+        <span class="badge">Audit trail</span><span class="badge">Conditional logic</span>
+      </div>
+      <p style="font-size:14px;color:var(--muted-fg);margin-top:6px">The real tool is a Next.js + Postgres data-capture app (YAML-defined forms, optimistic locking, RBAC, file attachments, CSV export). This demo is a self-contained, file://-safe recreation of the capture experience, with the form engine (the show_if evaluator and validator) reimplemented in the browser; synthetic subject, no backend.</p>
+    </section>
+
+    <section class="shot-strip">
+      <a class="shot-link" href="../demos/edc-capture.html">
+        <img class="shot" src="../assets/img/edc-capture.png" alt="Screenshot of the EDC data capture demo">
+        <span class="shot-caption">Static preview - click to open the live, interactive demo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container">
+    <span>TraceScribe Open</span><span>© <span data-year></span></span>
+  </div></footer>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
