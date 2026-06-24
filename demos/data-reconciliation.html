@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Reconciliation - TraceScribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --accent-soft:hsl(25 95% 53%/.12); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 50%); --info:hsl(199 89% 48%); --danger:hsl(0 72% 51%);
+    --radius:10px; --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1340px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex:none}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em;line-height:1.1}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--primary);text-transform:uppercase}
+  .hmeta{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .xbtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-weight:700;font-size:12.5px;color:var(--fg);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer}
+  .xbtn svg{width:14px;height:14px;color:var(--primary)}
+  .ctx{max-width:1340px;margin:0 auto;padding:18px 20px 0}
+  .ctx h1{font-size:21px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ctx h1 .ph{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:6px;background:var(--accent-soft);color:hsl(25 80% 42%)}
+  .ctx .sub{font-size:13px;color:var(--mut-fg);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ctx .sub b{color:var(--fg);font-weight:600}
+  .ctx .dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+  .tabs{max-width:1340px;margin:16px auto 0;padding:0 20px;display:flex;gap:2px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{font-family:var(--font);font-weight:600;font-size:14px;color:var(--mut-fg);background:none;border:0;border-bottom:2px solid transparent;padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:-1px}
+  .tab svg{width:15px;height:15px}
+  .tab:hover{color:var(--fg)}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  .tab .cnt{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--muted);color:var(--mut-fg)}
+  .tab.active .cnt{background:var(--primary-soft);color:var(--primary)}
+  main{max-width:1340px;margin:0 auto;padding:20px 20px 64px}
+  .view{display:none} .view.on{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .card>.h{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--mut-fg);padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card>.h svg{width:15px;height:15px;color:var(--primary)}
+  .card>.h .r{margin-left:auto;font-family:var(--font);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--mut-fg)}
+  .card>.b{padding:16px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  @media(max-width:1080px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--border);border-left-width:3px;border-radius:12px;padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi .l{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mut-fg)}
+  .kpi .v{font-size:27px;font-weight:800;letter-spacing:-.02em;margin-top:5px;line-height:1}
+  .kpi .s{font-family:var(--mono);font-size:10.5px;color:var(--mut-fg);margin-top:5px}
+  .kpi.teal{border-left-color:var(--primary)} .kpi.teal .v{color:var(--primary)}
+  .kpi.coral{border-left-color:var(--accent)} .kpi.coral .v{color:hsl(25 85% 47%)}
+  .kpi.amber{border-left-color:var(--warning)} .kpi.amber .v{color:hsl(38 80% 42%)}
+  .kpi.blue{border-left-color:var(--info)} .kpi.blue .v{color:var(--info)}
+  .kpi.red{border-left-color:var(--danger)} .kpi.red .v{color:var(--danger)}
+  .kpi.green{border-left-color:var(--success)} .kpi.green .v{color:var(--success)}
+  .row2{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:18px}
+  @media(max-width:1080px){.row2{grid-template-columns:1fr}}
+  .row3{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  @media(max-width:1080px){.row3{grid-template-columns:1fr}}
+  .vennwrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .vlabels{display:flex;justify-content:space-between;width:100%;max-width:430px;font-family:var(--mono);font-size:11px;color:var(--mut-fg)}
+  .vlabels b{display:block;color:var(--fg);font-weight:700;font-size:12px}
+  .matchrate{text-align:center;margin-top:4px}
+  .matchrate .big{font-size:34px;font-weight:800;color:var(--primary);letter-spacing:-.02em;line-height:1}
+  .matchrate .lbl{font-family:var(--mono);font-size:11px;color:var(--mut-fg);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+  .hbars{display:flex;flex-direction:column;gap:10px}
+  .hb{display:grid;grid-template-columns:128px 1fr 40px;align-items:center;gap:10px}
+  .hb .hl{font-family:var(--mono);font-size:11px;color:var(--mut-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hb .ht{height:14px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .hb .ht i{display:block;height:100%;border-radius:99px}
+  .hb .hv{font-family:var(--mono);font-size:12px;font-weight:700;text-align:right}
+  .cap{font-size:11.5px;color:var(--mut-fg);margin-top:12px;line-height:1.45}
+  .tblwrap{overflow:auto;max-height:600px;border-radius:10px;border:1px solid var(--border)}
+  table.tbl{border-collapse:collapse;width:100%;font-size:13px}
+  table.tbl th{position:sticky;top:0;background:var(--muted);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut-fg);text-align:left;padding:9px 12px;white-space:nowrap;z-index:1}
+  table.tbl td{padding:9px 12px;border-top:1px solid var(--border);white-space:nowrap}
+  table.tbl tr:hover td{background:hsl(168 76% 32%/.03)}
+  .sid{font-family:var(--mono);font-weight:600}
+  .code{font-family:var(--mono);font-size:12px;color:var(--fg)}
+  .sub2{color:var(--mut-fg)}
+  .gb{font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em}
+  .gb.edc{background:hsl(199 89% 48%/.13);color:hsl(199 80% 38%)}
+  .gb.lab{background:hsl(25 95% 53%/.14);color:hsl(25 85% 42%)}
+  .gb.warn{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)}
+  .gb.crit{background:hsl(0 72% 51%/.12);color:var(--danger)}
+  .filterbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;align-items:center}
+  .fb{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--mut-fg);cursor:pointer}
+  .fb.on{background:var(--primary);border-color:var(--primary);color:#fff}
+  .foot{max-width:1340px;margin:0 auto;padding:0 20px 40px;font-size:12px;color:var(--mut-fg);line-height:1.5}
+  .foot code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M3 16v5h5"/><path d="M16 21h5v-5"/><path d="M9 9l6 6M15 9l-6 6"/></svg></span>
+  <span class="brand">TraceScribe<small>Data Management</small></span>
+  <span class="hmeta">
+    <span class="pill" id="xferPill">Transfer</span>
+    <button class="xbtn" type="button" title="Export (demo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
+  </span>
+</div></header>
+
+<section class="ctx">
+  <h1>Data Reconciliation <span class="ph">EDC vs Central Lab</span></h1>
+  <div class="sub" id="ctxSub"></div>
+</section>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-summary"></section>
+  <section class="view" id="v-subjects"></section>
+  <section class="view" id="v-visits"></section>
+  <section class="view" id="v-categories"></section>
+  <section class="view" id="v-dates"></section>
+  <section class="view" id="v-values"></section>
+</main>
+
+<div class="foot">
+  Recreation of an EDC-to-central-lab external data reconciliation, the DM activity of proving the site's eCRF entries agree with the lab vendor's direct electronic transfer before database lock. Data is synthetic but modeled on the CDISC SDTM <code>LB</code> domain (real <code>LBTESTCD</code>, <code>LBCAT</code>, <code>LBSPEC</code>, ISO-8601 <code>LBDTC</code>) and reconciles on <code>USUBJID + VISIT + LBTESTCD</code> with a configurable +/-2 day collection-date tolerance. Every figure is computed from the records, nothing is hard-coded.
+</div>
+
+<script>
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pad(n){return String(n).padStart(3,'0');}
+function addDays(iso,n){var d=new Date(iso+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+
+// ===== Reference data (CDISC SDTM LB) =====
+var PANELS={
+  CHEMISTRY:{spec:'SERUM',tests:[['SODIUM','Sodium','mmol/L'],['K','Potassium','mmol/L'],['CL','Chloride','mmol/L'],['CREAT','Creatinine','mg/dL'],['BUN','Urea Nitrogen','mg/dL'],['GLUC','Glucose','mg/dL'],['ALT','Alanine Aminotransferase','U/L'],['AST','Aspartate Aminotransferase','U/L'],['ALP','Alkaline Phosphatase','U/L'],['BILI','Bilirubin','mg/dL'],['ALB','Albumin','g/dL']]},
+  HEMATOLOGY:{spec:'BLOOD',tests:[['WBC','Leukocytes','10^9/L'],['RBC','Erythrocytes','10^12/L'],['HGB','Hemoglobin','g/dL'],['HCT','Hematocrit','%'],['PLAT','Platelets','10^9/L'],['NEUT','Neutrophils','%']]},
+  COAGULATION:{spec:'PLASMA',tests:[['PT','Prothrombin Time','sec'],['INR','Intl. Normalized Ratio',''],['APTT','Activated PTT','sec'],['FIBRINO','Fibrinogen','mg/dL']]},
+  LIPIDS:{spec:'SERUM',tests:[['CHOL','Cholesterol','mg/dL'],['LDL','LDL Cholesterol','mg/dL'],['HDL','HDL Cholesterol','mg/dL'],['TRIG','Triglycerides','mg/dL']]},
+  URINALYSIS:{spec:'URINE',tests:[['SPGRAV','Specific Gravity',''],['PH','pH',''],['PROT','Protein',''],['GLUC','Glucose',''],['KETONES','Ketones','']]}
+};
+function tlen(p){return PANELS[p].tests.length;}
+var VISITS=[
+  {n:1,name:'Screening',day:0,panels:['CHEMISTRY','HEMATOLOGY','COAGULATION','LIPIDS','URINALYSIS']},
+  {n:2,name:'Day 1',day:14,panels:['CHEMISTRY','HEMATOLOGY','COAGULATION']},
+  {n:3,name:'Week 4',day:42,panels:['CHEMISTRY','HEMATOLOGY']},
+  {n:4,name:'Week 8',day:70,panels:['CHEMISTRY','HEMATOLOGY']},
+  {n:5,name:'Week 12',day:98,panels:['CHEMISTRY','HEMATOLOGY','LIPIDS','URINALYSIS']}
+];
+function visitByNum(n){for(var i=0;i<VISITS.length;i++)if(VISITS[i].n===n)return VISITS[i];return null;}
+var SITES=[{id:'101',name:'Boston, US'},{id:'102',name:'Houston, US'},{id:'103',name:'Berlin, DE'}];
+var STUDY='ABC-2026-01', VENDOR='Meridian Central Laboratories', TRANSFER='2026-06-19';
+
+// Injected, named discrepancies (keys: "usubjid|visit" or "usubjid|visit|panel")
+var SCREENFAIL=['ABC-101-007','ABC-102-009'];            // in EDC only (sample never transmitted)
+var LABONLY=['ABC-101-077'];                              // in lab only (mis-keyed requisition)
+var VISIT_GAP={'ABC-103-004|3':'Sample hemolyzed at lab, not analyzed','ABC-102-006|4':'Visit date mis-keyed; no lab accession'};
+var CAT_GAP={'ABC-102-003|1|COAGULATION':'Coagulation tube not drawn','ABC-101-005|2|COAGULATION':'Panel not transmitted in feed','ABC-103-008|5|LIPIDS':'Lipid panel missing from transfer'};
+var DATE_GAP={'ABC-101-002|3':3,'ABC-102-001|2':-4,'ABC-103-005|4':5,'ABC-101-010|5':3};   // delta days (EDC vs lab)
+var VALUE_GAP=[
+  {u:'ABC-103-005',v:4,p:'CHEMISTRY',t:'GLUC',edc:'95',lab:'99',unit:'mg/dL',flag:'NORMAL / NORMAL'},
+  {u:'ABC-101-003',v:1,p:'CHEMISTRY',t:'K',edc:'4.2',lab:'5.1',unit:'mmol/L',flag:'NORMAL / HIGH'},
+  {u:'ABC-102-004',v:1,p:'URINALYSIS',t:'SPGRAV',edc:'1.015',lab:'1.150',unit:'',flag:'dropped decimal'},
+  {u:'ABC-103-002',v:3,p:'HEMATOLOGY',t:'HGB',edc:'14.2',lab:'13.1',unit:'g/dL',flag:'NORMAL / LOW'},
+  {u:'ABC-101-008',v:5,p:'CHEMISTRY',t:'ALT',edc:'35',lab:'52',unit:'U/L',flag:'NORMAL / HIGH'}
+];
+var TOL=2;
+
+function build(){
+  var rnd=mulberry32(20260619);
+  // subjects
+  var subjects=[];
+  SITES.forEach(function(s){for(var i=1;i<=12;i++){subjects.push({u:'ABC-'+s.id+'-'+pad(i),site:s.id,kind:'normal'});}});
+  subjects.forEach(function(su){if(SCREENFAIL.indexOf(su.u)>=0)su.kind='screenfail';});
+  LABONLY.forEach(function(u){subjects.push({u:u,site:u.split('-')[1],kind:'labonly'});});
+  // screening date per subject (spread over ~5 weeks)
+  subjects.forEach(function(su,i){su.scr=addDays('2026-01-12',Math.floor(rnd()*34));});
+
+  // presence[u][visitNum][panel] = {edc,lab}; dates[u][visitNum] = {edc,lab,delta}
+  var pres={}, dates={};
+  subjects.forEach(function(su){
+    pres[su.u]={}; dates[su.u]={};
+    var visits = su.kind==='normal'?VISITS:[VISITS[0]];   // screen-fail / lab-only have screening only
+    visits.forEach(function(vi){
+      pres[su.u][vi.n]={};
+      var edcDate=addDays(su.scr,vi.day), delta=0;
+      var dk=su.u+'|'+vi.n;
+      if(DATE_GAP[dk]!==undefined) delta=DATE_GAP[dk]; else if(rnd()<0.18) delta=1; // most in-tolerance jitter
+      dates[su.u][vi.n]={edc:edcDate,lab:addDays(edcDate,delta),delta:delta};
+      vi.panels.forEach(function(p){
+        var edc = su.kind!=='labonly';
+        var lab = su.kind!=='screenfail';
+        if(VISIT_GAP[dk]) lab=false;
+        if(CAT_GAP[su.u+'|'+vi.n+'|'+p]) lab=false;
+        pres[su.u][vi.n][p]={edc:edc,lab:lab};
+      });
+    });
+  });
+
+  // ===== derive counts =====
+  var matched=0,edcOnly=0,labOnly=0,edcRecs=0,labRecs=0;
+  subjects.forEach(function(su){for(var vn in pres[su.u]){for(var p in pres[su.u][vn]){var c=pres[su.u][vn][p],n=tlen(p);
+    if(c.edc)edcRecs+=n; if(c.lab)labRecs+=n;
+    if(c.edc&&c.lab)matched+=n; else if(c.edc)edcOnly+=n; else if(c.lab)labOnly+=n;}}});
+  var union=matched+edcOnly+labOnly;
+  var matchRate=Math.round(matched/union*1000)/10;
+
+  // ===== derive gaps =====
+  var subjectGaps=[],visitGaps=[],categoryGaps=[],dateMismatches=[],valueMismatches=[];
+  var ages=mulberry32(7);
+  function age(){return 1+Math.floor(ages()*44);}
+  subjects.forEach(function(su){
+    // subject-level: present entirely in one system
+    var anyEdc=false,anyLab=false,edcN=0;
+    for(var vn in pres[su.u])for(var p in pres[su.u][vn]){if(pres[su.u][vn][p].edc){anyEdc=true;edcN+=tlen(p);}if(pres[su.u][vn][p].lab)anyLab=true;}
+    if(anyEdc&&!anyLab){subjectGaps.push({u:su.u,site:su.site,gap:'EDC_ONLY',recs:edcN,note:'In EDC only - sample never transmitted to lab (screen fail)',age:age()});return;}
+    if(anyLab&&!anyEdc){var labN=0;for(var vn2 in pres[su.u])for(var p2 in pres[su.u][vn2])if(pres[su.u][vn2][p2].lab)labN+=tlen(p2);
+      subjectGaps.push({u:su.u,site:su.site,gap:'LAB_ONLY',recs:labN,note:'In lab feed only - USUBJID not found in EDC (mis-keyed requisition)',age:age()});return;}
+    // visit + category + date for in-both subjects
+    for(var vn3 in pres[su.u]){
+      var vi=visitByNum(+vn3), panels=pres[su.u][vn3], edcPanels=0,labPanels=0,affected=[];
+      for(var pp in panels){if(panels[pp].edc)edcPanels++;if(panels[pp].lab)labPanels++;}
+      var vk=su.u+'|'+vn3;
+      if(edcPanels>0&&labPanels===0){
+        for(var px in panels)affected.push(px);
+        visitGaps.push({u:su.u,site:su.site,visit:vi.name,gap:'EDC_ONLY',panels:affected,note:VISIT_GAP[vk]||'Visit draw missing in lab feed',age:age()});
+      } else {
+        for(var pn in panels){var c=panels[pn];
+          if(c.edc&&!c.lab) categoryGaps.push({u:su.u,site:su.site,visit:vi.name,cat:pn,spec:PANELS[pn].spec,gap:'EDC_ONLY',note:CAT_GAP[su.u+'|'+vn3+'|'+pn]||'Panel collected per EDC, absent in lab feed',age:age()});
+        }
+      }
+      // date mismatch (one collection event per visit)
+      var d=dates[su.u][vn3];
+      if(edcPanels>0&&labPanels>0&&Math.abs(d.delta)>TOL){
+        dateMismatches.push({u:su.u,site:su.site,visit:vi.name,spec:'BLOOD',edc:d.edc,lab:d.lab,delta:d.delta,age:age()});
+      }
+    }
+  });
+  VALUE_GAP.forEach(function(g){var vi=visitByNum(g.v);
+    valueMismatches.push({u:g.u,site:g.u.split('-')[1],visit:vi.name,cat:g.p,test:g.t,edc:g.edc,lab:g.lab,unit:g.unit,flag:g.flag,age:age()});});
+
+  // subject counts (distinct USUBJID)
+  var sEdc=0,sLab=0,sBoth=0;
+  subjects.forEach(function(su){var e=false,l=false;for(var vn in pres[su.u])for(var p in pres[su.u][vn]){if(pres[su.u][vn][p].edc)e=true;if(pres[su.u][vn][p].lab)l=true;}
+    if(e)sEdc++;if(l)sLab++;if(e&&l)sBoth++;});
+
+  var open=subjectGaps.length+visitGaps.length+categoryGaps.length+dateMismatches.length+valueMismatches.length;
+  // breakdowns
+  var byType=[
+    {label:'Subject gaps',value:subjectGaps.length,color:'hsl(199 80% 48%)'},
+    {label:'Visit gaps',value:visitGaps.length,color:'hsl(168 66% 42%)'},
+    {label:'Category gaps',value:categoryGaps.length,color:'hsl(280 60% 58%)'},
+    {label:'Date mismatches',value:dateMismatches.length,color:'hsl(38 85% 50%)'},
+    {label:'Value mismatches',value:valueMismatches.length,color:'hsl(0 72% 55%)'}
+  ];
+  var allGaps=[].concat(subjectGaps,visitGaps,categoryGaps,dateMismatches,valueMismatches);
+  var siteMap={}; SITES.forEach(function(s){siteMap[s.id]=0;});
+  allGaps.forEach(function(g){if(siteMap[g.site]!==undefined)siteMap[g.site]++;});
+  var bySite=SITES.map(function(s){return {label:'Site '+s.id+' - '+s.name,value:siteMap[s.id],color:'hsl(168 66% 42%)'};}).sort(function(a,b){return b.value-a.value;});
+  var catMap={};
+  categoryGaps.forEach(function(g){catMap[g.cat]=(catMap[g.cat]||0)+1;});
+  valueMismatches.forEach(function(g){catMap[g.cat]=(catMap[g.cat]||0)+1;});
+  var byCat=Object.keys(catMap).map(function(k){return {label:k,value:catMap[k],color:'hsl(280 55% 60%)'};}).sort(function(a,b){return b.value-a.value;});
+  var agingBuckets=[{label:'0-7 d',value:0,color:'hsl(152 60% 45%)'},{label:'8-14 d',value:0,color:'hsl(78 60% 48%)'},{label:'15-30 d',value:0,color:'hsl(38 85% 52%)'},{label:'>30 d',value:0,color:'hsl(8 75% 55%)'}];
+  allGaps.forEach(function(g){var a=g.age;if(a<=7)agingBuckets[0].value++;else if(a<=14)agingBuckets[1].value++;else if(a<=30)agingBuckets[2].value++;else agingBuckets[3].value++;});
+
+  return {matched:matched,edcOnly:edcOnly,labOnly:labOnly,edcRecs:edcRecs,labRecs:labRecs,union:union,matchRate:matchRate,
+    subjects:{edc:sEdc,lab:sLab,both:sBoth},open:open,
+    subjectGaps:subjectGaps,visitGaps:visitGaps,categoryGaps:categoryGaps,dateMismatches:dateMismatches,valueMismatches:valueMismatches,
+    byType:byType,bySite:bySite,byCat:byCat,aging:agingBuckets};
+}
+
+// ===== rendering helpers =====
+function kpi(cls,label,val,sub){return '<div class="kpi '+cls+'"><div class="l">'+label+'</div><div class="v">'+val+'</div><div class="s">'+sub+'</div></div>';}
+function hbars(items,opts){opts=opts||{};var max=opts.max||Math.max.apply(null,items.map(function(i){return i.value;}).concat([1]));
+  return '<div class="hbars">'+items.map(function(it){
+    return '<div class="hb"><span class="hl">'+it.label+'</span><div class="ht"><i style="width:'+(it.value/max*100)+'%;background:'+it.color+'"></i></div><span class="hv">'+it.value+(opts.suffix||'')+'</span></div>';
+  }).join('')+'</div>';}
+function venn(edcOnly,matched,labOnly){
+  // two overlapping circles: EDC (teal) left, Lab (coral) right
+  return '<svg viewBox="0 0 430 210" width="100%" style="display:block;max-width:430px;margin:0 auto">'+
+    '<circle cx="165" cy="100" r="92" fill="hsl(168 76% 32%/.16)" stroke="hsl(168 76% 32%/.55)" stroke-width="2"/>'+
+    '<circle cx="265" cy="100" r="92" fill="hsl(25 95% 53%/.14)" stroke="hsl(25 90% 50%/.55)" stroke-width="2"/>'+
+    '<text x="110" y="96" text-anchor="middle" style="fill:hsl(199 80% 38%);font:800 26px '+"'Plus Jakarta Sans'"+'">'+edcOnly+'</text>'+
+    '<text x="110" y="116" text-anchor="middle" style="fill:hsl(220 9% 46%);font:600 9px '+"'JetBrains Mono'"+'">EDC ONLY</text>'+
+    '<text x="215" y="96" text-anchor="middle" style="fill:hsl(168 76% 28%);font:800 28px '+"'Plus Jakarta Sans'"+'">'+matched+'</text>'+
+    '<text x="215" y="116" text-anchor="middle" style="fill:hsl(168 30% 35%);font:600 9px '+"'JetBrains Mono'"+'">MATCHED</text>'+
+    '<text x="320" y="96" text-anchor="middle" style="fill:hsl(25 85% 42%);font:800 26px '+"'Plus Jakarta Sans'"+'">'+labOnly+'</text>'+
+    '<text x="320" y="116" text-anchor="middle" style="fill:hsl(220 9% 46%);font:600 9px '+"'JetBrains Mono'"+'">LAB ONLY</text>'+
+    '</svg>';
+}
+function gbadge(g){var m={EDC_ONLY:['edc','EDC only'],LAB_ONLY:['lab','Lab only']};var x=m[g]||['warn',g];return '<span class="gb '+x[0]+'">'+x[1]+'</span>';}
+
+function renderSummary(D){
+  var k='<div class="kpis">'+
+    kpi('green','Match rate',D.matchRate+'%','records matched in both systems')+
+    kpi('teal','Matched records',D.matched.toLocaleString(),'subject + visit + test')+
+    kpi('blue','EDC only',D.edcOnly.toLocaleString(),'in eCRF, absent from lab feed')+
+    kpi('coral','Lab only',D.labOnly.toLocaleString(),'in lab feed, absent from EDC')+
+    kpi('amber','Date mismatches',D.dateMismatches.length,'collection date beyond +/-'+TOL+' d')+
+    kpi('red','Value mismatches',D.valueMismatches.length,'result / unit / flag disagrees')+
+    kpi('teal','Subjects reconciled',D.subjects.both+' / '+Math.max(D.subjects.edc,D.subjects.lab),'present in both systems')+
+    kpi('red','Open discrepancies',D.open,'across all gap types')+
+  '</div>';
+
+  var flow='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10M7 8l3-3M7 8l3 3"/><path d="M17 16H7M17 16l-3-3M17 16l-3 3"/></svg>Reconciliation overlap<span class="r">'+D.union.toLocaleString()+' expected records</span></div><div class="b"><div class="vennwrap">'+
+    venn(D.edcOnly,D.matched,D.labOnly)+
+    '<div class="vlabels"><span><b>EDC metadata</b>'+D.edcRecs.toLocaleString()+' records</span><span style="text-align:right"><b>Central lab</b>'+D.labRecs.toLocaleString()+' records</span></div>'+
+    '<div class="matchrate"><div class="big">'+D.matchRate+'%</div><div class="lbl">overall match rate</div></div>'+
+    '</div></div></div>';
+
+  var types='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Discrepancies by type<span class="r">'+D.open+' open</span></div><div class="b">'+hbars(D.byType,{})+'</div></div>';
+
+  var site='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>By site<span class="r">requisition errors cluster by site</span></div><div class="b">'+hbars(D.bySite,{})+'</div></div>';
+  var cat='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>By lab category<span class="r">LBCAT</span></div><div class="b">'+hbars(D.byCat,{})+'</div></div>';
+  var aging='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Aging of open discrepancies<span class="r">days since detected</span></div><div class="b">'+hbars(D.aging,{})+
+    '<p class="cap">Stale discrepancies block database lock. Each is queried to the site (or the lab corrects its file and retransmits), then reconciliation re-runs.</p></div></div>';
+
+  return k+'<div class="row2">'+flow+types+'</div><div class="row3">'+site+cat+'</div><div class="row3">'+aging+'<div class="card"><div class="h">How matching works</div><div class="b"><p class="cap" style="margin-top:0">Records are joined on <b>USUBJID + VISIT + LBTESTCD</b> (qualified by <b>LBSPEC</b>), then classified <b>Matched</b> / <b>EDC only</b> / <b>Lab only</b>. For matched accessions, the EDC collection date <code style="font-family:var(--mono)">LBDTC</code> is compared to the lab collection date; a delta beyond the study-defined +/-'+TOL+' day tolerance is flagged. Value mismatches are surfaced where the site also transcribes a result into the eCRF (the central lab remains system of record for results).</p></div></div></div>';
+}
+
+function tableCard(title,count,note,head,rows){
+  return '<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M3 16v5h5"/><path d="M16 21h5v-5"/></svg>'+title+'<span class="r">'+count+' found</span></div><div class="b">'+
+    (note?'<p class="cap" style="margin-top:0;margin-bottom:13px">'+note+'</p>':'')+
+    '<div class="tblwrap"><table class="tbl"><thead><tr>'+head.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table></div></div></div>';
+}
+function renderSubjects(D){
+  var rows=D.subjectGaps.map(function(g){return '<tr><td class="sid">'+g.u+'</td><td>Site '+g.site+'</td><td>'+gbadge(g.gap)+'</td><td class="mono">'+(g.gap==='EDC_ONLY'?'EDC':'Lab')+'</td><td class="mono">'+g.recs+'</td><td class="sub2">'+g.note+'</td><td class="mono">'+g.age+' d</td></tr>';}).join('')||'<tr><td colspan="7" class="sub2">No subject-level gaps.</td></tr>';
+  return tableCard('Subject gaps',D.subjectGaps.length,'A USUBJID present in one system but not the other - usually a screen fail never transmitted, or a mis-keyed requisition (SUBJID vs USUBJID).',['USUBJID','Site','Gap','Present in','Records','Cause','Age'],rows);
+}
+function renderVisits(D){
+  var rows=D.visitGaps.map(function(g){return '<tr><td class="sid">'+g.u+'</td><td>Site '+g.site+'</td><td class="mono">'+g.visit+'</td><td>'+gbadge(g.gap)+'</td><td class="code">'+g.panels.join(', ')+'</td><td class="sub2">'+g.note+'</td><td class="mono">'+g.age+' d</td></tr>';}).join('')||'<tr><td colspan="7" class="sub2">No visit-level gaps.</td></tr>';
+  return tableCard('Visit gaps',D.visitGaps.length,'For a matched subject, an expected visit’s sample exists in one system but is missing in the other.',['USUBJID','Site','Visit','Gap','Panels affected','Cause','Age'],rows);
+}
+function renderCategories(D){
+  var rows=D.categoryGaps.map(function(g){return '<tr><td class="sid">'+g.u+'</td><td>Site '+g.site+'</td><td class="mono">'+g.visit+'</td><td class="code">'+g.cat+'</td><td class="mono sub2">'+g.spec+'</td><td>'+gbadge(g.gap)+'</td><td class="sub2">'+g.note+'</td><td class="mono">'+g.age+' d</td></tr>';}).join('')||'<tr><td colspan="8" class="sub2">No category-level gaps.</td></tr>';
+  return tableCard('Category gaps',D.categoryGaps.length,'A whole panel (LBCAT) collected per EDC but absent from the lab transfer - the tube was not drawn or not transmitted.',['USUBJID','Site','Visit','LBCAT','LBSPEC','Gap','Cause','Age'],rows);
+}
+function renderDates(D){
+  var rows=D.dateMismatches.map(function(g){var sev=Math.abs(g.delta)>=5?'crit':'warn';var sign=g.delta>0?'+':'';
+    return '<tr><td class="sid">'+g.u+'</td><td>Site '+g.site+'</td><td class="mono">'+g.visit+'</td><td class="mono sub2">'+g.spec+'</td><td class="mono">'+g.edc+'</td><td class="mono">'+g.lab+'</td><td><span class="gb '+sev+'">'+sign+g.delta+' d</span></td><td class="mono">'+g.age+' d</td></tr>';}).join('')||'<tr><td colspan="8" class="sub2">No date mismatches beyond tolerance.</td></tr>';
+  return tableCard('Date mismatches',D.dateMismatches.length,'EDC collection date (LBDTC) vs the lab collection date for the same subject + visit, beyond the +/-'+TOL+' day tolerance. A large delta can misassign a result to the wrong visit window.',['USUBJID','Site','Visit','LBSPEC','EDC LBDTC','Lab date','Delta','Age'],rows);
+}
+function renderValues(D){
+  var rows=D.valueMismatches.map(function(g){return '<tr><td class="sid">'+g.u+'</td><td>Site '+g.site+'</td><td class="mono">'+g.visit+'</td><td class="code">'+g.test+'</td><td class="mono sub2">'+g.cat+'</td><td class="mono">'+g.edc+(g.unit?' '+g.unit:'')+'</td><td class="mono">'+g.lab+(g.unit?' '+g.unit:'')+'</td><td><span class="gb crit">'+g.flag+'</span></td><td class="mono">'+g.age+' d</td></tr>';}).join('')||'<tr><td colspan="9" class="sub2">No value mismatches.</td></tr>';
+  return tableCard('Value mismatches',D.valueMismatches.length,'Subject + visit + test match, but the transcribed eCRF result disagrees with the lab result (value, units, or reference-range flag). The central lab is system of record for results; these are queried to the site.',['USUBJID','Site','Visit','LBTESTCD','LBCAT','EDC result','Lab result','Flag (EDC / lab)','Age'],rows);
+}
+
+// ===== mount =====
+var D=build();
+var TABS=[
+  {id:'summary',label:'Summary',render:renderSummary},
+  {id:'subjects',label:'Subject gaps',render:renderSubjects,count:D.subjectGaps.length},
+  {id:'visits',label:'Visit gaps',render:renderVisits,count:D.visitGaps.length},
+  {id:'categories',label:'Category gaps',render:renderCategories,count:D.categoryGaps.length},
+  {id:'dates',label:'Date mismatches',render:renderDates,count:D.dateMismatches.length},
+  {id:'values',label:'Value mismatches',render:renderValues,count:D.valueMismatches.length}
+];
+$('#ctxSub').innerHTML='Study <b>'+STUDY+'</b><span class="dot"></span>Central lab: <b>'+VENDOR+'</b><span class="dot"></span><b>'+SITES.length+'</b> sites<span class="dot"></span>'+D.subjects.both+' subjects reconciled';
+$('#xferPill').textContent='Transfer reconciled '+TRANSFER;
+var tabsEl=$('#tabs');
+TABS.forEach(function(t,i){
+  var b=document.createElement('button');b.className='tab'+(i===0?' active':'');b.setAttribute('data-view',t.id);
+  b.innerHTML=t.label+(t.count!==undefined?' <span class="cnt">'+t.count+'</span>':'');
+  b.addEventListener('click',function(){
+    tabsEl.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
+    $('#v-'+t.id).classList.add('on');
+  });
+  tabsEl.appendChild(b);
+  $('#v-'+t.id).innerHTML=t.render(D);
+});
+
+// deep-link ?tab=, ?still=1 (no animation needed)
+var params=new URLSearchParams(location.search), wantTab=params.get('tab');
+if(wantTab){var tb=document.querySelector('.tab[data-view="'+wantTab+'"]');if(tb)tb.click();}
+</script>
+</body>
+</html>

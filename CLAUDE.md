@@ -73,20 +73,26 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   `.git`/`.gitignore`/`.DS_Store`, de-brands CCS (see rule 1), and trims `demos/cro` to website
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
-- **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, and `demos/dm-dashboard.html` are
-  hand-authored**, not synced. Each is an in-repo, self-contained recreation of a feature from a large backend
-  app that is *not* bundled: `icf.html` recreates ICF generation from **TraceScribe2**; `ectd.html` recreates
-  eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`); `sites.html` recreates site-activation
-  tracking from **site-tracker** (`~/Documents/site-tracker`); `dm-dashboard.html` recreates the EDC
-  data-management dashboard from **301d-api** (`~/Documents/301d-api`, a tool that pulls live from the Fountayn
-  EDC API), **generalized to be multi-study** (a study switcher) instead of tied to AT01-301D. `sync-demos.sh`
-  never touches them; all use real source data/structure and are `file://`-safe (no fetch). `dm-dashboard.html`
-  is a deterministic synthetic-data generator (every view reconciles: status counts sum to enrollment, query
-  aging sums to the open total). Its charts use **ApexCharts inlined into the file** (offline-capable, the way
-  the source dashboard's own bundle ships it), so the demo is ~0.6 MB; chart animations are disabled so the
-  `?still=1` screenshot captures the final state. `icf.html`/`ectd.html`/`dm-dashboard.html` support `?still=1` for the
-  screenshot, and `dm-dashboard.html` also takes `?study=<id>` and `?tab=<view>`. Pattern for the next such app:
-  read the source to learn the feature (never edit it, rule 2), then build a standalone static recreation here.
+- **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`, and
+  `demos/data-reconciliation.html` are hand-authored**, not synced. Each is an in-repo, self-contained recreation
+  of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF generation from
+  **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
+  `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
+  `dm-dashboard.html` recreates the EDC data-management dashboard from **301d-api** (`~/Documents/301d-api`, a tool
+  that pulls live from the Fountayn EDC API), **generalized to be multi-study** (a study switcher) instead of tied
+  to AT01-301D; `data-reconciliation.html` recreates the EDC-vs-central-lab reconciliation dashboard from
+  **TraceScribe2** (`frontend/app/(dashboard)/data-reconciliation/`), modeled on the CDISC SDTM `LB` domain (real
+  `LBTESTCD`/`LBCAT`/`LBSPEC`, ISO-8601 `LBDTC`) and reconciling on `USUBJID + VISIT + LBTESTCD` with a +/-2 day
+  date tolerance. `sync-demos.sh` never touches them; all use real source data/structure and are `file://`-safe
+  (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
+  (every view reconciles: e.g. matched + EDC-only + lab-only = expected records, gap counts sum to open
+  discrepancies). `dm-dashboard.html`'s charts use **ApexCharts inlined into the file** (offline-capable, the way
+  the source dashboard's own bundle ships it), so that demo is ~0.6 MB with animations disabled so the `?still=1`
+  screenshot captures the final state; `data-reconciliation.html` uses lightweight inline SVG (a Venn overlap +
+  bars), so it stays ~33 KB. `icf.html`/`ectd.html`/`dm-dashboard.html`/`data-reconciliation.html` support
+  `?still=1` for the screenshot; `dm-dashboard.html` also takes `?study=<id>` and `?tab=<view>`, and
+  `data-reconciliation.html` takes `?tab=<view>`. Pattern for the next such app: read the source to learn the
+  feature (never edit it, rule 2), then build a standalone static recreation here.
 - **Live-tool exception - `demos/clinical-intelligence.html`** is a bundled single-file app (synced by
   `sync-demos.sh` from `~/Documents/clinical-intelligence`, em dashes stripped like the other bundles), but
   unlike every other demo it is **not `file://`-safe**: it calls the public ClinicalTrials.gov API v2 and
