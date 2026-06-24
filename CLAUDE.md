@@ -71,7 +71,8 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   those bundled copies** - re-run `sync-demos.sh`, which is the only thing that touches the
   siblings (author time only; the running site never depends on them). It strips bundled
   `.git`/`.gitignore`/`.DS_Store`, de-brands CCS (see rule 1), and trims `demos/cro` to website
-  files only.
+  files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
+  the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, and `demos/sites.html` are hand-authored**, not
   synced. Each is an in-repo, self-contained recreation of a feature from a large backend app that is
   *not* bundled: `icf.html` recreates ICF generation from **TraceScribe2**; `ectd.html` recreates eCTD
@@ -80,6 +81,14 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   real source data/structure and are `file://`-safe (no fetch). `icf.html`/`ectd.html` support `?still=1`
   for the screenshot. Pattern for the next such app: read the source to learn the feature (never edit it,
   rule 2), then build a standalone static recreation here.
+- **Live-tool exception - `demos/clinical-intelligence.html`** is a bundled single-file app (synced by
+  `sync-demos.sh` from `~/Documents/clinical-intelligence`, em dashes stripped like the other bundles), but
+  unlike every other demo it is **not `file://`-safe**: it calls the public ClinicalTrials.gov API v2 and
+  loads ApexCharts/SheetJS/Google Fonts via CDN, so it needs internet. Its detail page
+  (`projects/clinical-intelligence.html`) presents it as a **download** (`download` attribute) plus a
+  **new-tab launch**, and deliberately does **not** inline-embed it: the screenshot link uses `shot-launch`,
+  not `shot-link`, so `main.js`'s `embedDemoIfOnline()` skips it. The `fetch()` lives only in the demo, which
+  is why the file://-safety grep is scoped to `index.html`/`projects/`, never `demos/`.
 
 **Design system = `mydesign.md` (the "TraceScribe" system):** teal `#0D9488` primary, coral
 `#F97316` accent, Plus Jakarta Sans + JetBrains Mono (bundled locally in `assets/fonts/` for
