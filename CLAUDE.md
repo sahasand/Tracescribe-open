@@ -86,10 +86,12 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   date tolerance. `sync-demos.sh` never touches them; all use real source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
   (every view reconciles: e.g. matched + EDC-only + lab-only = expected records, gap counts sum to open
-  discrepancies). `dm-dashboard.html`'s charts use **ApexCharts inlined into the file** (offline-capable, the way
-  the source dashboard's own bundle ships it), so that demo is ~0.6 MB with animations disabled so the `?still=1`
-  screenshot captures the final state; `data-reconciliation.html` uses lightweight inline SVG (a Venn overlap +
-  bars), so it stays ~33 KB. `icf.html`/`ectd.html`/`dm-dashboard.html`/`data-reconciliation.html` support
+  discrepancies). Both render charts with **ApexCharts loaded from CDN** (the showcase is served online, so the
+  library is not inlined and both demos stay ~35 KB); chart animations are disabled so the `?still=1` screenshot
+  captures the final state. `data-reconciliation.html` keeps a custom SVG Venn for the EDC/lab overlap (ApexCharts
+  has no Venn type) plus ApexCharts bars for the breakdowns. A CDN `<script>` is not a `fetch()`/XHR, so it does
+  not trip the file://-safety grep (which is scoped to `index.html`/`projects/` anyway); the trade-off is that
+  these two demos need internet to draw their charts (fine for the deployed site). `icf.html`/`ectd.html`/`dm-dashboard.html`/`data-reconciliation.html` support
   `?still=1` for the screenshot; `dm-dashboard.html` also takes `?study=<id>` and `?tab=<view>`, and
   `data-reconciliation.html` takes `?tab=<view>`. Pattern for the next such app: read the source to learn the
   feature (never edit it, rule 2), then build a standalone static recreation here.
