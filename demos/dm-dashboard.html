@@ -89,6 +89,20 @@
   .bar .bt{height:13px;border-radius:99px;background:var(--muted);overflow:hidden}
   .bar .bt i{display:block;height:100%;border-radius:99px}
   .bar .bv{font-family:var(--mono);font-size:12px;font-weight:700;text-align:right}
+  /* delta + donut + horizontal bars + chart caption */
+  .delta{font-family:var(--mono);font-size:13px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .delta.down{color:var(--success)} .delta.up{color:var(--danger)}
+  .donut-wrap{display:flex;align-items:center;gap:18px}
+  .dleg{display:flex;flex-direction:column;gap:8px;flex:1}
+  .dl{font-size:13px;color:var(--mut-fg);display:flex;align-items:center;gap:8px}
+  .dl b{color:var(--fg);font-weight:700;font-family:var(--mono);margin-left:auto;padding-left:14px}
+  .hbars{display:flex;flex-direction:column;gap:9px}
+  .hb{display:grid;grid-template-columns:84px 1fr 44px;align-items:center;gap:10px}
+  .hb .hl{font-family:var(--mono);font-size:11px;color:var(--mut-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hb .ht{height:14px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .hb .ht i{display:block;height:100%;border-radius:99px;transition:width .4s ease-out}
+  .hb .hv{font-family:var(--mono);font-size:12px;font-weight:700;text-align:right}
+  .cap{font-size:11.5px;color:var(--mut-fg);margin-top:12px;line-height:1.45}
   /* heatmap */
   .heatwrap{overflow-x:auto}
   .heat{border-collapse:separate;border-spacing:4px;width:100%;min-width:760px}
@@ -255,6 +269,9 @@ function computeStudy(cfg){
   // query aging buckets summing to openQ
   var labels=['0-7 d','8-14 d','15-30 d','>30 d'], aging=cfg.agingFrac.map(function(f){return Math.round(openQ*f);});
   var diff=openQ-aging.reduce(function(a,b){return a+b;},0); aging[3]+=diff;
+  // prior-period (1 week ago) replay: slightly higher overall, older buckets shrank more (downward trend)
+  var pr=mulberry32(cfg.seed*7+3), priorAging=aging.map(function(n,i){return Math.round(n*(1.05+pr()*.2+i*.07));});
+  var priorQ=priorAging.reduce(function(a,b){return a+b;},0);
   // by-site query rollup
   var bySite=cfg.sites.map(function(site,idx){
     var subs=subjects.filter(function(s){return s.siteIdx===idx;});
@@ -270,15 +287,50 @@ function computeStudy(cfg){
     wl.push({qid:'Q-'+(10240+k*7+Math.floor(wr()*6)),sid:s.sid,site:'Site '+siteCode(s.site),form:FORMS[fi],field:FIELDS[fi],text:QTEXT[Math.floor(wr()*QTEXT.length)],age:age,status:wr()<.25?'Answered':'Open'});
   }
   var answered=Math.round(openQ*.16), closedMo=Math.round(openQ*(.5+(mulberry32(cfg.seed+5)()*.5)));
+  var totalEver=openQ+closedMo, closurePct=Math.round(closedMo/(totalEver||1)*100);
   return {cfg:cfg,subjects:subjects,sc:sc,sumForms:sumForms,sdvPct:sdvPct,reviewPct:reviewPct,
     openQ:openQ,openA:openA,overdue:overdue,missing:missing,lockReady:lockReady,
     heat:heat,totalGv:totalGv,tblk:tblk,aging:aging,agingLabels:labels,bySite:bySite,worklist:wl,
-    answered:answered,closedMo:closedMo};
+    answered:answered,closedMo:closedMo,priorAging:priorAging,priorQ:priorQ,deltaQ:openQ-priorQ,
+    totalEver:totalEver,closurePct:closurePct};
 }
 
 function heatStyle(p){var h=Math.round(p*1.52);return 'background:hsl('+h+' 62% 91%);color:hsl('+h+' 52% 27%)';}
 function agePill(d){var h=d<=7?152:d<=14?78:d<=30?38:8;return 'background:hsl('+h+' 70% 92%);color:hsl('+h+' 55% 30%)';}
-function statusColor(st){return st==='Active'?'199 80% 45%':st==='Completed'?'160 84% 38%':st==='Screening'?'38 80% 50%':'0 72% 55%';}
+var MONO="'JetBrains Mono',ui-monospace,monospace", SANS="'Plus Jakarta Sans',system-ui,sans-serif";
+function niceMax(m){if(m<=0)return 1;var p=Math.pow(10,Math.floor(Math.log10(m))),f=m/p;var nf=f<=1?1:f<=1.5?1.5:f<=2?2:f<=3?3:f<=4?4:f<=5?5:f<=7?7:10;return nf*p;}
+
+function svgDonut(segs,centerTop,centerSub){
+  var total=segs.reduce(function(a,s){return a+s.value;},0)||1, C=2*Math.PI*58, accum=0, arcs='';
+  segs.forEach(function(s){ if(s.value<=0)return; var len=s.value/total*C;
+    arcs+='<circle cx="80" cy="80" r="58" fill="none" stroke="'+s.color+'" stroke-width="22" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-accum).toFixed(2)+'"/>'; accum+=len; });
+  return '<svg viewBox="0 0 160 160" width="146" height="146" style="flex:none"><g transform="rotate(-90 80 80)"><circle cx="80" cy="80" r="58" fill="none" stroke="hsl(220 14% 92%)" stroke-width="22"/>'+arcs+'</g>'+
+    '<text x="80" y="77" text-anchor="middle" style="fill:hsl(222 47% 11%);font:800 30px '+SANS+'">'+centerTop+'</text>'+
+    '<text x="80" y="96" text-anchor="middle" style="fill:hsl(220 9% 46%);font:600 9px '+MONO+';letter-spacing:1px">'+centerSub+'</text></svg>';
+}
+function svgColumns(cats,prior,now,nowColor){
+  var W=520,H=300,pl=34,prr=10,pt=30,pb=32,x0=pl,x1=W-prr,y0=pt,y1=H-pb,pw=x1-x0,ph=y1-y0;
+  var nice=niceMax(Math.max.apply(null,prior.concat(now,[1]))), y=function(v){return y1-(v/nice)*ph;};
+  var g='';
+  for(var t=0;t<=4;t++){var gv=nice*t/4,gy=y(gv);g+='<line x1="'+x0+'" y1="'+gy+'" x2="'+x1+'" y2="'+gy+'" stroke="hsl(220 13% 91%)"/>'+
+    '<text x="'+(x0-6)+'" y="'+(gy+3)+'" text-anchor="end" style="fill:hsl(220 9% 46%);font:500 9px '+MONO+'">'+Math.round(gv)+'</text>';}
+  var n=cats.length,gw=pw/n,bw=gw*0.26,bars='',labels='';
+  for(var i=0;i<n;i++){var cx=x0+gw*i+gw/2,pv=prior[i],nv=now[i],pX=cx-bw-3,nX=cx+3;
+    bars+='<rect x="'+pX.toFixed(1)+'" y="'+y(pv).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(y1-y(pv)).toFixed(1)+'" rx="3" fill="hsl(220 13% 76%)"/>';
+    bars+='<rect x="'+nX.toFixed(1)+'" y="'+y(nv).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(y1-y(nv)).toFixed(1)+'" rx="3" fill="'+nowColor+'"/>';
+    if(nv>0)labels+='<text x="'+(nX+bw/2).toFixed(1)+'" y="'+(y(nv)-4).toFixed(1)+'" text-anchor="middle" style="fill:hsl(222 30% 32%);font:700 10px '+MONO+'">'+nv+'</text>';
+    labels+='<text x="'+cx.toFixed(1)+'" y="'+(y1+15)+'" text-anchor="middle" style="fill:hsl(220 9% 46%);font:500 10px '+MONO+'">'+cats[i]+'</text>';
+  }
+  var leg='<rect x="'+x0+'" y="9" width="11" height="11" rx="2" fill="hsl(220 13% 76%)"/><text x="'+(x0+16)+'" y="18" style="fill:hsl(220 9% 46%);font:500 10px '+MONO+'">1 week ago</text>'+
+    '<rect x="'+(x0+92)+'" y="9" width="11" height="11" rx="2" fill="'+nowColor+'"/><text x="'+(x0+108)+'" y="18" style="fill:hsl(220 9% 46%);font:500 10px '+MONO+'">Now</text>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-height:300px">'+g+bars+labels+leg+'</svg>';
+}
+function hbars(items,opts){opts=opts||{};
+  var max=opts.max||Math.max.apply(null,items.map(function(i){return i.value;}).concat([1]));
+  return '<div class="hbars">'+items.map(function(it){
+    return '<div class="hb"><span class="hl">'+it.label+'</span><div class="ht"><i style="width:'+(it.value/max*100)+'%;background:'+it.color+'"></i></div><span class="hv">'+it.value+(opts.suffix||'')+'</span></div>';
+  }).join('')+'</div>';
+}
 
 function kpi(cls,label,val,sub){return '<div class="kpi '+cls+'"><div class="l">'+label+'</div><div class="v">'+val+'</div><div class="s">'+sub+'</div></div>';}
 
@@ -295,24 +347,24 @@ function renderOverview(D){
     kpi('red','Missing items',D.missing,'ended casebooks, lock blockers')+
   '</div>';
 
-  // enrollment + status
-  var segs=[['Active','199 80% 50%'],['Completed','160 84% 40%'],['Screening','38 85% 55%'],['Withdrawn','0 72% 58%']];
-  var bar='', leg='';
-  segs.forEach(function(p){var n=D.sc[p[0]]||0; if(n)bar+='<i style="width:'+(n/c.enrolled*100)+'%;background:hsl('+p[1]+')"></i>';
-    leg+='<span><span class="sq" style="background:hsl('+p[1]+')"></span><b>'+n+'</b> '+p[0]+'</span>';});
-  var remaining=c.target-c.enrolled;
-  if(remaining>0)bar+='<i style="width:'+(remaining/c.target*100)+'%;background:transparent"></i>';
-  var enr='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>Enrollment vs target</div><div class="b">'+
-    '<div class="enr-bar">'+bar+'</div>'+
-    '<div class="target"><span>'+c.enrolled+' enrolled</span><span>'+(remaining>0?remaining+' to target':'target met')+' ('+c.target+')</span></div>'+
-    '<div class="enr-leg">'+leg+'</div></div></div>';
+  // subjects-by-status donut + enrollment progress
+  var statusSegs=[
+    {label:'Active',value:D.sc.Active,color:'hsl(199 80% 48%)'},
+    {label:'Completed',value:D.sc.Completed,color:'hsl(160 84% 38%)'},
+    {label:'Screening',value:D.sc.Screening,color:'hsl(38 85% 52%)'},
+    {label:'Withdrawn',value:D.sc.Withdrawn,color:'hsl(0 72% 55%)'}
+  ];
+  var dleg=statusSegs.map(function(s){return '<span class="dl"><span class="sq" style="background:'+s.color+'"></span>'+s.label+' <b>'+s.value+'</b></span>';}).join('');
+  var remaining=c.target-c.enrolled, pctEnr2=Math.round(c.enrolled/c.target*100);
+  var enr='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>Subjects by status<span class="r">'+c.enrolled+' enrolled</span></div><div class="b">'+
+    '<div class="donut-wrap">'+svgDonut(statusSegs,c.enrolled,'ENROLLED')+'<div class="dleg">'+dleg+'</div></div>'+
+    '<div class="enr-bar" style="margin-top:15px"><i style="width:'+pctEnr2+'%;background:linear-gradient(90deg,var(--primary),hsl(160 84% 45%))"></i></div>'+
+    '<div class="target"><span>'+c.enrolled+' of '+c.target+' target</span><span>'+pctEnr2+'%'+(remaining>0?' &middot; '+remaining+' to go':' &middot; target met')+'</span></div></div></div>';
 
-  // aging
-  var maxA=Math.max.apply(null,D.aging.concat([1]));
-  var hues=[152,78,38,8];
-  var ab='';
-  D.aging.forEach(function(n,i){ab+='<div class="bar"><span class="bl">'+D.agingLabels[i]+'</span><div class="bt"><i style="width:'+(n/maxA*100)+'%;background:hsl('+hues[i]+' 68% 52%)"></i></div><span class="bv">'+n+'</span></div>';});
-  var ag='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Open queries by age<span class="r">'+D.openQ+' open</span></div><div class="b"><div class="bars">'+ab+'</div></div></div>';
+  // lock readiness by gate (funnel)
+  var gateItems=GATES.map(function(g,i){var h=Math.round(D.totalGv[i]*1.52);return {label:g,value:D.totalGv[i],color:'hsl('+h+' 60% 48%)'};});
+  var ag='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Lock readiness by gate<span class="r">study-wide % of forms</span></div><div class="b">'+hbars(gateItems,{max:100,suffix:'%'})+
+    '<p class="cap">A subject is lock-ready only when every form clears all 8 gates; the study locks when all subjects are ready.</p></div></div>';
 
   // heatmap
   var head='<tr><th class="site">Site</th>'+GATES.map(function(g){return '<th>'+g+'</th>';}).join('')+'</tr>';
@@ -351,19 +403,18 @@ function renderSubjects(D){
 }
 
 function renderQueries(D){
+  var dq=D.deltaQ, deltaHTML=dq===0?'':'<span class="delta '+(dq<0?'down':'up')+'">'+(dq<0?'▼':'▲')+Math.abs(dq)+'</span>';
   var k='<div class="kpis">'+
-    kpi('coral','Open queries',D.openQ,'awaiting site response / closure')+
-    kpi('blue','Answered',D.answered,'awaiting DM closure')+
-    kpi('teal','Closed this month',D.closedMo,'resolved and verified')+
+    kpi('coral','Open queries',D.openQ+deltaHTML,'vs last week ('+D.priorQ+' then)')+
+    kpi('blue','Answered',D.answered,'site responded, awaiting DM closure')+
+    kpi('teal','Query closure',D.closurePct+'%',D.closedMo+' of '+D.totalEver+' closed')+
     kpi('amber','Open alerts',D.openA,'edit-check / system alerts')+
   '</div>';
-  var maxA=Math.max.apply(null,D.aging.concat([1])), hues=[152,78,38,8];
-  var ab='';
-  D.aging.forEach(function(n,i){ab+='<div class="bar"><span class="bl">'+D.agingLabels[i]+'</span><div class="bt"><i style="width:'+(n/maxA*100)+'%;background:hsl('+hues[i]+' 68% 52%)"></i></div><span class="bv">'+n+'</span></div>';});
-  var ag='<div class="card"><div class="h">Query aging<span class="r">'+D.openQ+' open</span></div><div class="b"><div class="bars">'+ab+'</div></div></div>';
-
-  var bs=D.bySite.map(function(r){return '<tr><td>'+r.site+'</td><td class="num">'+r.open+'</td><td class="num">'+r.answered+'</td><td class="num">'+r.alerts+'</td></tr>';}).join('');
-  var byside='<div class="card"><div class="h">By site</div><div class="b"><div class="tblwrap" style="max-height:280px"><table class="tbl"><thead><tr><th>Site</th><th class="num">Open Q</th><th class="num">Answered</th><th class="num">Open A</th></tr></thead><tbody>'+bs+'</tbody></table></div></div></div>';
+  // grouped column chart: open queries now vs 1 week ago
+  var ag='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="13" y="6" width="3" height="11"/></svg>Query aging<span class="r">now vs 1 week ago (replayed)</span></div><div class="b">'+svgColumns(D.agingLabels,D.priorAging,D.aging,'hsl(25 90% 52%)')+'</div></div>';
+  // by-site distributed horizontal bars
+  var siteItems=D.bySite.slice(0,8).map(function(r,i){return {label:r.site.replace(/ - .*/,''),value:r.open,color:i===0?'hsl(25 90% 52%)':'hsl(168 66% 42%)'};});
+  var byside='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>Open queries by site<span class="r">top sites</span></div><div class="b">'+hbars(siteItems,{})+'</div></div>';
 
   var wl=D.worklist.map(function(q){
     return '<tr><td class="sid">'+q.qid+'</td><td class="mono">'+q.sid+'</td><td>'+q.site+'</td><td>'+q.form+' / '+q.field+'</td><td class="qtext">'+q.text+'</td><td><span class="agepill" style="'+agePill(q.age)+'">'+q.age+' d</span></td><td><span class="sb '+(q.status==='Open'?'withdrawn':'active')+'" style="text-transform:none">'+q.status+'</span></td></tr>';
