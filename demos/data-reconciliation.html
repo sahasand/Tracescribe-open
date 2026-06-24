@@ -129,6 +129,7 @@
   Recreation of an EDC-to-central-lab external data reconciliation, the DM activity of proving the site's eCRF entries agree with the lab vendor's direct electronic transfer before database lock. Data is synthetic but modeled on the CDISC SDTM <code>LB</code> domain (real <code>LBTESTCD</code>, <code>LBCAT</code>, <code>LBSPEC</code>, ISO-8601 <code>LBDTC</code>) and reconciles on <code>USUBJID + VISIT + LBTESTCD</code> with a configurable +/-2 day collection-date tolerance. Every figure is computed from the records, nothing is hard-coded.
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
 <script>
 "use strict";
 var $=function(s,r){return (r||document).querySelector(s);};
@@ -277,10 +278,6 @@ function build(){
 
 // ===== rendering helpers =====
 function kpi(cls,label,val,sub){return '<div class="kpi '+cls+'"><div class="l">'+label+'</div><div class="v">'+val+'</div><div class="s">'+sub+'</div></div>';}
-function hbars(items,opts){opts=opts||{};var max=opts.max||Math.max.apply(null,items.map(function(i){return i.value;}).concat([1]));
-  return '<div class="hbars">'+items.map(function(it){
-    return '<div class="hb"><span class="hl">'+it.label+'</span><div class="ht"><i style="width:'+(it.value/max*100)+'%;background:'+it.color+'"></i></div><span class="hv">'+it.value+(opts.suffix||'')+'</span></div>';
-  }).join('')+'</div>';}
 function venn(edcOnly,matched,labOnly){
   // two overlapping circles: EDC (teal) left, Lab (coral) right
   return '<svg viewBox="0 0 430 210" width="100%" style="display:block;max-width:430px;margin:0 auto">'+
@@ -295,6 +292,22 @@ function venn(edcOnly,matched,labOnly){
     '</svg>';
 }
 function gbadge(g){var m={EDC_ONLY:['edc','EDC only'],LAB_ONLY:['lab','Lab only']};var x=m[g]||['warn',g];return '<span class="gb '+x[0]+'">'+x[1]+'</span>';}
+
+// ===== ApexCharts (CDN; the showcase is served online) =====
+var AXFONT='Plus Jakarta Sans, system-ui, sans-serif', AXMONO='JetBrains Mono, monospace', CHARTS=[];
+function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy();}catch(e){}});CHARTS=[];}
+function addChart(sel,opts){var el=document.querySelector(sel);if(!el||typeof ApexCharts==='undefined')return;var c=new ApexCharts(el,opts);c.render();CHARTS.push(c);}
+function reconBar(sel,items){addChart(sel,{
+  chart:{type:'bar',height:Math.max(160,items.length*40+26),toolbar:{show:false},fontFamily:AXFONT,animations:{enabled:false}},
+  grid:{borderColor:'#e9ebef'},series:[{name:'Discrepancies',data:items.map(function(i){return i.value;})}],colors:items.map(function(i){return i.color;}),
+  plotOptions:{bar:{horizontal:true,distributed:true,borderRadius:4,barHeight:'58%'}},
+  dataLabels:{enabled:true,style:{fontSize:'11px',fontFamily:AXMONO,colors:['#fff']}},
+  xaxis:{categories:items.map(function(i){return i.label;}),labels:{style:{fontFamily:AXMONO,fontSize:'10px'}}},
+  yaxis:{labels:{style:{fontFamily:AXFONT,fontSize:'12px'}}},legend:{show:false},
+  tooltip:{y:{formatter:function(v){return v+' discrepancies';}}}
+});}
+function mountReconCharts(){var s=$('#v-summary');if(!s||!s.classList.contains('on'))return;destroyCharts();
+  reconBar('#ch-type',D.byType);reconBar('#ch-site',D.bySite);reconBar('#ch-cat',D.byCat);reconBar('#ch-aging',D.aging);}
 
 function renderSummary(D){
   var k='<div class="kpis">'+
@@ -314,11 +327,11 @@ function renderSummary(D){
     '<div class="matchrate"><div class="big">'+D.matchRate+'%</div><div class="lbl">overall match rate</div></div>'+
     '</div></div></div>';
 
-  var types='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Discrepancies by type<span class="r">'+D.open+' open</span></div><div class="b">'+hbars(D.byType,{})+'</div></div>';
+  var types='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Discrepancies by type<span class="r">'+D.open+' open</span></div><div class="b"><div id="ch-type" style="min-height:226px"></div></div></div>';
 
-  var site='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>By site<span class="r">requisition errors cluster by site</span></div><div class="b">'+hbars(D.bySite,{})+'</div></div>';
-  var cat='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>By lab category<span class="r">LBCAT</span></div><div class="b">'+hbars(D.byCat,{})+'</div></div>';
-  var aging='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Aging of open discrepancies<span class="r">days since detected</span></div><div class="b">'+hbars(D.aging,{})+
+  var site='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>By site<span class="r">requisition errors cluster by site</span></div><div class="b"><div id="ch-site" style="min-height:150px"></div></div></div>';
+  var cat='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>By lab category<span class="r">LBCAT</span></div><div class="b"><div id="ch-cat" style="min-height:150px"></div></div></div>';
+  var aging='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Aging of open discrepancies<span class="r">days since detected</span></div><div class="b"><div id="ch-aging" style="min-height:190px"></div>'+
     '<p class="cap">Stale discrepancies block database lock. Each is queried to the site (or the lab corrects its file and retransmits), then reconciliation re-runs.</p></div></div>';
 
   return k+'<div class="row2">'+flow+types+'</div><div class="row3">'+site+cat+'</div><div class="row3">'+aging+'<div class="card"><div class="h">How matching works</div><div class="b"><p class="cap" style="margin-top:0">Records are joined on <b>USUBJID + VISIT + LBTESTCD</b> (qualified by <b>LBSPEC</b>), then classified <b>Matched</b> / <b>EDC only</b> / <b>Lab only</b>. For matched accessions, the EDC collection date <code style="font-family:var(--mono)">LBDTC</code> is compared to the lab collection date; a delta beyond the study-defined +/-'+TOL+' day tolerance is flagged. Value mismatches are surfaced where the site also transcribes a result into the eCRF (the central lab remains system of record for results).</p></div></div></div>';
@@ -371,10 +384,12 @@ TABS.forEach(function(t,i){
     tabsEl.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');
     document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
     $('#v-'+t.id).classList.add('on');
+    if(t.id==='summary')mountReconCharts();else destroyCharts();
   });
   tabsEl.appendChild(b);
   $('#v-'+t.id).innerHTML=t.render(D);
 });
+mountReconCharts();
 
 // deep-link ?tab=, ?still=1 (no animation needed)
 var params=new URLSearchParams(location.search), wantTab=params.get('tab');
