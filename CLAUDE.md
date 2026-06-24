@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-"Clinical Projects by San" - a **pure-static, zero-build** HTML showcase that presents a
+"TraceScribe Open" - a **pure-static, zero-build** HTML showcase that presents a
 curated set of clinical software projects, each with a live, interactive demo. A landing page
 (`index.html`) links to one detail page per project (`projects/*.html`); each detail page has a
 **"Launch live demo →"** button that opens that project's bundled static demo in a new tab.

@@ -1,6 +1,6 @@
-# Clinical Projects by San
+# TraceScribe Open
 
-A static showcase of clinical-trial software, each project running live in your browser.
+Open-source clinical-research software, free to try and running live in your browser.
 
 ## View it
 
