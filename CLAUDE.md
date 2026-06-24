@@ -73,11 +73,15 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   `.git`/`.gitignore`/`.DS_Store`, de-brands CCS (see rule 1), and trims `demos/cro` to website
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
-- **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`, and
-  `demos/data-reconciliation.html` are hand-authored**, not synced. Each is an in-repo, self-contained recreation
-  of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF generation from
-  **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
+- **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
+  `demos/data-reconciliation.html`, and `demos/edc-capture.html` are hand-authored**, not synced. Each is an in-repo,
+  self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
+  generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
+  `edc-capture.html` recreates the EDC/eCRF data-capture experience from **redcap-db** (`~/Documents/redcap-db`, a
+  Next.js + Postgres capture app): a schema-compiled form with live `show_if` branching, validation, repeating
+  instances, and an append-only audit trail, the form engine (`expr.ts`/`validate.ts` semantics) reimplemented in the
+  browser and verified against the documented YAML branches;
   `dm-dashboard.html` recreates the EDC data-management dashboard from **301d-api** (`~/Documents/301d-api`, a tool
   that pulls live from the Fountayn EDC API), **generalized to be multi-study** (a study switcher) instead of tied
   to AT01-301D; `data-reconciliation.html` recreates the EDC-vs-central-lab reconciliation dashboard from
