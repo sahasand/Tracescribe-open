@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, `demos/pk-analysis.html`, and `demos/biometrics-pipeline.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, `demos/pk-analysis.html`, `demos/biometrics-pipeline.html`, and `demos/feasibility.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -138,6 +138,26 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   light up the contributing ADaM rows then the SDTM source records, with the derivation printed, plus a
   subject picker for the reverse direction. Takes `?tab=<view>` and `?still=1` (pre-selects a traced TEAE
   cell for the screenshot).
+  `feasibility.html` is the seventh from-scratch demo (no source app) - a clinical trial **feasibility
+  workbench** built from feasibility research, filling the previously thin Feasibility phase (phase 1) of the
+  lifecycle homepage. It is a **live what-if cockpit**: one control panel (protocol I/E criteria toggles +
+  thresholds, target N, sites, activation ramp, screening rate, planned LPR, site-mix strategy) drives four
+  connected engines that all recompute and reconcile together for one HFrEF Phase 3: (1) an **eligibility
+  funnel** filtering a synthetic seeded patient population by real HFrEF criteria (NYHA, LVEF cutoff, eGFR floor,
+  prior HF hosp, GDMT, exclusions), with **killer-criteria** flagged by full **set-difference** recovery (>30%
+  of the current pool), not the sequential drop; (2) an **Anisimov Poisson-Gamma Monte Carlo** enrollment
+  forecast (per-site Gamma rates, staggered activation, Poisson arrivals thinned by yield x consent), giving the
+  cumulative curve + 5-95% band, P(reach N by planned LPR), and the LPR distribution, with the MC mean
+  **cross-checked against the closed-form cumulative mean** (the aggregate is NOT Negative-Binomial under
+  staggered activation, but its mean is closed-form by linearity) and **per-site/per-sim PRNG sub-streams** so
+  the live ripple stays monotone; (3) a **site/country mix** (regions with startup lag, recruit-rate multiplier,
+  cost/patient; balanced/speed/cost strategies that ripple to the forecast); and (4) a **Go/No-Go scorecard**
+  gated to the worst dimension (eTMF-style), so a healthy composite still reads No-Go on any failing dimension.
+  Reconciliation invariants hold (screen-fail = `1 - yield x consent`; the scorecard reads the forecast's own
+  P(on-time); MC mean ~ closed-form), checked by an in-page self-test. Interaction uses an instant closed-form
+  preview on slider drag + debounced full Monte Carlo. Takes `?tab=<view>`, `?still=1` (a deliberately tight
+  base scenario: LVEF<=35 killer + Amber/CONDITIONAL verdict), and deep-linkable scenario params (`?n=`,
+  `?sites=`, `?rate=`, `?lpr=`, `?lvef=`, `?egfr=`, `?strat=`).
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
