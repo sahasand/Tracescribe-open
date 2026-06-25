@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, and `demos/etmf.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, and `demos/pk-analysis.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -108,6 +108,14 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   filing **timeliness** (5-business-day target), QC, and a composite **inspection-readiness score gated to Amber/Red by
   any missing CORE artifact** (so a 92 score still reads "Action required"); interactive zone drill-down and a
   **"File now"** action on a gap that recomputes readiness. Takes `?tab=<view>`.
+  `pk-analysis.html` is the fifth from-scratch demo (no source app) - the full pharmacokinetic statistics
+  workflow built from NCA research: a 5-tab demo (PK analysis plan, sample reconciliation, statistical
+  analysis, results figures, PK report) whose data is **simulated from a 1-compartment oral Bateman model**
+  (log-normal between-subject variability) and run through a **real in-browser NCA engine** (linear-up/log-down
+  trapezoidal AUC, best-fit terminal lambda-z with R-squared/point criteria, BLQ rules, CL/F, Vz/F) - so the
+  recovered geometric-mean parameters land on the simulation's targets and dose proportionality (power-model
+  slope ~1) is computed, not asserted. Features the standard PK figures (mean concentration-time with a
+  **linear/semi-log toggle**, spaghetti, Cmax/AUC box plots, log-log dose-proportionality scatter). Takes `?tab=<view>`.
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
