@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eTMF - TraceScribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --accent-soft:hsl(25 95% 53%/.12); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 50%); --info:hsl(199 89% 48%); --danger:hsl(0 72% 51%);
+    --radius:10px; --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1340px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex:none}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em;line-height:1.1}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--primary);text-transform:uppercase}
+  .hmeta{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .rag{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:999px}
+  .rag .d{width:9px;height:9px;border-radius:50%}
+  .rag.green{background:hsl(160 84% 36%/.13);color:var(--success)} .rag.green .d{background:var(--success)}
+  .rag.amber{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)} .rag.amber .d{background:var(--warning)}
+  .rag.red{background:hsl(0 72% 51%/.13);color:var(--danger)} .rag.red .d{background:var(--danger)}
+  .ctx{max-width:1340px;margin:0 auto;padding:18px 20px 0}
+  .ctx h1{font-size:20px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ctx h1 .ph{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:6px;background:var(--accent-soft);color:hsl(25 80% 42%)}
+  .ctx .sub{font-size:13px;color:var(--mut-fg);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ctx .sub b{color:var(--fg);font-weight:600}
+  .ctx .dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+  .tabs{max-width:1340px;margin:16px auto 0;padding:0 20px;display:flex;gap:3px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{font-family:var(--font);font-weight:600;font-size:14px;color:var(--mut-fg);background:none;border:0;border-bottom:2px solid transparent;padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:-1px}
+  .tab svg{width:15px;height:15px}
+  .tab:hover{color:var(--fg)}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  .tab .cnt{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--muted);color:var(--mut-fg)}
+  .tab.active .cnt{background:var(--primary-soft);color:var(--primary)}
+  main{max-width:1340px;margin:0 auto;padding:20px 20px 64px}
+  .view{display:none} .view.on{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:18px}
+  .card>.h{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--mut-fg);padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card>.h svg{width:15px;height:15px;color:var(--primary)}
+  .card>.h .r{margin-left:auto;font-family:var(--font);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--mut-fg)}
+  .card>.b{padding:16px}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-bottom:18px}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--border);border-left-width:3px;border-radius:12px;padding:13px 14px;box-shadow:var(--shadow)}
+  .kpi .l{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut-fg)}
+  .kpi .v{font-size:25px;font-weight:800;letter-spacing:-.02em;margin-top:5px;line-height:1}
+  .kpi .s{font-family:var(--mono);font-size:10px;color:var(--mut-fg);margin-top:5px}
+  .kpi.teal{border-left-color:var(--primary)} .kpi.teal .v{color:var(--primary)}
+  .kpi.green{border-left-color:var(--success)} .kpi.green .v{color:var(--success)}
+  .kpi.amber{border-left-color:var(--warning)} .kpi.amber .v{color:hsl(38 80% 42%)}
+  .kpi.red{border-left-color:var(--danger)} .kpi.red .v{color:var(--danger)}
+  .kpi.blue{border-left-color:var(--info)} .kpi.blue .v{color:var(--info)}
+  .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+  @media(max-width:1080px){.row2{grid-template-columns:1fr}}
+  .bars{display:flex;flex-direction:column;gap:9px}
+  .zbar{display:grid;grid-template-columns:24px 1fr 96px;align-items:center;gap:11px;cursor:pointer;padding:2px 4px;border-radius:7px}
+  .zbar:hover{background:hsl(168 76% 32%/.04)}
+  .zbar .zn{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--mut-fg)}
+  .zbar .zl{font-size:12.5px}
+  .zbar .zt{height:15px;border-radius:6px;background:var(--muted);overflow:hidden;margin-top:3px}
+  .zbar .zt i{display:block;height:100%;border-radius:6px}
+  .zbar .zv{font-family:var(--mono);font-size:11px;text-align:right;color:var(--mut-fg)}
+  .zbar .zv b{color:var(--fg);font-weight:700}
+  .ms{display:flex;flex-direction:column;gap:11px}
+  .msrow{display:grid;grid-template-columns:130px 1fr 50px;align-items:center;gap:10px}
+  .msrow .ml{font-size:12.5px;display:flex;align-items:center;gap:7px}
+  .msrow .ml svg{width:14px;height:14px}
+  .msrow .mt{height:9px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .msrow .mt i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+  .msrow .mv{font-family:var(--mono);font-size:11px;font-weight:600;text-align:right}
+  .cap{font-size:11.5px;color:var(--mut-fg);margin-top:12px;line-height:1.45}
+  .cap code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+  /* tmf tree */
+  .zone{border:1px solid var(--border);border-radius:11px;margin-bottom:9px;overflow:hidden}
+  .zhead{display:flex;align-items:center;gap:12px;padding:13px 15px;cursor:pointer}
+  .zhead:hover{background:hsl(168 76% 32%/.03)}
+  .zhead .num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--primary);width:24px}
+  .zhead .nm{font-weight:700;font-size:14px}
+  .zhead .meter{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .zhead .meter .t{width:120px;height:10px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .zhead .meter .t i{display:block;height:100%;border-radius:99px}
+  .zhead .meter .pc{font-family:var(--mono);font-size:12px;font-weight:700;width:42px;text-align:right}
+  .zhead .chev{width:16px;height:16px;color:var(--mut-fg);transition:transform .2s}
+  .zone.open .chev{transform:rotate(90deg)}
+  .zbody{display:none;border-top:1px solid var(--border);padding:6px 6px 6px}
+  .zone.open .zbody{display:block}
+  .arow{display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:8px;font-size:13px}
+  .arow:hover{background:var(--muted)}
+  .arow .ref{font-family:var(--mono);font-size:11px;color:var(--mut-fg);width:64px;flex:none}
+  .arow .an{flex:1}
+  .arow .lv{font-family:var(--mono);font-size:9.5px;color:var(--mut-fg);text-transform:uppercase}
+  .stb{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+  .stb.final{background:hsl(160 84% 36%/.13);color:var(--success)}
+  .stb.inqc{background:hsl(199 89% 48%/.12);color:hsl(199 80% 40%)}
+  .stb.late{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)}
+  .stb.draft{background:hsl(220 9% 46%/.12);color:var(--mut-fg)}
+  .stb.missing{background:hsl(0 72% 51%/.12);color:var(--danger)}
+  .crit{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--accent);margin-left:6px}
+  .tblwrap{overflow:auto;max-height:600px;border-radius:10px;border:1px solid var(--border)}
+  table.tbl{border-collapse:collapse;width:100%;font-size:13px}
+  table.tbl th{position:sticky;top:0;background:var(--muted);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut-fg);text-align:left;padding:9px 11px;white-space:nowrap;z-index:1}
+  table.tbl td{padding:8px 11px;border-top:1px solid var(--border);white-space:nowrap}
+  table.tbl tr:hover td{background:hsl(168 76% 32%/.03)}
+  .filterbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}
+  .fb{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--mut-fg);cursor:pointer}
+  .fb.on{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-weight:700;font-size:12px;border-radius:7px;padding:5px 11px;cursor:pointer;border:1px solid transparent;background:var(--primary);color:#fff}
+  .btn:hover{filter:brightness(1.05)} .btn svg{width:13px;height:13px}
+  .banner{font-family:var(--mono);font-size:12px;color:var(--success);margin-bottom:12px;display:none}
+  .banner.on{display:block}
+  .gapcard{display:flex;align-items:center;gap:13px;padding:12px 14px;border:1px solid var(--border);border-radius:11px;margin-bottom:9px}
+  .gapcard.critical{border-color:hsl(0 72% 51%/.4);background:hsl(0 72% 51%/.04)}
+  .gapcard .gi{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:hsl(0 72% 51%/.12);color:var(--danger)}
+  .gapcard.late .gi{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)}
+  .gapcard .gi svg{width:16px;height:16px}
+  .gapcard .gn{font-weight:600;font-size:13.5px}
+  .gapcard .gm{font-family:var(--mono);font-size:10.5px;color:var(--mut-fg);margin-top:2px}
+  .gapcard .gr{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .foot{max-width:1340px;margin:0 auto;padding:6px 20px 40px;font-size:12px;color:var(--mut-fg);line-height:1.5}
+  .foot code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+  <span class="brand">TraceScribe<small>eTMF</small></span>
+  <span class="hmeta"><span class="pill">DIA TMF Reference Model v3.3</span><span class="rag" id="ragPill"></span></span>
+</div></header>
+
+<section class="ctx">
+  <h1>Trial Master File <span class="ph">Inspection readiness</span></h1>
+  <div class="sub" id="ctxSub"></div>
+</section>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-overview"></section>
+  <section class="view" id="v-structure"></section>
+  <section class="view" id="v-documents"></section>
+  <section class="view" id="v-gaps"></section>
+</main>
+
+<div class="foot">
+  Recreation of an electronic Trial Master File: the inspection-ready repository of GCP essential documents (ICH E6), organized by the <b>DIA TMF Reference Model</b> (11 zones, <code>zone.section.artifact</code>). It tracks <b>completeness</b> (present vs expected), <b>timeliness</b> (filed within 5 business days), <b>quality</b> (QC), and a composite <b>inspection-readiness</b> status gated by missing critical documents. Synthetic study; zone names and the verified artifact IDs are the real Reference Model; every figure is computed from the document list.
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script>
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pad(n,w){return String(n).padStart(w||2,'0');}
+function addDays(iso,n){var d=new Date(iso+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+var AXFONT='Plus Jakarta Sans, system-ui, sans-serif', AXMONO='JetBrains Mono, monospace', CHARTS=[];
+var STUDY='NX-201', SPONSOR='Nexa Therapeutics', ASOF='2026-06-19';
+
+var ZONES=[
+ {n:'01',name:'Trial Management'},{n:'02',name:'Central Trial Documents'},{n:'03',name:'Regulatory'},
+ {n:'04',name:'IRB / IEC and other Approvals'},{n:'05',name:'Site Management'},{n:'06',name:'IP and Trial Supplies'},
+ {n:'07',name:'Safety Reporting'},{n:'08',name:'Central & Local Testing'},{n:'09',name:'Third Parties'},
+ {n:'10',name:'Data Management'},{n:'11',name:'Statistics'}
+];
+var SITES=['101 Boston','104 Berlin','109 Tokyo','112 Toronto','120 Madrid'];
+
+// status: final | late | inqc | draft | missing ; crit = core artifact (gates readiness)
+function A(ref,name,zone,level,status,crit,site){return {ref:ref,name:name,zone:zone,level:level,status:status,crit:!!crit,site:site||null};}
+// trial / country level
+var TRIAL=[
+ A('01.01.01','Trial Master File Plan','01','Trial','final'),
+ A('01.02.01','Clinical Monitoring Plan','01','Trial','final'),
+ A('01.02.02','Communication Plan','01','Trial','final'),
+ A('01.03.01','Risk Management / Quality Plan','01','Trial','final'),
+ A('01.04.01','Recruitment & Retention Plan','01','Trial','final'),
+ A('02.01.01','Final Protocol','02','Trial','final',1),
+ A('02.01.02','Protocol Amendment 1','02','Trial','final'),
+ A('02.01.03','Protocol Signature Page','02','Trial','final',1),
+ A('02.02.01',"Investigator's Brochure (current)",'02','Trial','final',1),
+ A('02.03.01','Sample (blank) Case Report Form','02','Trial','inqc'),
+ A('02.04.01','Subject Information Sheet (master)','02','Trial','final'),
+ A('03.01.01','IND / CTA Submission & Acknowledgment','03','Country','final',1),
+ A('03.01.02','IND Safety Reports submission','03','Country','final'),
+ A('03.02.01','Regulatory Authority Approval (DE)','03','Country','missing',1),
+ A('03.03.01','Import / Export Licence','03','Country','final'),
+ A('06.01.01','IP Certificate of Analysis','06','Trial','final'),
+ A('06.04.01','IP QP Release / Label Approval','06','Trial','final'),
+ A('07.01.01','SUSAR Reports','07','Trial','final'),
+ A('07.01.02','SAE Reports','07','Trial','final'),
+ A('07.02.01','DSUR','07','Trial','final'),
+ A('07.03.01','Safety Letter to IRB/IEC','07','Trial','final'),
+ A('08.01.01','Central Lab Normal Ranges','08','Trial','final'),
+ A('08.01.02','Central Lab Accreditation/Cert','08','Trial','final'),
+ A('08.02.01','Sample Handling Manual','08','Trial','final'),
+ A('09.01.01','CRO Oversight / Vendor Qualification','09','Trial','final'),
+ A('09.02.01','Confidentiality Agreement','09','Trial','final'),
+ A('09.03.01','Vendor Service Agreement','09','Trial','inqc'),
+ A('10.01.01','Data Management Plan','10','Trial','final'),
+ A('10.02.01','Data Validation Specification','10','Trial','final'),
+ A('10.03.01','Database Lock Documentation','10','Trial','missing'),
+ A('11.01.01','Statistical Analysis Plan','11','Trial','final',1),
+ A('11.02.01','Randomization Records','11','Trial','final'),
+ A('11.03.01','Final Statistical Report','11','Trial','missing')
+];
+// per-site artifact templates: [ref-suffix, name, zone, crit, missAt(site indices), lateAt]
+var SITETPL=[
+ ['04.01.02','IRB / IEC Approval (Decision)','04',1,[],[]],
+ ['04.01.05','IRB / IEC Composition / Roster','04',0,[2,1],[]],
+ ['04.02.01','IRB / IEC Annual Re-approval','04',0,[],[0]],
+ ['05.02.01','Form FDA 1572 / Investigator Agreement','05',1,[],[]],
+ ['05.02.03','Financial Disclosure Form','05',0,[2],[3]],
+ ['05.03.01','Principal Investigator CV (signed)','05',0,[],[]],
+ ['05.03.02','Sub-investigator CVs','05',0,[2],[]],
+ ['05.04.01','Informed Consent Form Template','05',1,[],[]],
+ ['05.05.01','Site Initiation Visit Report','05',0,[2],[]],
+ ['05.06.01','Delegation of Authority Log','05',0,[1],[]],
+ ['06.02.01','IP Accountability Log','06',0,[],[2,4]]
+];
+var DOCS=TRIAL.slice();
+SITES.forEach(function(sl,si){ SITETPL.forEach(function(t){
+  var status='final'; if(t[4].indexOf(si)>=0)status='missing'; else if(t[5].indexOf(si)>=0)status='late';
+  DOCS.push(A(t[0],t[1],t[2],'Site',status,t[3],sl));
+}); });
+// dates + filing lag (business-day-ish)
+var rng=mulberry32(20260619);
+DOCS.forEach(function(d,i){
+  d.id=i+1; var base=addDays('2025-09-15',Math.floor(rng()*210));
+  d.docDate=base;
+  if(d.status==='missing'){ d.due=addDays(base,7); d.age=1+Math.floor(rng()*40); d.filed=null; }
+  else { var lag=d.status==='late'?(7+Math.floor(rng()*12)):Math.floor(rng()*5); d.filed=addDays(base,lag); d.lagBiz=lag; }
+});
+
+// ===== derived =====
+function present(d){return d.status!=='missing';}
+function approved(d){return d.status==='final'||d.status==='late';}
+function counts(){
+  var c={total:DOCS.length,present:0,missing:0,late:0,inqc:0,final:0,critMissing:0};
+  DOCS.forEach(function(d){ if(present(d))c.present++; else c.missing++; if(d.status==='late')c.late++; if(d.status==='inqc')c.inqc++; if(d.status==='final')c.final++; if(d.status==='missing'&&d.crit)c.critMissing++; });
+  c.completeness=Math.round(c.present/c.total*100);
+  c.timeliness=c.present?Math.round((c.present-c.late)/c.present*100):0;
+  c.qc=c.present?Math.round(c.final/c.present*100):0;
+  c.score=Math.round(0.5*c.completeness+0.3*c.timeliness+0.2*c.qc);
+  c.rag = c.critMissing>0 ? (c.score<70?'red':'amber') : (c.score>=90?'green':c.score>=80?'amber':'red');
+  return c;
+}
+function zoneStats(){ return ZONES.map(function(z){ var ds=DOCS.filter(function(d){return d.zone===z.n;}); var pres=ds.filter(present).length;
+  return {n:z.n,name:z.name,total:ds.length,present:pres,pct:ds.length?Math.round(pres/ds.length*100):0}; }); }
+function siteStats(){ return SITES.map(function(sl){ var ds=DOCS.filter(function(d){return d.site===sl;}); var pres=ds.filter(present).length;
+  return {site:sl,total:ds.length,present:pres,pct:ds.length?Math.round(pres/ds.length*100):0}; }); }
+function gaps(){ return DOCS.filter(function(d){return d.status==='missing'||d.status==='late';}).sort(function(a,b){return (b.crit-a.crit)||((b.status==='missing')-(a.status==='missing'));}); }
+
+// milestones (illustrative completion)
+var MILES=[['Study startup',100],['Site activation',92],['Conduct / maintenance',81],['Closeout / archival',0]];
+
+// ===== charts =====
+function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy();}catch(e){}});CHARTS=[];}
+function addChart(sel,opts){var el=document.querySelector(sel);if(!el||typeof ApexCharts==='undefined')return;var c=new ApexCharts(el,opts);c.render();CHARTS.push(c);}
+function mountCharts(){
+  if(!$('#v-overview').classList.contains('on'))return; destroyCharts(); var c=counts();
+  addChart('#ch-time',{chart:{type:'donut',height:230,fontFamily:AXFONT,animations:{enabled:false}},
+    series:[c.present-c.late,c.late,c.missing],labels:['Filed on time','Filed late','Expected (missing)'],colors:['#10b981','#f59e0b','#ef4444'],
+    stroke:{width:2,colors:['#fff']},dataLabels:{enabled:false},legend:{position:'bottom',fontFamily:AXFONT,fontSize:'12px',markers:{radius:3}},
+    plotOptions:{pie:{donut:{size:'68%',labels:{show:true,name:{show:false},value:{fontFamily:AXFONT,fontSize:'24px',fontWeight:800,color:'#0f172a',offsetY:4},total:{show:true,label:'ARTIFACTS',fontFamily:AXMONO,fontSize:'9px',color:'#64748b',formatter:function(){return c.total;}}}}}}});
+}
+
+// ===== render =====
+function kpi(cls,l,v,s){return '<div class="kpi '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s">'+s+'</div></div>';}
+function heatColor(p){var h=Math.round(p*1.52);return 'hsl('+h+' 64% 46%)';}
+function renderOverview(){
+  var c=counts(), zs=zoneStats();
+  var k='<div class="kpis">'+
+    kpi(c.rag==='green'?'green':c.rag==='amber'?'amber':'red','Inspection readiness',c.score,c.rag.toUpperCase()+(c.critMissing?' &middot; critical gap':''))+
+    kpi('teal','Completeness',c.completeness+'%',c.present+' of '+c.total+' present')+
+    kpi('red','Missing',c.missing,c.critMissing+' critical')+
+    kpi('amber','Filed late',c.late,'target 5 business days')+
+    kpi('green','QC passed',c.qc+'%',c.final+' final')+
+    kpi('blue','Sites',SITES.length,'+ trial / country level')+
+  '</div>';
+  var zb='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Completeness by TMF zone<span class="r">present / expected</span></div><div class="b"><div class="bars">'+
+    zs.map(function(z){return '<div class="zbar" data-zone="'+z.n+'"><span class="zn">'+z.n+'</span><div><div class="zl">'+z.name+'</div><div class="zt"><i style="width:'+z.pct+'%;background:'+heatColor(z.pct)+'"></i></div></div><span class="zv"><b>'+z.pct+'%</b> '+z.present+'/'+z.total+'</span></div>';}).join('')+
+    '</div><p class="cap" style="margin-bottom:0">Click a zone to open it in the TMF structure. "Expected" comes from the milestone-driven Expected Document List; zones 10-11 are sparse because database lock and the final statistical report are not yet due.</p></div></div>';
+  var time='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Filing timeliness<span class="r">'+c.timeliness+'% on time</span></div><div class="b"><div id="ch-time" style="min-height:230px"></div></div></div>';
+  var ms='<div class="card" style="margin-bottom:0"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>Milestone completion</div><div class="b"><div class="ms">'+
+    MILES.map(function(m){return '<div class="msrow"><span class="ml">'+m[0]+'</span><div class="mt"><i style="width:'+m[1]+'%"></i></div><span class="mv">'+m[1]+'%</span></div>';}).join('')+'</div></div></div>';
+  return k+'<div class="row2">'+zb+'<div>'+time+ms+'</div></div>';
+}
+
+var OPENZONE=null;
+function renderStructure(){
+  var zs=zoneStats();
+  return '<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>TMF Reference Model structure<span class="r">zone &rarr; artifact</span></div><div class="b">'+
+    zs.map(function(z){ var ds=DOCS.filter(function(d){return d.zone===z.n;}).sort(function(a,b){return a.ref<b.ref?-1:1;});
+      return '<div class="zone'+(OPENZONE===z.n?' open':'')+'" data-z="'+z.n+'"><div class="zhead"><span class="num">'+z.n+'</span><span class="nm">'+z.name+'</span><span class="meter"><span class="t"><i style="width:'+z.pct+'%;background:'+heatColor(z.pct)+'"></i></span><span class="pc">'+z.pct+'%</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div><div class="zbody">'+
+      ds.map(function(d){return '<div class="arow"><span class="ref">'+d.ref+'</span><span class="an">'+d.name+(d.crit?'<span class="crit">CORE</span>':'')+(d.site?' <span class="lv">&middot; '+d.site.split(' ')[0]+'</span>':'')+'</span><span class="lv">'+d.level+'</span><span class="stb '+d.status+'">'+(d.status==='missing'?'expected':d.status==='inqc'?'in QC':d.status)+'</span></div>';}).join('')+
+      '</div></div>'; }).join('')+
+    '<p class="cap">The DIA TMF Reference Model organizes the TMF into 11 zones and ~249 artifacts numbered <code>zone.section.artifact</code>. Zone names and the CORE-flagged artifact IDs (e.g. <code>02.01.03</code> Protocol Signature Page, <code>04.01.02</code> IRB/IEC Approval, <code>05.04.01</code> ICF Template) are the real model.</p></div></div>';
+}
+
+var FILTER='all';
+function renderDocs(){
+  var rows=DOCS.filter(function(d){ return FILTER==='all'||(FILTER==='missing'&&d.status==='missing')||(FILTER==='late'&&d.status==='late')||(FILTER==='inqc'&&d.status==='inqc')||(FILTER==='core'&&d.crit); })
+    .sort(function(a,b){return a.ref<b.ref?-1:1;})
+    .map(function(d){ return '<tr><td class="mono">'+d.ref+'</td><td>'+d.name+(d.crit?'<span class="crit">CORE</span>':'')+'</td><td class="mono" style="font-size:11px">'+d.zone+'</td><td>'+d.level+(d.site?' &middot; '+d.site.split(' ')[0]:'')+'</td><td class="mono" style="font-size:11px">'+d.docDate+'</td><td class="mono" style="font-size:11px">'+(d.filed||'<span style="color:var(--danger)">not filed</span>')+'</td><td>'+(d.status==='late'?'<span class="stb late">'+d.lagBiz+' biz d</span>':d.status==='missing'?'<span class="stb missing">overdue '+d.age+'d</span>':present(d)?'<span class="stb final" style="background:none;color:var(--mut-fg)">on time</span>':'')+'</td><td><span class="stb '+d.status+'">'+(d.status==='missing'?'expected':d.status==='inqc'?'in QC':d.status)+'</span></td></tr>'; }).join('');
+  var fb=[['all','All'],['core','Core / critical'],['missing','Missing'],['late','Late'],['inqc','In QC']].map(function(f){return '<button class="fb'+(f[0]===FILTER?' on':'')+'" data-f="'+f[0]+'">'+f[1]+'</button>';}).join('');
+  return '<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Essential documents<span class="r">'+DOCS.length+' artifacts</span></div><div class="b"><div class="filterbar" id="docFilter">'+fb+'</div>'+
+    '<div class="tblwrap"><table class="tbl"><thead><tr><th>TMF Ref</th><th>Artifact</th><th>Zone</th><th>Level</th><th>Doc date</th><th>Filed</th><th>Timeliness</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></div></div>';
+}
+
+var banner='';
+function renderGaps(){
+  var g=gaps(), c=counts();
+  var ss=siteStats();
+  var sitegrid='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Completeness by site (ISF)</div><div class="b"><div class="bars">'+
+    ss.map(function(s){return '<div class="zbar" style="cursor:default;grid-template-columns:130px 1fr 70px"><span class="zl mono" style="font-size:12px">Site '+s.site+'</span><div class="zt"><i style="width:'+s.pct+'%;background:'+heatColor(s.pct)+'"></i></div><span class="zv"><b>'+s.pct+'%</b> '+s.present+'/'+s.total+'</span></div>';}).join('')+'</div></div></div>';
+  var list='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Missing &amp; overdue documents<span class="r">'+g.length+' open</span></div><div class="b"><div class="banner'+(banner?' on':'')+'" id="gapBanner">'+banner+'</div>'+
+    (g.length?g.map(function(d){var late=d.status==='late';
+      return '<div class="gapcard'+(d.crit&&!late?' critical':'')+(late?' late':'')+'"><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(late?'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>':'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>')+'</svg></span><div><div class="gn">'+d.name+(d.crit?'<span class="crit">CORE</span>':'')+'</div><div class="gm">'+d.ref+' &middot; Zone '+d.zone+' &middot; '+d.level+(d.site?' &middot; Site '+d.site.split(' ')[0]:'')+' &middot; '+(late?'filed '+d.lagBiz+' business days after finalization (target 5)':'overdue '+d.age+' days')+'</div></div><div class="gr">'+(late?'<span class="stb late">late</span>':'<span class="stb missing">expected</span><button class="btn" data-file="'+d.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>File now</button>')+'</div></div>';
+    }).join(''):'<div style="text-align:center;padding:40px;color:var(--mut-fg)">No open gaps. The TMF is complete.</div>')+
+    '<p class="cap">Missing core documents (e.g. the regulatory authority approval) gate inspection-readiness regardless of the overall score. Filing a document here recomputes completeness and the readiness status.</p></div></div>';
+  return sitegrid+list;
+}
+
+// ===== mount =====
+function setRag(){ var c=counts(); $('#ragPill').className='rag '+c.rag; $('#ragPill').innerHTML='<span class="d"></span>'+(c.rag==='green'?'Inspection ready':c.rag==='amber'?'Action required':'Not ready')+' &middot; '+c.score; }
+$('#ctxSub').innerHTML='Study <b>'+STUDY+'</b><span class="dot"></span>Sponsor <b>'+SPONSOR+'</b><span class="dot"></span><b>'+ZONES.length+'</b> zones<span class="dot"></span><b>'+SITES.length+'</b> sites<span class="dot"></span>Data as of <b>'+ASOF+'</b>';
+var TABS=[{id:'overview',label:'Overview',render:renderOverview},{id:'structure',label:'TMF structure',render:renderStructure},{id:'documents',label:'Documents',render:renderDocs,count:DOCS.length},{id:'gaps',label:'Gaps',render:renderGaps,count:gaps().length}];
+var tabsEl=$('#tabs');
+function rerenderAll(){ TABS.forEach(function(t){ $('#v-'+t.id).innerHTML=t.render(); }); var gc=$('#cnt-gaps'); if(gc)gc.textContent=gaps().length; setRag(); mountCharts(); }
+TABS.forEach(function(t,i){
+  var b=document.createElement('button'); b.className='tab'+(i===0?' active':''); b.setAttribute('data-view',t.id);
+  b.innerHTML=t.label+(t.count!==undefined?' <span class="cnt" id="cnt-'+t.id+'">'+t.count+'</span>':'');
+  b.addEventListener('click',function(){ tabsEl.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');}); $('#v-'+t.id).classList.add('on'); mountCharts(); });
+  tabsEl.appendChild(b); $('#v-'+t.id).innerHTML=t.render();
+});
+setRag(); mountCharts();
+function gotoZone(zn){ OPENZONE=zn; document.querySelector('.tab[data-view="structure"]').click(); $('#v-structure').innerHTML=renderStructure();
+  var el=document.querySelector('.zone[data-z="'+zn+'"]'); if(el)el.scrollIntoView({block:'center'}); }
+$('#v-overview').addEventListener('click',function(e){ var z=e.target.closest('[data-zone]'); if(z)gotoZone(z.getAttribute('data-zone')); });
+$('#v-structure').addEventListener('click',function(e){ var h=e.target.closest('.zhead'); if(!h)return; var zone=h.parentNode; zone.classList.toggle('open'); OPENZONE=zone.classList.contains('open')?zone.getAttribute('data-z'):null; });
+$('#v-documents').addEventListener('click',function(e){ var fb=e.target.closest('.fb'); if(fb){FILTER=fb.getAttribute('data-f');$('#v-documents').innerHTML=renderDocs();} });
+$('#v-gaps').addEventListener('click',function(e){ var f=e.target.closest('[data-file]'); if(!f)return; var id=+f.getAttribute('data-file'); var d=DOCS.filter(function(x){return x.id===id;})[0];
+  if(d){ d.status='final'; d.filed=ASOF; d.lagBiz=2; banner='Filed "'+d.name+'" ('+d.ref+'). Completeness and inspection-readiness recomputed.'; rerenderAll(); } });
+
+var params=new URLSearchParams(location.search), wantTab=params.get('tab');
+if(wantTab){var tb=document.querySelector('.tab[data-view="'+wantTab+'"]');if(tb)tb.click();}
+</script>
+</body>
+</html>
