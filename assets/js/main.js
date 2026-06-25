@@ -36,8 +36,6 @@
       narr: "HF-001's collected data is standardized into CDISC SDTM." },
     { href: "projects/biometrics-pipeline.html", phase: "Analyze", phaseNum: 6, title: "ADaM & TLF Pipeline",
       narr: "HF-001's SDTM records derive into ADaM and roll up into the TLF tables that go in the CSR.", showsSubjects: true },
-    { href: "projects/ncdisc.html", phase: "Analyze", phaseNum: 6, title: "Non-CDISC Pipeline",
-      narr: "The same standardization for HF-001's data, the non-CDISC route." },
     { href: "projects/biostats.html", phase: "Analyze", phaseNum: 6, title: "Clinical Trial Analytics",
       narr: "HF-001's outcomes feed the trial-level analytics." },
     { href: "projects/pk-analysis.html", phase: "Analyze", phaseNum: 6, title: "PK Analysis",

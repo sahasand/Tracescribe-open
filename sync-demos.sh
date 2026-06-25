@@ -19,7 +19,6 @@ copy_file() { # $1 src file  $2 dest file
 }
 
 copy_dir  "$SRC/ccs-cdisc-demo/site"                   "demos/cdisc"
-copy_dir  "$SRC/ccs-ncdisc-demo/site"                  "demos/ncdisc"
 copy_file "$SRC/ccs-monitoring/ccs-monitor-demo.html"  "demos/monitoring.html"
 copy_dir  "$SRC/dashboard-biostats"                    "demos/biostats"
 copy_dir  "$SRC/cro-website"                           "demos/cro"
@@ -41,9 +40,6 @@ debrand() {
     s{\QCCS Monitor\E}{Clinical Monitor}g;
     s{\Qccs-monitor\E}{clinical-monitor}g;
   ' demos/monitoring.html
-  # ncdisc bundles its source dev doc (CLAUDE.md) which references CCS and is not part
-  # of the runnable demo - drop it.
-  rm -f demos/ncdisc/CLAUDE.md
   echo "de-branded demos (CCS -> neutral)"
 }
 debrand
