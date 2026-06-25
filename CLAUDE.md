@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, and `demos/rtsm-irt.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, and `demos/medical-coding.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -96,7 +96,13 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   permuted-block randomization (2:2:1, NYHA x Region = 6 strata, seed-reproducible, each block a verified 4:4:2
   split), an **interactive "randomize next subject"** action, a **blinding toggle** (kit codes vs arms; emergency
   unblinding writes an audited code-break log), and depot-to-site supply (par-level + predictive resupply, expiry,
-  cold-chain quarantine, accountability). Takes `?tab=<view>` and `?blind=1`. `sync-demos.sh` never touches them; all use real
+  cold-chain quarantine, accountability). Takes `?tab=<view>` and `?blind=1`. `medical-coding.html` is the third
+  from-scratch demo (no source app) - a medical-coding workbench built from MedDRA + **WHODrug** research: verbatim
+  terms coded to MedDRA (AE/MH/indication) or WHODrug (con-meds), an **interactive coding queue** where the
+  auto-coder suggests a term with the full path (MedDRA SOC->PT->LLT, or the WHODrug 5-level **ATC** ladder +
+  ingredient + Drug Code `DRN-Seq1-Seq2`) and the coder accepts / picks an alternative / raises a coding query;
+  real ATC codes and MedDRA terms, ~60% auto-coded, status + uncoded-backlog tracking. Takes `?tab=<view>`.
+  `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
   (every view reconciles: e.g. matched + EDC-only + lab-only = expected records, gap counts sum to open
