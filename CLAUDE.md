@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, and `demos/medical-coding.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, and `demos/etmf.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -102,6 +102,12 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   auto-coder suggests a term with the full path (MedDRA SOC->PT->LLT, or the WHODrug 5-level **ATC** ladder +
   ingredient + Drug Code `DRN-Seq1-Seq2`) and the coder accepts / picks an alternative / raises a coding query;
   real ATC codes and MedDRA terms, ~60% auto-coded, status + uncoded-backlog tracking. Takes `?tab=<view>`.
+  `etmf.html` is the fourth from-scratch demo (no source app) - an electronic Trial Master File inspection-readiness
+  dashboard built from **DIA TMF Reference Model** research: the 11 zones with real names and the `zone.section.artifact`
+  numbering (verified IDs like `02.01.03`/`04.01.02`/`05.04.01` flagged CORE), completeness by zone/site/milestone,
+  filing **timeliness** (5-business-day target), QC, and a composite **inspection-readiness score gated to Amber/Red by
+  any missing CORE artifact** (so a 92 score still reads "Action required"); interactive zone drill-down and a
+  **"File now"** action on a gap that recomputes readiness. Takes `?tab=<view>`.
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
