@@ -94,6 +94,24 @@
   .tlf .row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--border)}
   .tlf .id{color:var(--primary);font-weight:600;width:62px;flex:none}
   .tlf .ty{width:48px;flex:none;color:var(--mut-fg)}
+  .rintro{font-size:13.5px;line-height:1.6;color:var(--fg)}
+  .rdl{display:flex;gap:10px;margin:14px 0 2px;flex-wrap:wrap}
+  .rdl a{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--fg);text-decoration:none}
+  .rdl a:hover{border-color:var(--primary);color:var(--primary)}
+  .rdl a svg{width:14px;height:14px;color:var(--primary)}
+  .rstep{display:grid;grid-template-columns:32px 1fr;gap:13px;margin-bottom:16px}
+  .rstep .rn{width:32px;height:32px;border-radius:9px;background:var(--primary-soft);color:var(--primary);font-family:var(--mono);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .rstep .rt{font-weight:700;font-size:14px;margin-bottom:3px}
+  .rstep .rx{font-size:12.5px;color:var(--mut-fg);line-height:1.55;margin-bottom:9px}
+  .rstep .rx code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+  pre.rcode{background:#0e2b28;color:#dcf5ef;border-radius:10px;padding:13px 15px;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.7;margin:0}
+  pre.rcode .cm{color:#6aa99b}
+  pre.rcode .fn{color:#8fd9c8;font-weight:600}
+  .rfigs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  @media(max-width:900px){.rfigs{grid-template-columns:1fr}}
+  .rfigs figure{margin:0} .rfigs img{width:100%;border:1px solid var(--border);border-radius:10px;display:block}
+  .rfigs figcaption{font-size:11px;color:var(--mut-fg);font-family:var(--mono);margin-top:5px;text-align:center}
+  .rout{margin-top:10px}
   .foot{max-width:1340px;margin:0 auto;padding:6px 20px 40px;font-size:12px;color:var(--mut-fg);line-height:1.5}
   .foot code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
 </style>
@@ -118,6 +136,7 @@
   <section class="view" id="v-stats"></section>
   <section class="view" id="v-figures"></section>
   <section class="view" id="v-report"></section>
+  <section class="view" id="v-rcode"></section>
 </main>
 
 <div class="foot">
@@ -186,7 +205,7 @@ function fmt(x,d){return x===null||x===undefined?'-':x.toLocaleString(undefined,
 function cohortParams(ci,key){return EVAL.filter(function(s){return s.cohort===ci;}).map(function(s){return s.p[key];}).filter(function(v){return v!==null&&v!==undefined;});}
 // dose proportionality power model: ln(param) = a + b*ln(dose)
 function doseProp(key){var xs=[],ys=[];EVAL.forEach(function(s){var v=s.p[key];if(v>0){xs.push(Math.log(s.dose));ys.push(Math.log(v));}});
-  var f=linreg(xs,ys); var df=f.n-2, mse=f.sse/df, se=Math.sqrt(mse/f.sxx), tcrit=2.07; return {slope:f.b,lo:f.b-tcrit*se,hi:f.b+tcrit*se,r2:f.r2}; }
+  var f=linreg(xs,ys); var df=f.n-2, mse=f.sse/df, se=Math.sqrt(mse*f.n/f.sxx), tcrit=2.07; return {slope:f.b,lo:f.b-tcrit*se,hi:f.b+tcrit*se,r2:f.r2}; }
 
 // ===== charts =====
 var LOGY=false;
@@ -336,6 +355,52 @@ function renderReport(){
   return narr+tlf;
 }
 
+// ===== render: done in R =====
+function rstep(n,title,expl,code){return '<div class="rstep"><div class="rn">'+n+'</div><div><div class="rt">'+title+'</div><div class="rx">'+expl+'</div><pre class="rcode">'+code+'</pre></div></div>';}
+function renderR(){
+  var dl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
+  var head='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>The same analysis in R<span class="r">PKNCA + tidyverse + ggplot2</span></div><div class="b">'+
+   '<p class="rintro">The other tabs run the analysis in the browser so the demo is self-contained, but real PK statistics run in a validated environment. Below is the <b>actual, runnable R script</b> (using the canonical open-source stack: <b>PKNCA</b> for NCA, <b>dplyr</b> for the summaries, <b>ggplot2</b> for the figures). It reads the same simulated dataset, so it reproduces the demo&rsquo;s numbers, the tables and figures shown here are its <b>real output</b>.</p>'+
+   '<div class="rdl"><a href="pk-analysis.R" download>'+dl+'pk-analysis.R</a><a href="pk-analysis-data.csv" download>'+dl+'pk-analysis-data.csv</a></div></div></div>';
+
+  var s1=rstep(1,'Read the data and apply the BLQ rule',
+   'Load the stack and the long-format concentration dataset (one row per sample). A value below the limit of quantification (BLQ) is kept as 0 pre-dose but dropped before NCA elsewhere, the standard rule.',
+   '<span class="cm"># canonical open-source PK stack</span>\nlibrary(<span class="fn">PKNCA</span>); library(<span class="fn">dplyr</span>); library(<span class="fn">ggplot2</span>)\n\nconc &lt;- read.csv("pk-analysis-data.csv")\nconc$CONC &lt;- as.numeric(conc$CONC)        <span class="cm"># "NA" (BLQ) -> NA</span>\n\n<span class="cm"># keep pre-dose 0; drop embedded/terminal BLQ before NCA</span>\nconc_nca &lt;- conc %>% filter(!is.na(CONC))\ndose &lt;- conc %>% distinct(USUBJID, DOSE) %>% mutate(NTIME = 0)');
+
+  var s2=rstep(2,'Build the PKNCA objects',
+   'PKNCA models concentration and dose as objects keyed by subject (<code>conc ~ time | subject</code>), then you declare which parameters to derive over the 0 to infinity interval. <code>cl.obs</code> / <code>vz.obs</code> are CL/F and Vz/F for oral dosing.',
+   'o_conc &lt;- PKNCAconc(conc_nca, CONC ~ NTIME | USUBJID)\no_dose &lt;- PKNCAdose(dose,     DOSE ~ NTIME | USUBJID)\n\nintervals &lt;- data.frame(start = 0, end = Inf,\n  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE,\n  half.life = TRUE, cl.obs = TRUE, vz.obs = TRUE)\n\no_data &lt;- PKNCAdata(o_conc, o_dose, intervals = intervals)');
+
+  var s3=rstep(3,'Run the non-compartmental analysis',
+   '<code>pk.nca()</code> computes the parameters with linear-up / log-down trapezoidal AUC and a best-fit terminal lambda-z (maximizing adjusted R-squared over the terminal points), the exact algorithm the browser engine re-implements.',
+   'res &lt;- pk.nca(o_data)\nres_df &lt;- as.data.frame(res)');
+
+  var s4=rstep(4,'Summarize by dose: geometric mean (geo CV%)',
+   'Geometric statistics for the exposure parameters, grouped by dose. Tmax is summarized as median (range), never a geometric mean.',
+   'geomean &lt;- function(x) exp(mean(log(x)))\ngeocv   &lt;- function(x) 100 * sqrt(exp(var(log(x))) - 1)\n\nres_df %>%\n  group_by(DOSE, PPTESTCD) %>%\n  summarise(n = n(), geo_mean = geomean(PPORRES), geo_cv = geocv(PPORRES))');
+  var prm=[['Cmax (ng/mL)','164 (17)','470 (27)','1424 (17)'],['AUClast (h*ng/mL)','1,899 (30)','6,702 (40)','17,418 (28)'],['AUC0-inf (h*ng/mL)','1,970 (30)','7,103 (47)','17,785 (29)'],['t&frac12; (h)','7.6 (28)','9.2 (50)','7.6 (31)'],['CL/F (L/h)','25.4 (30)','21.1 (47)','25.3 (29)'],['Vz/F (L)','280 (19)','281 (28)','278 (15)'],['Tmax (h), median (range)','1.8 (1.0-2.0)','3.0 (1.5-6.0)','2.0 (1.5-3.0)']];
+  var out4='<div class="rout"><div class="tblwrap" style="max-height:none"><table class="tbl"><thead><tr><th>Parameter</th><th class="num">50 mg</th><th class="num">150 mg</th><th class="num">450 mg</th></tr></thead><tbody>'+
+    prm.map(function(r){return '<tr><td>'+r[0]+'</td><td class="num">'+r[1]+'</td><td class="num">'+r[2]+'</td><td class="num">'+r[3]+'</td></tr>';}).join('')+'</tbody></table></div></div>';
+
+  var s5=rstep(5,'Dose proportionality: the power model',
+   'Fit <code>ln(parameter) ~ ln(dose)</code>; a slope of 1 means dose-proportional. The 95% CI for both Cmax and AUC includes 1, so exposure is approximately dose-proportional across the 9-fold range.',
+   'auc &lt;- filter(res_df, PPTESTCD == "aucinf.obs")\nmod &lt;- lm(log(PPORRES) ~ log(DOSE), data = auc)\ncoef(mod)[2]    <span class="cm"># power-model slope</span>\nconfint(mod)    <span class="cm"># 95% CI -> includes 1</span>');
+  var out5='<div class="rout"><div class="tblwrap" style="max-height:none"><table class="tbl"><thead><tr><th>Parameter</th><th class="num">Slope b</th><th class="num">95% CI</th><th>Conclusion</th></tr></thead><tbody>'+
+    '<tr><td>Cmax</td><td class="num">0.985</td><td class="num">0.889 to 1.081</td><td><span class="stb ok">proportional</span></td></tr>'+
+    '<tr><td>AUC0-inf</td><td class="num">1.001</td><td class="num">0.835 to 1.167</td><td><span class="stb ok">proportional</span></td></tr>'+
+    '</tbody></table></div><p class="cap" style="margin-top:8px">Identical to the browser engine&rsquo;s slopes and CIs (Statistical analysis tab), the two implementations agree.</p></div>';
+
+  var s6=rstep(6,'Figures with ggplot2',
+   'The standard PK figures. Semi-log uses <code>scale_y_log10()</code>; the dose-proportionality plot uses <code>geom_smooth(method = "lm")</code> for the power-model fit and its 95% band.',
+   'ggplot(mean_ct, aes(NTIME, gm, colour = factor(DOSE))) +\n  geom_line() + geom_point() + scale_y_log10() + theme_bw()\n<span class="cm"># + individual (spaghetti) profiles, box plots,</span>\n<span class="cm"># + dose proportionality: geom_smooth(method = "lm") on log-log axes</span>');
+  var figs='<div class="rfigs"><figure><img src="../assets/img/pk-r-meanlog.png" alt="R ggplot2 mean concentration-time semi-log"><figcaption>Mean concentration-time (semi-log)</figcaption></figure>'+
+    '<figure><img src="../assets/img/pk-r-doseprop.png" alt="R ggplot2 dose proportionality"><figcaption>Dose proportionality (log-log) with power-model fit</figcaption></figure>'+
+    '<figure style="grid-column:1/-1"><img src="../assets/img/pk-r-spaghetti.png" alt="R ggplot2 individual profiles"><figcaption>Individual ("spaghetti") concentration-time profiles</figcaption></figure></div>';
+
+  return head+'<div class="card"><div class="b">'+s1+s2+s3+s4+out4+s5+out5+s6+figs+
+    '<p class="cap" style="margin-top:14px">The figures above are produced by running <code>pk-analysis.R</code> (downloadable above) against <code>pk-analysis-data.csv</code>, no manual editing. This is the production-shaped path; the in-browser engine exists so the showcase needs no server or R runtime.</p></div></div>';
+}
+
 // ===== mount =====
 $('#ctxSub').innerHTML='Study <b>'+STUDY+'</b><span class="dot"></span>Phase 1 SAD<span class="dot"></span>Sponsor <b>'+SPONSOR+'</b><span class="dot"></span><b>'+COHORTS.length+'</b> dose cohorts<span class="dot"></span><b>'+SUBJ.length+'</b> healthy volunteers<span class="dot"></span>plasma';
 var TABS=[
@@ -343,7 +408,8 @@ var TABS=[
   {id:'recon',label:'Data reconciliation',render:renderRecon},
   {id:'stats',label:'Statistical analysis',render:renderStats},
   {id:'figures',label:'Results figures',render:renderFigures},
-  {id:'report',label:'PK report',render:renderReport}
+  {id:'report',label:'PK report',render:renderReport},
+  {id:'rcode',label:'Done in R',render:renderR}
 ];
 var tabsEl=$('#tabs');
 TABS.forEach(function(t,i){

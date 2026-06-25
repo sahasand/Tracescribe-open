@@ -116,6 +116,15 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   recovered geometric-mean parameters land on the simulation's targets and dose proportionality (power-model
   slope ~1) is computed, not asserted. Features the standard PK figures (mean concentration-time with a
   **linear/semi-log toggle**, spaghetti, Cmax/AUC box plots, log-log dose-proportionality scatter). Takes `?tab=<view>`.
+  It also has a **"Done in R" tab** (`?tab=rcode`): a step-by-step walkthrough of the same analysis as a runnable
+  R script using the canonical **PKNCA + tidyverse + ggplot2** stack, with explanations, the real output tables, and
+  three **real ggplot2 figures** (`assets/img/pk-r-{meanlog,spaghetti,doseprop}.png`). The shippable artifacts are
+  `demos/pk-analysis.R` (the script) and `demos/pk-analysis-data.csv` (the demo's exact simulated dataset, exported so
+  the R reproduces the browser numbers). To regenerate the figures: `cd demos && Rscript pk-analysis.R` (needs
+  `install.packages(c("PKNCA","ggplot2","dplyr","tidyr"))`), then move the PNGs to `assets/img/`. Cross-checking the R
+  `lm`/`confint` against the JS engine revealed and fixed a dose-proportionality SE bug (the JS CI was missing a factor
+  of n, so it was ~sqrt(n) too narrow); the two now agree exactly. The R figures are the one place a demo embeds
+  pre-rendered images rather than computing in-browser.
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators

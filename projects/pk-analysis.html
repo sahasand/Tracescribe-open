@@ -46,10 +46,11 @@
         <li><b>Statistics</b>: a concentration summary by timepoint x dose, the PK parameter summary table (geometric mean, geo CV%), and dose proportionality, a power-model slope with a 95% CI that includes 1 across the 9-fold dose range.</li>
         <li><b>Results figures</b>: mean concentration-time profiles with a <b>linear / semi-log toggle</b>, individual ("spaghetti") profiles, Cmax and AUC box plots by dose, and the dose-proportionality log-log scatter with the power-model fit.</li>
         <li><b>PK report</b>: the assembled CSR Section 11.4 narrative, the in-text summary tables, the figures, and a TLF index.</li>
+        <li><b>Done in R</b>: a tab that shows the same analysis as a runnable R script (the canonical <b>PKNCA + tidyverse + ggplot2</b> stack), step by step with explanations, alongside its real output tables and ggplot figures. The script and dataset are downloadable, and the R reproduces the in-browser engine's numbers exactly (cross-checking the two even surfaced and fixed a confidence-interval bug).</li>
       </ul>
       <div class="badge-row" style="margin-top:8px">
         <span class="badge">NCA</span><span class="badge">Dose proportionality</span>
-        <span class="badge">PK figures</span><span class="badge">ICH E3</span>
+        <span class="badge">PK figures</span><span class="badge">R / PKNCA</span><span class="badge">ICH E3</span>
       </div>
       <p style="font-size:14px;color:var(--muted-fg);margin-top:6px">A from-scratch recreation grounded in PK practice (NCA per Phoenix WinNonlin / R PKNCA conventions, the linear-up / log-down AUC, the lambda-z acceptance criteria, the BLQ rules, and the power model). The concentration data is simulated from a 1-compartment Bateman model with log-normal between-subject variability; the NCA, statistics, and figures are all computed in the browser, so the recovered parameters land on the simulation's targets.</p>
     </section>
