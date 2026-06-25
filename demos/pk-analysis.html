@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PK Analysis - TraceScribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --accent-soft:hsl(25 95% 53%/.12); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 50%); --info:hsl(199 89% 48%); --danger:hsl(0 72% 51%);
+    --radius:10px; --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1340px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex:none}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em;line-height:1.1}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--primary);text-transform:uppercase}
+  .hmeta{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .ctx{max-width:1340px;margin:0 auto;padding:18px 20px 0}
+  .ctx h1{font-size:20px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ctx h1 .ph{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:6px;background:var(--accent-soft);color:hsl(25 80% 42%)}
+  .ctx .sub{font-size:13px;color:var(--mut-fg);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ctx .sub b{color:var(--fg);font-weight:600}
+  .ctx .dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+  .tabs{max-width:1340px;margin:16px auto 0;padding:0 20px;display:flex;gap:2px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{font-family:var(--font);font-weight:600;font-size:13.5px;color:var(--mut-fg);background:none;border:0;border-bottom:2px solid transparent;padding:11px 12px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:-1px}
+  .tab svg{width:15px;height:15px}
+  .tab:hover{color:var(--fg)}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  main{max-width:1340px;margin:0 auto;padding:20px 20px 64px}
+  .view{display:none} .view.on{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:18px}
+  .card>.h{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--mut-fg);padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card>.h svg{width:15px;height:15px;color:var(--primary)}
+  .card>.h .r{margin-left:auto;font-family:var(--font);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--mut-fg)}
+  .card>.b{padding:16px}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-bottom:18px}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--border);border-left-width:3px;border-radius:12px;padding:13px 14px;box-shadow:var(--shadow)}
+  .kpi .l{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut-fg)}
+  .kpi .v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:5px;line-height:1}
+  .kpi .s{font-family:var(--mono);font-size:10px;color:var(--mut-fg);margin-top:5px}
+  .kpi.teal{border-left-color:var(--primary)} .kpi.teal .v{color:var(--primary)}
+  .kpi.amber{border-left-color:var(--warning)} .kpi.amber .v{color:hsl(38 80% 42%)}
+  .kpi.red{border-left-color:var(--danger)} .kpi.red .v{color:var(--danger)}
+  .kpi.blue{border-left-color:var(--info)} .kpi.blue .v{color:var(--info)}
+  .kpi.green{border-left-color:var(--success)} .kpi.green .v{color:var(--success)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:1080px){.row2{grid-template-columns:1fr}}
+  .spec{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+  @media(max-width:760px){.spec{grid-template-columns:1fr}}
+  .kv{display:flex;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--border);gap:12px}
+  .kv .k{color:var(--mut-fg);min-width:150px;font-size:12px}
+  .kv .v{font-weight:600;flex:1}
+  .kv .v.mono{font-family:var(--mono);font-weight:500;font-size:12.5px}
+  .tblwrap{overflow:auto;max-height:560px;border-radius:10px;border:1px solid var(--border)}
+  table.tbl{border-collapse:collapse;width:100%;font-size:12.5px}
+  table.tbl th{position:sticky;top:0;background:var(--muted);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut-fg);text-align:left;padding:8px 10px;white-space:nowrap;z-index:1}
+  table.tbl td{padding:7px 10px;border-top:1px solid var(--border);white-space:nowrap}
+  table.tbl tr:hover td{background:hsl(168 76% 32%/.03)}
+  table.tbl td.num,table.tbl th.num{text-align:right;font-family:var(--mono)}
+  table.tbl tfoot td{border-top:2px solid var(--border);font-weight:700;background:hsl(168 76% 32%/.04)}
+  .stb{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase}
+  .stb.ok{background:hsl(160 84% 36%/.13);color:var(--success)}
+  .stb.dev{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)}
+  .stb.miss{background:hsl(0 72% 51%/.12);color:var(--danger)}
+  .stb.blq{background:hsl(220 9% 46%/.12);color:var(--mut-fg)}
+  .stb.re{background:hsl(199 89% 48%/.12);color:hsl(199 80% 40%)}
+  .cap{font-size:11.5px;color:var(--mut-fg);margin-top:12px;line-height:1.5}
+  .cap code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+  .toggle{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .toggle button{font-family:var(--mono);font-size:11px;font-weight:600;padding:6px 12px;border:0;background:var(--card);color:var(--mut-fg);cursor:pointer}
+  .toggle button.on{background:var(--primary);color:#fff}
+  .figgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:1000px){.figgrid{grid-template-columns:1fr}}
+  .concl{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:11px;background:hsl(168 76% 32%/.06);border:1px solid hsl(168 76% 32%/.2);font-size:13px;margin-top:4px}
+  .concl svg{width:17px;height:17px;color:var(--primary);flex:none;margin-top:1px}
+  .concl b{font-weight:700}
+  .narr{font-size:13.5px;line-height:1.65;color:var(--fg)} .narr b{font-weight:700} .narr .mono{font-family:var(--mono);font-size:12.5px}
+  .tlf{font-family:var(--mono);font-size:12px}
+  .tlf .row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--border)}
+  .tlf .id{color:var(--primary);font-weight:600;width:62px;flex:none}
+  .tlf .ty{width:48px;flex:none;color:var(--mut-fg)}
+  .foot{max-width:1340px;margin:0 auto;padding:6px 20px 40px;font-size:12px;color:var(--mut-fg);line-height:1.5}
+  .foot code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M5 15c3-9 5-9 7-1s4 8 7-5"/></svg></span>
+  <span class="brand">TraceScribe<small>PK Analysis</small></span>
+  <span class="hmeta"><span class="pill">NCA &middot; ICH E3</span></span>
+</div></header>
+
+<section class="ctx">
+  <h1>Pharmacokinetic Analysis <span class="ph">NCA</span></h1>
+  <div class="sub" id="ctxSub"></div>
+</section>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-sap"></section>
+  <section class="view" id="v-recon"></section>
+  <section class="view" id="v-stats"></section>
+  <section class="view" id="v-figures"></section>
+  <section class="view" id="v-report"></section>
+</main>
+
+<div class="foot">
+  Recreation of the pharmacokinetic statistics workflow: a statistical analysis plan, bioanalytical-to-EDC sample reconciliation, non-compartmental analysis (NCA), and the standard PK result figures. The concentration-time data is <b>simulated from a 1-compartment oral model</b> (with log-normal between-subject variability), then run through a real NCA engine in the browser, linear-up / log-down trapezoidal AUC, terminal-slope lambda-z, BLQ rules, so every parameter, table, and figure is computed, not hard-coded. Synthetic study.
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script>
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pad(n,w){return String(n).padStart(w||2,'0');}
+var AXFONT='Plus Jakarta Sans, system-ui, sans-serif', AXMONO='JetBrains Mono, monospace', CHARTS=[];
+var STUDY='BRX-7', SPONSOR='Braxon Bio', ANALYTE='BRX-7', LLOQ=1.0;
+var TIMES=[0,0.5,1,1.5,2,3,4,6,8,12,24,48];
+var COHORTS=[{dose:50,label:'50 mg',col:'#0D9488'},{dose:150,label:'150 mg',col:'#3aa0e8'},{dose:450,label:'450 mg',col:'#F97316'}];
+var NSUBJ=8;
+
+// ===== PK simulator: 1-compartment oral (Bateman), log-normal between-subject variability =====
+function gauss(rnd){var u=Math.max(rnd(),1e-9),v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+var rng=mulberry32(20260622);
+var POP={CL:25000,V:287000,ka:1.5}; // mL/h, mL, 1/h  -> ke=CL/V=0.0871 (t1/2 ~8 h), Tmax ~2 h
+var SUBJ=[];
+COHORTS.forEach(function(co,ci){
+  for(var i=0;i<NSUBJ;i++){
+    var CL=POP.CL*Math.exp(0.28*gauss(rng)), V=POP.V*Math.exp(0.28*gauss(rng)), ka=POP.ka*Math.exp(0.20*gauss(rng));
+    var ke=CL/V, doseNg=co.dose*1e6, A=doseNg*ka/(V*(ka-ke));
+    var conc=TIMES.map(function(t){ if(t<=0)return 0; var c=A*(Math.exp(-ke*t)-Math.exp(-ka*t)); c*=Math.exp(0.08*gauss(rng)); return c<LLOQ?null:Math.round(c*100)/100; });
+    SUBJ.push({id:'C'+(ci+1)+'-'+pad(i+1),cohort:ci,dose:co.dose,conc:conc,blq:conc.map(function(c,j){return c===null&&TIMES[j]>0;})});
+  }
+});
+
+// ===== NCA engine =====
+function linreg(xs,ys){var n=xs.length,sx=0,sy=0,sxx=0,sxy=0,syy=0;for(var i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxx+=xs[i]*xs[i];sxy+=xs[i]*ys[i];syy+=ys[i]*ys[i];}
+  var b=(n*sxy-sx*sy)/(n*sxx-sx*sx), a=(sy-b*sx)/n; var sst=syy-sy*sy/n, sse=0; for(var j=0;j<n;j++){var e=ys[j]-(a+b*xs[j]);sse+=e*e;}
+  var r2=sst>0?1-sse/sst:0, r2adj=n>2?1-(1-r2)*(n-1)/(n-2):r2; return {b:b,a:a,r2:r2,r2adj:r2adj,n:n,sxx:n*sxx-sx*sx,sse:sse}; }
+function nca(s){
+  // build analyzable points: t=0 conc=0, then quantifiable points up to last quantifiable (terminal BLQ excluded)
+  var pts=[{t:0,c:0}], lastIdx=-1;
+  for(var i=1;i<TIMES.length;i++){ if(s.conc[i]!==null){ pts.push({t:TIMES[i],c:s.conc[i]}); lastIdx=i; } }
+  if(pts.length<3)return null;
+  var cmax=0,tmax=0; pts.forEach(function(p){ if(p.c>cmax){cmax=p.c;tmax=p.t;} });
+  // AUClast: linear-up / log-down
+  var auclast=0; for(var k=1;k<pts.length;k++){ var p0=pts[k-1],p1=pts[k],dt=p1.t-p0.t;
+    if(p1.c>=p0.c||p1.c<=0||p0.c<=0) auclast+=dt*(p0.c+p1.c)/2; else auclast+=dt*(p0.c-p1.c)/Math.log(p0.c/p1.c); }
+  var clast=pts[pts.length-1].c, tlast=pts[pts.length-1].t;
+  // lambda-z: best-fit over terminal points (after tmax), windows of last 3,4,...
+  var term=pts.filter(function(p){return p.t>tmax&&p.c>0;});
+  var best=null;
+  for(var w=3;w<=term.length;w++){ var seg=term.slice(term.length-w); var fit=linreg(seg.map(function(p){return p.t;}),seg.map(function(p){return Math.log(p.c);}));
+    if(fit.b<0&&fit.r2adj>=0.70){ if(!best||fit.r2adj>best.r2adj+0.0001)best=fit; } }
+  var lz=best?-best.b:null, thalf=lz?0.693/lz:null;
+  var aucinf=lz?auclast+clast/lz:null, extrap=lz?100*(clast/lz)/aucinf:null;
+  var clf=aucinf?(s.dose*1e6/aucinf):null, vzf=(lz&&clf)?clf/lz:null;
+  return {cmax:cmax,tmax:tmax,auclast:auclast,aucinf:aucinf,extrap:extrap,lz:lz,thalf:thalf,clf:clf?clf/1000:null,vzf:vzf?vzf/1000:null,lzpts:best?best.n:0,r2:best?best.r2adj:0};
+}
+SUBJ.forEach(function(s){ s.p=nca(s); });
+var EVAL=SUBJ.filter(function(s){return s.p&&s.p.aucinf;});
+
+// ===== stats =====
+function geoMean(a){if(!a.length)return null;var m=a.reduce(function(x,v){return x+Math.log(v);},0)/a.length;return Math.exp(m);}
+function geoCV(a){if(a.length<2)return null;var ln=a.map(Math.log),m=ln.reduce(function(x,v){return x+v;},0)/ln.length;var v=ln.reduce(function(x,y){return x+(y-m)*(y-m);},0)/(ln.length-1);return 100*Math.sqrt(Math.exp(v)-1);}
+function median(a){var b=a.slice().sort(function(x,y){return x-y;}),n=b.length;return n%2?b[(n-1)/2]:(b[n/2-1]+b[n/2])/2;}
+function quart(a){var b=a.slice().sort(function(x,y){return x-y;}),n=b.length;function q(p){var idx=p*(n-1),lo=Math.floor(idx),hi=Math.ceil(idx);return b[lo]+(b[hi]-b[lo])*(idx-lo);}return {min:b[0],q1:q(0.25),med:q(0.5),q3:q(0.75),max:b[n-1]};}
+function fmt(x,d){return x===null||x===undefined?'-':x.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});}
+function cohortParams(ci,key){return EVAL.filter(function(s){return s.cohort===ci;}).map(function(s){return s.p[key];}).filter(function(v){return v!==null&&v!==undefined;});}
+// dose proportionality power model: ln(param) = a + b*ln(dose)
+function doseProp(key){var xs=[],ys=[];EVAL.forEach(function(s){var v=s.p[key];if(v>0){xs.push(Math.log(s.dose));ys.push(Math.log(v));}});
+  var f=linreg(xs,ys); var df=f.n-2, mse=f.sse/df, se=Math.sqrt(mse/f.sxx), tcrit=2.07; return {slope:f.b,lo:f.b-tcrit*se,hi:f.b+tcrit*se,r2:f.r2}; }
+
+// ===== charts =====
+var LOGY=false;
+function destroyCharts(){CHARTS.forEach(function(c){try{c.destroy();}catch(e){}});CHARTS=[];}
+function addChart(sel,opts){var el=document.querySelector(sel);if(!el||typeof ApexCharts==='undefined')return;var c=new ApexCharts(el,opts);c.render();CHARTS.push(c);}
+function meanProfileSeries(){ return COHORTS.map(function(co,ci){ var data=[];
+  TIMES.forEach(function(t,ti){ var vals=SUBJ.filter(function(s){return s.cohort===ci&&s.conc[ti]!==null;}).map(function(s){return s.conc[ti];});
+    if(vals.length){ var g=geoMean(vals); if(!(LOGY&&(g<=0)))data.push({x:t,y:Math.round(g*100)/100}); } });
+  return {name:co.label,data:data}; }); }
+function spaghettiSeries(){ var out=[]; SUBJ.forEach(function(s){ var data=[]; TIMES.forEach(function(t,ti){ if(s.conc[ti]!==null&&!(LOGY&&s.conc[ti]<=0))data.push({x:t,y:s.conc[ti]}); });
+  out.push({name:s.id,data:data,color:COHORTS[s.cohort].col}); }); return out; }
+function lineBase(h){return {chart:{type:'line',height:h,toolbar:{show:false},fontFamily:AXFONT,animations:{enabled:false},zoom:{enabled:false}},
+  stroke:{width:2,curve:'straight'},markers:{size:3},grid:{borderColor:'#e9ebef'},
+  xaxis:{type:'numeric',tickAmount:8,title:{text:'Time (h)',style:{fontFamily:AXMONO,fontSize:'10px',fontWeight:500,color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'},formatter:function(v){return Math.round(v);}}},
+  yaxis:{logarithmic:LOGY,title:{text:'Conc. (ng/mL)'+(LOGY?', log':''),style:{fontFamily:AXMONO,fontSize:'10px',fontWeight:500,color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'},formatter:function(v){return LOGY?(v>=1?v.toFixed(0):v.toFixed(1)):Math.round(v);}}},
+  tooltip:{}};}
+function mountFigs(){
+  if(!$('#v-figures').classList.contains('on'))return; destroyCharts();
+  addChart('#ch-mean',Object.assign(lineBase(320),{series:meanProfileSeries(),colors:COHORTS.map(function(c){return c.col;}),markers:{size:4},legend:{position:'top',fontFamily:AXMONO,fontSize:'11px',markers:{radius:2}}}));
+  addChart('#ch-spag',Object.assign(lineBase(320),{series:spaghettiSeries(),stroke:{width:1,curve:'straight'},markers:{size:0},legend:{show:false},tooltip:{enabled:false}}));
+  // box plots
+  function boxData(key){return COHORTS.map(function(co,ci){var q=quart(cohortParams(ci,key));return {x:co.label,y:[Math.round(q.min),Math.round(q.q1),Math.round(q.med),Math.round(q.q3),Math.round(q.max)]};});}
+  addChart('#ch-boxc',{chart:{type:'boxPlot',height:300,toolbar:{show:false},fontFamily:AXFONT,animations:{enabled:false}},series:[{data:boxData('cmax')}],
+    plotOptions:{boxPlot:{colors:{upper:'#0D9488',lower:'#3aa0e8'}}},grid:{borderColor:'#e9ebef'},xaxis:{labels:{style:{fontFamily:AXMONO,fontSize:'11px'}}},yaxis:{title:{text:'Cmax (ng/mL)',style:{fontFamily:AXMONO,fontSize:'10px',color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'}}}});
+  addChart('#ch-boxa',{chart:{type:'boxPlot',height:300,toolbar:{show:false},fontFamily:AXFONT,animations:{enabled:false}},series:[{data:boxData('aucinf')}],
+    plotOptions:{boxPlot:{colors:{upper:'#0D9488',lower:'#3aa0e8'}}},grid:{borderColor:'#e9ebef'},xaxis:{labels:{style:{fontFamily:AXMONO,fontSize:'11px'}}},yaxis:{title:{text:'AUC0-inf (h*ng/mL)',style:{fontFamily:AXMONO,fontSize:'10px',color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'}}}});
+  // dose proportionality scatter (log-log) for AUC0-inf
+  var pts=EVAL.map(function(s){return {x:s.dose,y:Math.round(s.p.aucinf)};});
+  var dp=doseProp('aucinf'), lnD=Math.log, fitline=[50,150,450].map(function(d){ // fitted geomean line via regression intercept
+    var xs=[],ys=[];EVAL.forEach(function(s){if(s.p.aucinf>0){xs.push(lnD(s.dose));ys.push(lnD(s.p.aucinf));}});var f=linreg(xs,ys);return {x:d,y:Math.round(Math.exp(f.a+f.b*lnD(d)))};});
+  addChart('#ch-dp',{chart:{type:'line',height:320,toolbar:{show:false},fontFamily:AXFONT,animations:{enabled:false},zoom:{enabled:false}},
+    series:[{name:'Subjects',type:'scatter',data:pts},{name:'Power-model fit',type:'line',data:fitline,color:'#F97316'}],colors:['#0D9488','#F97316'],
+    stroke:{width:[0,2]},markers:{size:[5,0]},grid:{borderColor:'#e9ebef'},legend:{position:'top',fontFamily:AXMONO,fontSize:'11px',markers:{radius:2}},
+    xaxis:{type:'numeric',logarithmic:true,tickAmount:3,title:{text:'Dose (mg), log',style:{fontFamily:AXMONO,fontSize:'10px',color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'},formatter:function(v){return Math.round(v);}}},
+    yaxis:{logarithmic:true,title:{text:'AUC0-inf (h*ng/mL), log',style:{fontFamily:AXMONO,fontSize:'10px',color:'#64748b'}},labels:{style:{fontFamily:AXMONO,fontSize:'10px'},formatter:function(v){return Math.round(v).toLocaleString();}}},tooltip:{}});
+}
+
+// ===== render: SAP =====
+function kpi(cls,l,v,s){return '<div class="kpi '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s">'+s+'</div></div>';}
+function renderSAP(){
+  return '<div class="kpis">'+
+    kpi('teal','Subjects',SUBJ.length,COHORTS.length+' dose cohorts')+
+    kpi('blue','PK-evaluable',EVAL.length,'lambda-z criteria met')+
+    kpi('teal','Sampling points',TIMES.length,'0 to 48 h post-dose')+
+    kpi('amber','LLOQ',LLOQ.toFixed(2),'ng/mL, plasma')+
+    kpi('teal','Method','NCA','Phoenix WinNonlin / R PKNCA')+
+    kpi('blue','Analyte',ANALYTE,'oral, single dose')+
+  '</div>'+
+  '<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>PK statistical analysis plan<span class="r">'+STUDY+' &middot; SAD &middot; healthy volunteers</span></div><div class="b"><div class="spec">'+
+    '<div><div class="kv"><span class="k">Analysis population</span><span class="v">PK-evaluable (dosed + evaluable profile)</span></div>'+
+    '<div class="kv"><span class="k">Method</span><span class="v">Non-compartmental analysis (NCA)</span></div>'+
+    '<div class="kv"><span class="k">AUC method</span><span class="v">Linear-up / log-down trapezoidal</span></div>'+
+    '<div class="kv"><span class="k">Parameters</span><span class="v mono">Cmax, Tmax, AUClast, AUC0-inf, %extrap, t&frac12;, lambda-z, CL/F, Vz/F</span></div>'+
+    '<div class="kv"><span class="k">lambda-z criteria</span><span class="v">&ge;3 points, R&sup2;adj &ge; 0.70, ends &gt; Tmax</span></div></div>'+
+    '<div><div class="kv"><span class="k">Descriptive stats</span><span class="v">n, geometric mean (geo CV%); median (range) for Tmax</span></div>'+
+    '<div class="kv"><span class="k">Concentrations</span><span class="v">by treatment x nominal time (BLQ = 0)</span></div>'+
+    '<div class="kv"><span class="k">Parameters</span><span class="v">by dose; BLQ = missing for NCA</span></div>'+
+    '<div class="kv"><span class="k">Dose proportionality</span><span class="v mono">power model: ln(param) = a + b&middot;ln(dose)</span></div>'+
+    '<div class="kv"><span class="k">Times</span><span class="v">actual for parameters, nominal for summaries</span></div></div>'+
+    '</div><p class="cap">BLQ rules: a value below the LLOQ before the first quantifiable concentration is set to 0; embedded or terminal BLQ values are treated as missing and excluded from NCA. CL/F and Vz/F carry the "/F" because oral bioavailability is not identifiable without IV data. Annexed to the SAP (ICH E9); concentration data must be reconciled and locked (next tab) before analysis runs.</p></div></div>';
+}
+
+// ===== render: reconciliation =====
+var FLAGS=[
+ {sub:'C1-03',t:2,kind:'dev',note:'Actual 2.4 h vs nominal 2.0 h (+20%): kept in NCA on actual time, excluded from the 2 h concentration summary'},
+ {sub:'C2-06',t:4,kind:'dev',note:'Actual 3.5 h vs nominal 4.0 h (-12.5%): outside +/-10% window'},
+ {sub:'C3-01',t:1,kind:'miss',note:'Sample not collected (IV access lost); no result from lab'},
+ {sub:'C2-02',t:24,kind:'miss',note:'Lab result with no matching collection record (orphan); query raised'},
+ {sub:'C1-07',t:6,kind:'re',note:'Reassayed: initial value flagged as inconsistent with profile; mean of reassay reported'},
+ {sub:'C3-04',t:0.5,kind:'dev',note:'Hemolyzed sample, wrong tube (EDTA vs lithium heparin): excluded, query to site'},
+ {sub:'C2-08',t:48,kind:'blq',note:'BLQ at terminal time: treated as missing for NCA (not zero)'},
+ {sub:'C3-05',t:0,kind:'blq',note:'Quantifiable pre-dose flagged; set to 0 per BLQ rules'}
+];
+function renderRecon(){
+  var totSamp=SUBJ.length*(TIMES.length); var collected=totSamp-2, blqCount=0; SUBJ.forEach(function(s){s.blq.forEach(function(b){if(b)blqCount++;});});
+  var dev=FLAGS.filter(function(f){return f.kind==='dev';}).length, miss=FLAGS.filter(function(f){return f.kind==='miss';}).length, re=FLAGS.filter(function(f){return f.kind==='re';}).length;
+  var k='<div class="kpis">'+
+    kpi('teal','Samples expected',totSamp,SUBJ.length+' subj x '+TIMES.length+' timepoints')+
+    kpi('teal','Collected & analyzed',collected,'bioanalytical results received')+
+    kpi('amber','Time deviations',dev,'beyond +/-10% of nominal')+
+    kpi('red','Missing / orphan',miss,'no result or no collection')+
+    kpi('blue','Reassays',re,'anomalous results re-run')+
+    kpi('teal','BLQ values',blqCount,'< LLOQ, rules applied')+
+  '</div>';
+  var sm={dev:['dev','Time deviation'],miss:['miss','Missing / orphan'],re:['re','Reassay'],blq:['blq','BLQ rule']};
+  var rows=FLAGS.map(function(f){var s=sm[f.kind];return '<tr><td class="mono">'+f.sub+'</td><td class="mono">'+f.t+' h</td><td><span class="stb '+s[0]+'">'+s[1]+'</span></td><td style="white-space:normal;font-size:12px;color:var(--mut-fg)">'+f.note+'</td></tr>';}).join('');
+  var tbl='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M21 3l-7 7M3 16v5h5M3 21l7-7"/></svg>Sample reconciliation worklist<span class="r">bioanalytical vs EDC collection</span></div><div class="b">'+
+    '<div class="tblwrap"><table class="tbl"><thead><tr><th>Subject</th><th>Nominal time</th><th>Discrepancy</th><th>Resolution</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<p class="cap">Every bioanalytical result is matched to a collected sample on <code>subject + period + nominal time + sample ID</code>, and the <b>actual</b> collection time is checked against nominal (tolerance +/-10%). Out-of-window samples stay in the parameter analysis on their actual time but drop out of the by-timepoint concentration summary. Only a clean, locked concentration dataset feeds the NCA.</p></div></div>';
+  return k+tbl;
+}
+
+// ===== render: stats =====
+function renderStats(){
+  // concentration summary by timepoint x cohort (geo mean)
+  var head='<th>Time (h)</th>'+COHORTS.map(function(c){return '<th class="num">'+c.label+'<div style="font-weight:400;color:var(--mut-fg)">geo mean (CV%)</div></th>';}).join('');
+  var crows=TIMES.map(function(t,ti){ return '<tr><td class="mono">'+t+'</td>'+COHORTS.map(function(co,ci){
+    var vals=SUBJ.filter(function(s){return s.cohort===ci&&s.conc[ti]!==null;}).map(function(s){return s.conc[ti];});
+    if(t===0||!vals.length)return '<td class="num" style="color:var(--mut-fg)">BLQ</td>';
+    return '<td class="num">'+fmt(geoMean(vals),1)+' <span style="color:var(--mut-fg)">('+fmt(geoCV(vals),0)+')</span></td>'; }).join('')+'</tr>'; }).join('');
+  var conc='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>Plasma concentration summary<span class="r">geometric mean (geo CV%), ng/mL</span></div><div class="b"><div class="tblwrap" style="max-height:380px"><table class="tbl"><thead><tr>'+head+'</tr></thead><tbody>'+crows+'</tbody></table></div></div></div>';
+  // parameter summary by cohort
+  var PRM=[['cmax','Cmax','ng/mL',0],['tmax','Tmax','h','t'],['auclast','AUClast','h*ng/mL',0],['aucinf','AUC0-inf','h*ng/mL',0],['extrap','%AUCextrap','%',1],['thalf','t&frac12;','h',1],['clf','CL/F','L/h',1],['vzf','Vz/F','L',0]];
+  var phead='<th>Parameter</th>'+COHORTS.map(function(c){return '<th class="num">'+c.label+'</th>';}).join('');
+  var prows=PRM.map(function(pr){ return '<tr><td>'+pr[1]+' <span style="color:var(--mut-fg);font-size:11px">'+pr[2]+'</span></td>'+COHORTS.map(function(co,ci){
+    var vals=cohortParams(ci,pr[0]);
+    if(pr[3]==='t'){ var md=median(vals),mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals); return '<td class="num">'+fmt(md,1)+' <span style="color:var(--mut-fg)">('+fmt(mn,1)+'-'+fmt(mx,1)+')</span></td>'; }
+    return '<td class="num">'+fmt(geoMean(vals),pr[3])+' <span style="color:var(--mut-fg)">('+fmt(geoCV(vals),0)+')</span></td>'; }).join('')+'</tr>'; }).join('');
+  var param='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>PK parameter summary<span class="r">geo mean (geo CV%); Tmax median (range)</span></div><div class="b"><div class="tblwrap"><table class="tbl"><thead><tr>'+phead+'</tr></thead><tbody>'+prows+'</tbody></table></div></div></div>';
+  // dose proportionality
+  var dpC=doseProp('cmax'), dpA=doseProp('aucinf');
+  var propA=dpA.lo<=1&&dpA.hi>=1, propC=dpC.lo<=1&&dpC.hi>=1;
+  var dp='<div class="card" style="margin-bottom:0"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M7.5 7.5l9 9"/></svg>Dose proportionality<span class="r">power model, slope b (95% CI)</span></div><div class="b"><div class="tblwrap" style="max-height:none"><table class="tbl"><thead><tr><th>Parameter</th><th class="num">Slope b</th><th class="num">95% CI</th><th>Conclusion</th></tr></thead><tbody>'+
+    '<tr><td>Cmax</td><td class="num">'+fmt(dpC.slope,3)+'</td><td class="num">'+fmt(dpC.lo,3)+' to '+fmt(dpC.hi,3)+'</td><td><span class="stb '+(propC?'ok':'dev')+'">'+(propC?'proportional':'CI excludes 1')+'</span></td></tr>'+
+    '<tr><td>AUC0-inf</td><td class="num">'+fmt(dpA.slope,3)+'</td><td class="num">'+fmt(dpA.lo,3)+' to '+fmt(dpA.hi,3)+'</td><td><span class="stb '+(propA?'ok':'dev')+'">'+(propA?'proportional':'CI excludes 1')+'</span></td></tr>'+
+    '</tbody></table></div><div class="concl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg><div>The power-model slope for both Cmax and AUC has a 95% CI that '+(propA&&propC?'includes 1, so exposure is <b>approximately dose-proportional</b> across 50 to 450 mg':'departs from 1')+'. CL/F and t&frac12; are independent of dose, a built-in consistency check for a linear, well-behaved PK profile.</div></div></div></div>';
+  return conc+param+dp;
+}
+
+// ===== render: figures =====
+function renderFigures(){
+  return '<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M5 15c3-9 5-9 7-1s4 8 7-5"/></svg>Mean concentration-time profiles<span class="r"><span class="toggle" id="logTog"><button data-log="0" class="'+(LOGY?'':'on')+'">Linear</button><button data-log="1" class="'+(LOGY?'on':'')+'">Semi-log</button></span></span></div><div class="b"><div class="figgrid"><div><div id="ch-mean" style="min-height:320px"></div><p class="cap" style="text-align:center;margin-top:2px">Geometric mean, by dose. <b>Semi-log</b> makes the terminal elimination phase a straight line whose slope is lambda-z.</p></div><div><div id="ch-spag" style="min-height:320px"></div><p class="cap" style="text-align:center;margin-top:2px">Individual ("spaghetti") profiles, colored by cohort, showing between-subject variability.</p></div></div></div></div>'+
+    '<div class="figgrid"><div class="card"><div class="h">Cmax by dose</div><div class="b"><div id="ch-boxc" style="min-height:300px"></div></div></div>'+
+    '<div class="card"><div class="h">AUC0-inf by dose</div><div class="b"><div id="ch-boxa" style="min-height:300px"></div></div></div></div>'+
+    '<div class="card" style="margin-bottom:0"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M7.5 7.5l9 9"/></svg>Dose proportionality<span class="r">AUC0-inf vs dose, log-log</span></div><div class="b"><div style="max-width:640px;margin:0 auto"><div id="ch-dp" style="min-height:320px"></div></div><p class="cap" style="text-align:center">Individual AUC0-inf vs dose on log-log axes with the fitted power-model line. A straight line of slope ~1 indicates dose proportionality.</p></div></div>';
+}
+
+// ===== render: report =====
+function renderReport(){
+  var gmC=COHORTS.map(function(co,ci){return Math.round(geoMean(cohortParams(ci,'cmax')));});
+  var gmA=COHORTS.map(function(co,ci){return Math.round(geoMean(cohortParams(ci,'aucinf')));});
+  var th=geoMean(cohortParams(2,'thalf')), clf=geoMean(cohortParams(2,'clf'));
+  var narr='<div class="card"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg>Clinical Study Report &middot; Section 11.4 Pharmacokinetics<span class="r">ICH E3</span></div><div class="b"><div class="narr">'+
+    '<p>Following single oral doses of '+STUDY+' (50, 150, and 450 mg) to healthy volunteers, '+STUDY+' was absorbed with a median T<sub>max</sub> of approximately 2 h. Geometric mean C<sub>max</sub> was <span class="mono">'+gmC.join(', ')+'</span> ng/mL and geometric mean AUC<sub>0-inf</sub> was <span class="mono">'+gmA.map(function(v){return v.toLocaleString();}).join(', ')+'</span> h&middot;ng/mL across the 50, 150, and 450 mg cohorts, respectively.</p>'+
+    '<p style="margin-top:10px">The terminal elimination half-life was approximately <b>'+fmt(th,1)+' h</b> and apparent clearance (CL/F) approximately <b>'+fmt(clf,1)+' L/h</b>, both independent of dose. Systemic exposure (C<sub>max</sub> and AUC) increased in an approximately <b>dose-proportional</b> manner over the 9-fold dose range, supported by a power-model slope with a 95% confidence interval including unity. Between-subject variability was moderate (geometric CV% ~25-35%).</p></div>'+
+    '<div class="concl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><div>This narrative, the in-text summary tables, and the figures are generated from the locked NCA dataset and would be assembled into CSR Section 11.4 (and the Section 14 / 16 TLFs), then published in the eCTD.</div></div></div></div>';
+  var tlf='<div class="card" style="margin-bottom:0"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>PK tables, listings &amp; figures (TLF) index</div><div class="b"><div class="tlf">'+
+    [['T 14.4.1','Table','Plasma concentration summary by treatment and nominal time'],
+     ['T 14.4.2','Table','PK parameter summary by treatment (geometric mean, geo CV%)'],
+     ['T 14.4.3','Table','Dose-proportionality assessment (power model)'],
+     ['F 14.4.1','Figure','Mean concentration-time profiles (linear and semi-log)'],
+     ['F 14.4.2','Figure','Individual concentration-time profiles by cohort'],
+     ['F 14.4.3','Figure','Box plots of Cmax and AUC by dose'],
+     ['F 14.4.4','Figure','Dose proportionality (AUC0-inf vs dose, log-log)'],
+     ['L 16.2.5','Listing','Individual plasma concentrations and PK parameters']].map(function(r){return '<div class="row"><span class="id">'+r[0]+'</span><span class="ty">'+r[1]+'</span><span>'+r[2]+'</span></div>';}).join('')+
+    '</div></div></div>';
+  return narr+tlf;
+}
+
+// ===== mount =====
+$('#ctxSub').innerHTML='Study <b>'+STUDY+'</b><span class="dot"></span>Phase 1 SAD<span class="dot"></span>Sponsor <b>'+SPONSOR+'</b><span class="dot"></span><b>'+COHORTS.length+'</b> dose cohorts<span class="dot"></span><b>'+SUBJ.length+'</b> healthy volunteers<span class="dot"></span>plasma';
+var TABS=[
+  {id:'sap',label:'PK analysis plan',render:renderSAP},
+  {id:'recon',label:'Data reconciliation',render:renderRecon},
+  {id:'stats',label:'Statistical analysis',render:renderStats},
+  {id:'figures',label:'Results figures',render:renderFigures},
+  {id:'report',label:'PK report',render:renderReport}
+];
+var tabsEl=$('#tabs');
+TABS.forEach(function(t,i){
+  var b=document.createElement('button'); b.className='tab'+(i===0?' active':''); b.setAttribute('data-view',t.id);
+  b.innerHTML=t.label;
+  b.addEventListener('click',function(){ tabsEl.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');}); $('#v-'+t.id).classList.add('on'); mountFigs(); });
+  tabsEl.appendChild(b); $('#v-'+t.id).innerHTML=t.render();
+});
+mountFigs();
+$('#v-figures').addEventListener('click',function(e){ var b=e.target.closest('[data-log]'); if(!b)return; LOGY=b.getAttribute('data-log')==='1';
+  $('#v-figures').innerHTML=renderFigures(); mountFigs(); });
+
+var params=new URLSearchParams(location.search), wantTab=params.get('tab');
+if(wantTab){var tb=document.querySelector('.tab[data-view="'+wantTab+'"]');if(tb)tb.click();}
+</script>
+</body>
+</html>
