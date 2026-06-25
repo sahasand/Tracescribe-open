@@ -11,3 +11,4 @@ __pycache__/
 
 # Unrelated project dropped in this dir; not part of the showcase
 gstack-main/
+.gstack/

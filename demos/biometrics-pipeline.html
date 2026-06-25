@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SDTM to ADaM to TLF - TraceScribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --bg:hsl(30 20% 98%); --card:#fff; --muted:hsl(220 14% 96%);
+    --fg:hsl(222 47% 11%); --mut-fg:hsl(220 9% 46%);
+    --primary:hsl(168 76% 32%); --primary-soft:hsl(168 76% 32%/.1);
+    --accent:hsl(25 95% 53%); --accent-soft:hsl(25 95% 53%/.12); --border:hsl(220 13% 91%);
+    --success:hsl(160 84% 36%); --warning:hsl(38 92% 50%); --info:hsl(199 89% 48%); --danger:hsl(0 72% 51%);
+    --radius:10px; --shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono)}
+  header{position:sticky;top:0;z-index:20;background:hsl(0 0% 100%/.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .hwrap{max-width:1340px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;flex:none}
+  .logo svg{width:17px;height:17px;color:#fff}
+  .brand{font-weight:800;letter-spacing:-.01em;line-height:1.1}
+  .brand small{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--primary);text-transform:uppercase}
+  .hmeta{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary)}
+  .ctx{max-width:1340px;margin:0 auto;padding:18px 20px 0}
+  .ctx h1{font-size:20px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ctx h1 .ph{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:6px;background:var(--accent-soft);color:hsl(25 80% 42%)}
+  .ctx .sub{font-size:13px;color:var(--mut-fg);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ctx .sub b{color:var(--fg);font-weight:600}
+  .ctx .dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+  .tabs{max-width:1340px;margin:16px auto 0;padding:0 20px;display:flex;gap:2px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{font-family:var(--font);font-weight:600;font-size:13.5px;color:var(--mut-fg);background:none;border:0;border-bottom:2px solid transparent;padding:11px 12px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:-1px}
+  .tab svg{width:15px;height:15px}
+  .tab:hover{color:var(--fg)}
+  .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  main{max-width:1340px;margin:0 auto;padding:20px 20px 64px}
+  .view{display:none} .view.on{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:18px}
+  .card>.h{font-size:12px;font-family:var(--mono);font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--mut-fg);padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card>.h svg{width:15px;height:15px;color:var(--primary)}
+  .card>.h .r{margin-left:auto;font-family:var(--font);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--mut-fg)}
+  .card>.b{padding:16px}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-bottom:18px}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--border);border-left-width:3px;border-radius:12px;padding:13px 14px;box-shadow:var(--shadow)}
+  .kpi .l{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut-fg)}
+  .kpi .v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:5px;line-height:1}
+  .kpi .s{font-family:var(--mono);font-size:10px;color:var(--mut-fg);margin-top:5px}
+  .kpi.teal{border-left-color:var(--primary)} .kpi.teal .v{color:var(--primary)}
+  .kpi.amber{border-left-color:var(--warning)} .kpi.amber .v{color:hsl(38 80% 42%)}
+  .kpi.red{border-left-color:var(--danger)} .kpi.red .v{color:var(--danger)}
+  .kpi.blue{border-left-color:var(--info)} .kpi.blue .v{color:var(--info)}
+  .kpi.green{border-left-color:var(--success)} .kpi.green .v{color:var(--success)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:1080px){.row2{grid-template-columns:1fr}}
+  .kv{display:flex;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--border);gap:12px}
+  .kv .k{color:var(--mut-fg);min-width:160px;font-size:12px}
+  .kv .v{font-weight:600;flex:1}
+  .kv .v.mono{font-family:var(--mono);font-weight:500;font-size:12.5px}
+  .tblwrap{overflow:auto;max-height:560px;border-radius:10px;border:1px solid var(--border)}
+  table.tbl{border-collapse:collapse;width:100%;font-size:12.5px}
+  table.tbl th{position:sticky;top:0;background:var(--muted);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut-fg);text-align:left;padding:8px 10px;white-space:nowrap;z-index:1}
+  table.tbl td{padding:7px 10px;border-top:1px solid var(--border);white-space:nowrap}
+  table.tbl tr:hover td{background:hsl(168 76% 32%/.03)}
+  table.tbl td.num,table.tbl th.num{text-align:right;font-family:var(--mono)}
+  table.tbl tfoot td{border-top:2px solid var(--border);font-weight:700;background:hsl(168 76% 32%/.04)}
+  .stb{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+  .stb.ok{background:hsl(160 84% 36%/.13);color:var(--success)}
+  .stb.dev{background:hsl(38 92% 50%/.15);color:hsl(38 75% 38%)}
+  .stb.miss{background:hsl(0 72% 51%/.12);color:var(--danger)}
+  .stb.mut{background:hsl(220 9% 46%/.12);color:var(--mut-fg)}
+  .stb.re{background:hsl(199 89% 48%/.12);color:hsl(199 80% 40%)}
+  .cap{font-size:11.5px;color:var(--mut-fg);margin-top:12px;line-height:1.5}
+  .cap code,.dnote code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .seg button{font-family:var(--mono);font-size:11px;font-weight:600;padding:6px 12px;border:0;background:var(--card);color:var(--mut-fg);cursor:pointer}
+  .seg button.on{background:var(--primary);color:#fff}
+  .narr{font-size:13.5px;line-height:1.65;color:var(--fg)} .narr b{font-weight:700}
+  /* pipeline flow */
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px}
+  @media(max-width:900px){.flow{grid-template-columns:1fr;gap:14px}.flow .arrow{transform:rotate(90deg);justify-self:center}}
+  .stage{border:1px solid var(--border);border-radius:12px;padding:13px 14px;background:var(--card)}
+  .stage .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
+  .stage .nm{font-weight:700;font-size:14px;margin:3px 0 7px}
+  .stage .it{font-family:var(--mono);font-size:11.5px;color:var(--fg);padding:3px 0;border-top:1px dashed var(--border)}
+  .stage .it span{color:var(--mut-fg)}
+  .arrow{color:var(--accent);font-weight:800;font-size:20px;justify-self:center}
+  .recon{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:11px;background:hsl(160 84% 36%/.07);border:1px solid hsl(160 84% 36%/.25);font-size:12.5px;margin-top:16px}
+  .recon svg{width:17px;height:17px;color:var(--success);flex:none;margin-top:1px}
+  .recon b{font-weight:700} .recon .mono{font-family:var(--mono);font-size:11.5px}
+  .dnote{font-size:12px;color:var(--fg);background:hsl(168 76% 32%/.05);border:1px solid hsl(168 76% 32%/.18);border-radius:10px;padding:11px 13px;margin-bottom:12px;line-height:1.55}
+  .dnote b{font-weight:700;color:var(--primary)}
+  /* traceability three panel */
+  .trace-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;margin-bottom:12px}
+  .trace-bar .crumb{font-family:var(--mono);font-size:11.5px;color:var(--mut-fg);flex:1;min-width:220px}
+  .trace-bar .crumb b{color:var(--primary)} .trace-bar .crumb .a{color:var(--accent)}
+  .trace-deriv{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:#0e2b28;color:#dcf5ef;border-radius:10px;padding:10px 13px;margin-bottom:14px;min-height:20px}
+  .trace-deriv .k{color:#8fd9c8;font-weight:600} .trace-deriv .muted{color:#6aa99b}
+  .panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:980px){.panels{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card);display:flex;flex-direction:column}
+  .panel>.ph{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--mut-fg);padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;background:var(--muted)}
+  .panel>.ph .pn{width:16px;height:16px;border-radius:5px;background:var(--primary);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .panel>.ph select{margin-left:auto;font-family:var(--mono);font-size:10.5px;border:1px solid var(--border);border-radius:6px;padding:2px 5px;background:var(--card);color:var(--fg)}
+  .pscroll{overflow:auto;max-height:430px}
+  .panel table.tbl{font-size:11.5px}
+  .panel table.tbl td{padding:5px 8px}
+  .panel table.tbl th{padding:6px 8px;font-size:9px}
+  tr.hl td{background:hsl(168 76% 32%/.16)!important;box-shadow:inset 2px 0 0 var(--primary)}
+  td.cellhit{background:hsl(168 76% 32%/.16)!important;box-shadow:inset 0 0 0 2px var(--primary);border-radius:4px}
+  td.ring{box-shadow:inset 0 0 0 2px var(--accent);border-radius:4px}
+  .clk{cursor:pointer}
+  .tlfmini td.val{cursor:pointer} .tlfmini td.val:hover{background:hsl(25 95% 53%/.1)}
+  .soc{font-weight:700;background:hsl(168 76% 32%/.04)}
+  .pt td:first-child{padding-left:22px}
+  .legend{font-size:11px;color:var(--mut-fg);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .foot{max-width:1340px;margin:0 auto;padding:6px 20px 40px;font-size:12px;color:var(--mut-fg);line-height:1.5}
+  .foot code{font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></span>
+  <span class="brand">TraceScribe<small>Stat Programming</small></span>
+  <span class="hmeta"><span class="pill">CDISC &middot; SDTM / ADaM / TLF</span></span>
+</div></header>
+
+<section class="ctx">
+  <h1>SDTM to ADaM to TLF Pipeline <span class="ph">TRACEABILITY</span></h1>
+  <div class="sub" id="ctxSub"></div>
+</section>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-overview"></section>
+  <section class="view" id="v-sdtm"></section>
+  <section class="view" id="v-adam"></section>
+  <section class="view" id="v-tlf"></section>
+  <section class="view" id="v-trace"></section>
+</main>
+
+<div class="foot">
+  Recreation of the clinical Biometrics (statistical programming) chain: collected <b>SDTM</b> domains are derived into analysis-ready <b>ADaM</b> datasets, which are aggregated into the <b>TLF</b> outputs of a Clinical Study Report. The data is generated by a <b>deterministic, seeded</b> synthetic engine (SDTM DM / EX / AE), then ADSL and ADAE are derived in the browser with the real <code>SAFFL</code> and <code>TRTEMFL</code> logic shown, and every table count is computed from the ADaM, not hard-coded, so the numbers reconcile and each one traces back to source. Synthetic study, no real subjects.
+</div>
+
+<script>
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pad(n,w){return String(n).padStart(w||2,'0');}
+function pick(rnd,arr){return arr[Math.floor(rnd()*arr.length)];}
+var BASE=new Date(2024,0,8);
+function addDays(n){var d=new Date(BASE.getTime());d.setDate(d.getDate()+n);return d;}
+function iso(d){return d?d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()):'';}
+
+var STUDY='HF-204', SPONSOR='Cordia Therapeutics', INDICATION='Chronic heart failure (HFrEF)';
+var ARMS=[{cd:'PBO',name:'Placebo',pn:1,extrt:'Placebo',dose:0},{cd:'ACT',name:'Active 100 mg',pn:2,extrt:'CDX-100',dose:100}];
+var SITES=['101','102','103','104','205','206'];
+var RACES=[['WHITE',.62],['BLACK OR AFRICAN AMERICAN',.18],['ASIAN',.12],['OTHER',.08]];
+var rng=mulberry32(20260625);
+
+// MedDRA dictionary (SOC, PT) with per-subject occurrence probability by arm. HFrEF-flavored.
+var MEDDRA=[
+ ['Cardiac disorders','Cardiac failure',0.20,0.11],
+ ['Cardiac disorders','Atrial fibrillation',0.10,0.08],
+ ['Cardiac disorders','Palpitations',0.05,0.07],
+ ['Vascular disorders','Hypotension',0.05,0.19],
+ ['Vascular disorders','Hypertension',0.10,0.05],
+ ['Metabolism and nutrition disorders','Hyperkalaemia',0.04,0.16],
+ ['Renal and urinary disorders','Renal impairment',0.05,0.12],
+ ['Nervous system disorders','Dizziness',0.08,0.17],
+ ['Nervous system disorders','Headache',0.12,0.11],
+ ['Gastrointestinal disorders','Nausea',0.10,0.12],
+ ['Gastrointestinal disorders','Diarrhoea',0.08,0.09],
+ ['General disorders and administration site conditions','Fatigue',0.14,0.16],
+ ['General disorders and administration site conditions','Oedema peripheral',0.13,0.08],
+ ['Infections and infestations','Nasopharyngitis',0.10,0.11],
+ ['Infections and infestations','Urinary tract infection',0.06,0.07],
+ ['Musculoskeletal and connective tissue disorders','Back pain',0.07,0.06],
+ ['Musculoskeletal and connective tissue disorders','Muscle spasms',0.05,0.08],
+ ['Investigations','Blood creatinine increased',0.04,0.10]
+];
+var VERBATIM={'Cardiac failure':'WORSENING HEART FAILURE','Atrial fibrillation':'IRREGULAR HEARTBEAT (AFIB)','Palpitations':'HEART POUNDING','Hypotension':'LOW BLOOD PRESSURE','Hypertension':'HIGH BLOOD PRESSURE','Hyperkalaemia':'HIGH POTASSIUM','Renal impairment':'WORSENING KIDNEY FUNCTION','Dizziness':'DIZZY SPELLS','Headache':'HEADACHE','Nausea':'FEELING SICK','Diarrhoea':'LOOSE STOOLS','Fatigue':'TIREDNESS','Oedema peripheral':'SWOLLEN ANKLES','Nasopharyngitis':'COMMON COLD','Urinary tract infection':'UTI','Back pain':'LOW BACK PAIN','Muscle spasms':'LEG CRAMPS','Blood creatinine increased':'RAISED CREATININE ON BLOODS'};
+
+function gauss(){var u=Math.max(rng(),1e-9),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function wpick(table){var r=rng(),acc=0;for(var i=0;i<table.length;i++){acc+=table[i][1];if(r<acc)return table[i][0];}return table[table.length-1][0];}
+
+// ===== Generate SDTM =====
+var N=120; // randomized subjects (ITT)
+var DM=[],EX=[],AE=[];
+for(var i=0;i<N;i++){
+  var arm=ARMS[i%2]; // 1:1 allocation
+  var usubjid=STUDY+'-'+pad(i+1,3);
+  var age=Math.round(63+9*gauss()); if(age<40)age=40; if(age>88)age=88;
+  var sex=rng()<0.41?'F':'M';
+  var race=wpick(RACES);
+  var consentDay=Math.floor(rng()*150);
+  var brth=new Date(addDays(consentDay).getFullYear()-age,Math.floor(rng()*12),1+Math.floor(rng()*27));
+  // 2 subjects randomized but never dosed -> no EX -> SAFFL=N (one per arm)
+  var notTreated=(i===57||i===88);
+  var doseDay=consentDay+10+Math.floor(rng()*8);
+  var dm={USUBJID:usubjid,SUBJID:pad(i+1,3),SITEID:pick(rng,SITES),ARMCD:arm.cd,ARM:arm.name,ACTARMCD:arm.cd,ACTARM:arm.name,
+    AGE:age,AGEU:'YEARS',SEX:sex,RACE:race,ETHNIC:rng()<0.14?'HISPANIC OR LATINO':'NOT HISPANIC OR LATINO',COUNTRY:'USA',
+    BRTHDTC:iso(brth),RFICDTC:iso(addDays(consentDay)),RFSTDTC:notTreated?'':iso(addDays(doseDay)),RFENDTC:notTreated?'':iso(addDays(doseDay+84)),_arm:arm,_consentDay:consentDay,_doseDay:doseDay,_notTreated:notTreated};
+  DM.push(dm);
+  if(!notTreated){
+    EX.push({USUBJID:usubjid,EXSEQ:1,EXTRT:arm.extrt,EXDOSE:arm.dose,EXDOSU:'mg',EXROUTE:'ORAL',EXSTDTC:iso(addDays(doseDay)),EXENDTC:iso(addDays(doseDay+84)),_st:doseDay});
+  }
+  // AEs
+  var aeseq=1;
+  MEDDRA.forEach(function(m){
+    var rate=arm.cd==='PBO'?m[2]:m[3];
+    var occ=rng()<rate?1:0;
+    if(occ && rng()<0.12) occ=2; // a few subjects have 2 episodes of same PT
+    for(var o=0;o<occ;o++){
+      // ~7% of AEs start pre-dose (screening) -> not treatment-emergent; ~1.5% missing start date
+      var r=rng(), startDay, miss=false, pre=false;
+      if(r<0.015){miss=true;}
+      else if(r<0.085 && !notTreated){pre=true; startDay=consentDay+1+Math.floor(rng()*6);}
+      else {var base=notTreated?consentDay+5:doseDay+1; startDay=base+Math.floor(rng()*80);}
+      var dur=3+Math.floor(rng()*40);
+      var sev=rng()<0.12?'SEVERE':(rng()<0.5?'MODERATE':'MILD');
+      var ser=(sev==='SEVERE'&&rng()<0.5)?'Y':'N';
+      AE.push({USUBJID:usubjid,AESEQ:aeseq++,AETERM:VERBATIM[m[1]]||m[1].toUpperCase(),AEDECOD:m[1],AESOC:m[0],
+        AESTDTC:miss?'':iso(addDays(startDay)),AEENDTC:miss?'':iso(addDays(startDay+dur)),AESEV:sev,AESER:ser,
+        AEREL:rng()<(arm.cd==='ACT'?0.45:0.3)?'RELATED':'NOT RELATED',AEACN:sev==='SEVERE'?'DRUG WITHDRAWN':'DOSE NOT CHANGED',_pre:pre,_miss:miss});
+    }
+  });
+}
+
+// ===== Derive ADaM: ADSL =====
+// provenance helper: {value, src:[{dom,key}], rule, text}
+function dmKey(u){return 'DM|'+u;}
+function exKey(u){return 'EX|'+u+'|1';}
+function aeKey(u,seq){return 'AE|'+u+'|'+seq;}
+var EXby={}; EX.forEach(function(e){EXby[e.USUBJID]=e;});
+var ADSL=DM.map(function(d){
+  var ex=EXby[d.USUBJID];
+  var saffl=ex?'Y':'N';
+  var trtsdt=ex?ex.EXSTDTC:'';
+  var trtedt=ex?ex.EXENDTC:'';
+  var agegr1=d.AGE<65?'<65':'>=65';
+  return {USUBJID:d.USUBJID,SITEID:d.SITEID,
+    TRT01P:d._arm.name,TRT01PN:d._arm.pn,TRT01A:d._arm.name,TRT01AN:d._arm.pn,
+    TRTSDT:trtsdt,TRTEDT:trtedt,SAFFL:saffl,ITTFL:'Y',AGE:d.AGE,AGEGR1:agegr1,SEX:d.SEX,RACE:d.RACE,
+    _dm:d,_ex:ex,
+    _prov:{
+      TRT01P:{src:[{dom:'DM',key:dmKey(d.USUBJID)}],text:"TRT01P = DM.ARM ('"+d.ARM+"')"},
+      SAFFL:{src:ex?[{dom:'EX',key:exKey(d.USUBJID)}]:[{dom:'DM',key:dmKey(d.USUBJID)}],text:"SAFFL = 'Y' if subject has >=1 EX record"+(ex?" -> Y (EXTRT '"+ex.EXTRT+"', dose "+ex.EXDOSE+" mg; placebo dose 0 still counts)":" -> N (no EX record: randomized but never treated)")},
+      TRTSDT:{src:ex?[{dom:'EX',key:exKey(d.USUBJID)}]:[],text:ex?"TRTSDT = MIN(EX.EXSTDTC) = "+trtsdt:"TRTSDT = . (no exposure)"},
+      AGEGR1:{src:[{dom:'DM',key:dmKey(d.USUBJID)}],text:"AGEGR1 = (ADSL.AGE "+d.AGE+" < 65) ? '<65' : '>=65' -> '"+agegr1+"' (AGE carried from DM.AGE)"},
+      SEX:{src:[{dom:'DM',key:dmKey(d.USUBJID)}],text:"SEX = DM.SEX ('"+d.SEX+"')"},
+      RACE:{src:[{dom:'DM',key:dmKey(d.USUBJID)}],text:"RACE = DM.RACE ('"+d.RACE+"')"}
+    }};
+});
+var ADSLby={}; ADSL.forEach(function(s){ADSLby[s.USUBJID]=s;});
+
+// ===== Derive ADaM: ADAE =====
+var ADAE=AE.map(function(a){
+  var s=ADSLby[a.USUBJID];
+  var astdt=a.AESTDTC;
+  var trtemfl,text;
+  if(a._miss){trtemfl='N';text="TRTEMFL = N: AESTDTC missing -> excluded from TEAE flag (not coerced to a pre-dose date)";}
+  else if(!s.TRTSDT){trtemfl='N';text="TRTEMFL = N: no TRTSDT (subject not treated)";}
+  else if(astdt>=s.TRTSDT){trtemfl='Y';text="TRTEMFL = Y: ASTDT ("+astdt+") >= TRTSDT ("+s.TRTSDT+")";}
+  else {trtemfl='N';text="TRTEMFL = N: ASTDT ("+astdt+") < TRTSDT ("+s.TRTSDT+") -> pre-treatment";}
+  return {USUBJID:a.USUBJID,AESEQ:a.AESEQ,TRT01A:s.TRT01A,TRT01AN:s.TRT01AN,SAFFL:s.SAFFL,AESOC:a.AESOC,AEDECOD:a.AEDECOD,
+    ASTDT:astdt,AENDT:a.AEENDTC,AESEV:a.AESEV,AESER:a.AESER,AEREL:a.AEREL,TRTEMFL:trtemfl,
+    _ae:a,
+    _prov:{TRTEMFL:{src:[{dom:'AE',key:aeKey(a.USUBJID,a.AESEQ)}].concat(s._ex?[{dom:'EX',key:exKey(a.USUBJID)}]:[]),text:text}}};
+});
+
+// ===== TLF computation =====
+function fmt1(x){return x.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1});}
+function fmt2(x){return x.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function mean(a){return a.reduce(function(x,y){return x+y;},0)/a.length;}
+function sd(a){var m=mean(a);return Math.sqrt(a.reduce(function(x,y){return x+(y-m)*(y-m);},0)/(a.length-1));}
+function median(a){var b=a.slice().sort(function(x,y){return x-y;}),n=b.length;return n%2?b[(n-1)/2]:(b[n/2-1]+b[n/2])/2;}
+function pct(n,d){return d?fmt1(100*n/d):'0.0';}
+
+var SAF=ADSL.filter(function(s){return s.SAFFL==='Y';});
+var safArm=ARMS.map(function(a){return SAF.filter(function(s){return s.TRT01PN===a.pn;});});       // by TRT01P
+var safArmA=ARMS.map(function(a){return SAF.filter(function(s){return s.TRT01AN===a.pn;});});      // by TRT01A (same here)
+var TEAE=ADAE.filter(function(r){return r.SAFFL==='Y'&&r.TRTEMFL==='Y';});
+
+// Table 14.3.1 structure: build SOC -> PT -> per-arm distinct subjects, sort by Active-arm freq.
+function teaeBuild(){
+  var socMap={};
+  TEAE.forEach(function(r){
+    if(!socMap[r.AESOC])socMap[r.AESOC]={pt:{},subj:[[],[]]};
+    var soc=socMap[r.AESOC];
+    if(!soc.pt[r.AEDECOD])soc.pt[r.AEDECOD]={subj:[[],[]],rows:[[],[]]};
+    var ai=r.TRT01AN-1;
+    soc.pt[r.AEDECOD].rows[ai].push(r);
+    if(soc.pt[r.AEDECOD].subj[ai].indexOf(r.USUBJID)<0)soc.pt[r.AEDECOD].subj[ai].push(r.USUBJID);
+    if(soc.subj[ai].indexOf(r.USUBJID)<0)soc.subj[ai].push(r.USUBJID);
+  });
+  var socs=Object.keys(socMap).map(function(name){
+    var s=socMap[name];
+    var pts=Object.keys(s.pt).map(function(pn){return {pt:pn,d:s.pt[pn]};});
+    pts.sort(function(x,y){var dy=y.d.subj[1].length-x.d.subj[1].length;return dy!==0?dy:x.pt.localeCompare(y.pt);});
+    return {soc:name,subj:s.subj,pts:pts,actN:s.subj[1].length};
+  });
+  socs.sort(function(x,y){var d=y.actN-x.actN;return d!==0?d:x.soc.localeCompare(y.soc);});
+  return socs;
+}
+var TEAESOC=teaeBuild();
+var anyTEAE=ARMS.map(function(a,ai){var set=[];TEAE.forEach(function(r){if(r.TRT01AN-1===ai&&set.indexOf(r.USUBJID)<0)set.push(r.USUBJID);});return set;});
+
+// ===== rendering helpers =====
+function kpi(cls,l,v,s){return '<div class="kpi '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s">'+s+'</div></div>';}
+function ic(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+
+// ===== Overview =====
+function renderOverview(){
+  var nTreated=EX.length, nAE=AE.length, nTEAE=TEAE.length;
+  var safN=SAF.length;
+  var k='<div class="kpis">'+
+    kpi('teal','Subjects (ITT)',N,ARMS.length+' arms, 1:1')+
+    kpi('blue','Safety population',safN,'SAFFL = Y ('+(N-safN)+' not treated)')+
+    kpi('teal','SDTM records',DM.length+EX.length+AE.length,'DM '+DM.length+' / EX '+EX.length+' / AE '+AE.length)+
+    kpi('teal','ADaM rows',ADSL.length+ADAE.length,'ADSL '+ADSL.length+' / ADAE '+ADAE.length)+
+    kpi('amber','TEAE records',nTEAE,'TRTEMFL = Y, of '+nAE+' AEs')+
+    kpi('blue','TLF outputs',3,'2 tables + 1 listing')+
+  '</div>';
+  var flow='<div class="card"><div class="h">'+ic('<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>')+'The statistical-programming chain<span class="r">'+STUDY+' &middot; '+INDICATION+'</span></div><div class="b">'+
+    '<div class="flow">'+
+    '<div class="stage"><div class="tag">SDTM &middot; collected</div><div class="nm">Tabulation data</div><div class="it">DM <span>demographics</span></div><div class="it">EX <span>exposure</span></div><div class="it">AE <span>adverse events</span></div></div>'+
+    '<div class="arrow">&rarr;</div>'+
+    '<div class="stage"><div class="tag">ADaM &middot; analysis-ready</div><div class="nm">Derived datasets</div><div class="it">ADSL <span>subject level, SAFFL</span></div><div class="it">ADAE <span>events, TRTEMFL</span></div><div class="it">+ traceability <span>to SDTM</span></div></div>'+
+    '<div class="arrow">&rarr;</div>'+
+    '<div class="stage"><div class="tag">TLF &middot; outputs</div><div class="nm">CSR tables</div><div class="it">14.1.1 <span>demographics</span></div><div class="it">14.3.1 <span>TEAE by SOC/PT</span></div><div class="it">16.2.7.1 <span>AE listing</span></div></div>'+
+    '</div>'+
+    '<div class="recon">'+ic('<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>')+'<div><b>Every number reconciles, and is computed not asserted.</b> '+
+      'Safety population = <span class="mono">'+safN+'</span> equals the count of <span class="mono">SAFFL=Y</span> in ADSL ('+reconA()+'). '+
+      'The "subjects with &ge;1 TEAE" rows in Table 14.3.1 (<span class="mono">'+anyTEAE[0].length+'</span> placebo, <span class="mono">'+anyTEAE[1].length+'</span> active) equal the distinct subjects with <span class="mono">TRTEMFL=Y &amp; SAFFL=Y</span> in ADAE, and the listing has <span class="mono">'+TEAE.length+'</span> rows, one per such ADAE record.</div></div>'+
+    '</div></div>';
+  var about='<div class="card" style="margin-bottom:0"><div class="h">'+ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'What this demo is</div><div class="b"><div class="narr">'+
+    '<p>This is the engine room of clinical <b>Biometrics</b>: statistical programmers turn the standardized collected data (<b>SDTM</b>) into analysis-ready datasets (<b>ADaM</b>), then into the <b>Tables, Listings and Figures</b> of the Clinical Study Report. That chain normally lives invisibly inside SAS programs and define.xml.</p>'+
+    '<p style="margin-top:9px">Here it is made visible and clickable. A deterministic, seeded generator produces the SDTM domains; ADSL and ADAE are derived in the browser with the real <code style="font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px">SAFFL</code> and <code style="font-family:var(--mono);background:var(--muted);padding:1px 5px;border-radius:4px;font-size:11px">TRTEMFL</code> rules on screen; the TLFs are aggregated from the ADaM. On the <b>Traceability</b> tab, click any number in a table and watch it light up the ADaM rows that produced it, and the SDTM records behind those.</p></div></div></div>';
+  return k+flow+about;
+}
+function reconA(){var c=ADSL.filter(function(s){return s.SAFFL==='Y';}).length;return c+' = '+c;}
+
+// ===== SDTM tab =====
+var SDOM='DM';
+function renderSDTM(){
+  var note='<div class="dnote"><b>SDTM</b> is the collected, standardized trial data, one normalized dataset per domain with CDISC variable names and controlled terminology. It is the <b>source</b>: nothing here is derived. Switch domains to inspect the inputs the ADaM step reads from.</div>';
+  var sw='<div class="card"><div class="h">'+ic('<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>')+'SDTM domain<span class="r"><span class="seg" id="domSeg">'+
+    ['DM','EX','AE'].map(function(d){return '<button data-dom="'+d+'" class="'+(d===SDOM?'on':'')+'">'+d+'</button>';}).join('')+'</span></span></div><div class="b">'+sdtmTable(SDOM)+'</div></div>';
+  return note+sw;
+}
+function sdtmTable(dom){
+  if(dom==='DM'){
+    var h='<tr><th>USUBJID</th><th>SITEID</th><th>ARMCD</th><th>ARM</th><th class="num">AGE</th><th>SEX</th><th>RACE</th><th>BRTHDTC</th><th>RFICDTC</th><th>RFSTDTC</th><th>RFENDTC</th></tr>';
+    var rows=DM.map(function(d){return '<tr><td class="mono">'+d.USUBJID+'</td><td class="mono">'+d.SITEID+'</td><td class="mono">'+d.ARMCD+'</td><td>'+d.ARM+'</td><td class="num">'+d.AGE+'</td><td>'+d.SEX+'</td><td style="white-space:normal">'+d.RACE+'</td><td class="mono">'+d.BRTHDTC+'</td><td class="mono">'+d.RFICDTC+'</td><td class="mono">'+(d.RFSTDTC||'<span style="color:var(--danger)">.</span>')+'</td><td class="mono">'+(d.RFENDTC||'.')+'</td></tr>';}).join('');
+    return '<div class="tblwrap"><table class="tbl"><thead>'+h+'</thead><tbody>'+rows+'</tbody></table></div><p class="cap"><code>RFSTDTC</code> is the reference (first-dose) date. Two subjects were randomized but never dosed, so they have no <code>RFSTDTC</code> and no EX record, which is exactly what drives <code>SAFFL=N</code> in the next step.</p>';
+  }
+  if(dom==='EX'){
+    var h2='<tr><th>USUBJID</th><th class="num">EXSEQ</th><th>EXTRT</th><th class="num">EXDOSE</th><th>EXDOSU</th><th>EXROUTE</th><th>EXSTDTC</th><th>EXENDTC</th></tr>';
+    var r2=EX.map(function(e){return '<tr><td class="mono">'+e.USUBJID+'</td><td class="num">'+e.EXSEQ+'</td><td>'+e.EXTRT+'</td><td class="num">'+e.EXDOSE+'</td><td>'+e.EXDOSU+'</td><td>'+e.EXROUTE+'</td><td class="mono">'+e.EXSTDTC+'</td><td class="mono">'+e.EXENDTC+'</td></tr>';}).join('');
+    return '<div class="tblwrap"><table class="tbl"><thead>'+h2+'</thead><tbody>'+r2+'</tbody></table></div><p class="cap">Placebo exposure carries <code>EXDOSE = 0</code> but is still a real EX record, so placebo subjects stay in the safety population. <code>MIN(EXSTDTC)</code> becomes <code>ADSL.TRTSDT</code>.</p>';
+  }
+  var h3='<tr><th>USUBJID</th><th class="num">AESEQ</th><th>AETERM (verbatim)</th><th>AEDECOD (PT)</th><th>AESOC</th><th>AESTDTC</th><th>AESEV</th><th>AESER</th><th>AEREL</th></tr>';
+  var r3=AE.map(function(a){return '<tr><td class="mono">'+a.USUBJID+'</td><td class="num">'+a.AESEQ+'</td><td style="white-space:normal;color:var(--mut-fg)">'+a.AETERM+'</td><td>'+a.AEDECOD+'</td><td style="white-space:normal">'+a.AESOC+'</td><td class="mono">'+(a.AESTDTC||'<span style="color:var(--danger)">. (missing)</span>')+'</td><td>'+a.AESEV+'</td><td>'+a.AESER+'</td><td>'+a.AEREL+'</td></tr>';}).join('');
+  return '<div class="tblwrap"><table class="tbl"><thead>'+h3+'</thead><tbody>'+r3+'</tbody></table></div><p class="cap">The verbatim <code>AETERM</code> is what the site reported; <code>AEDECOD</code>/<code>AESOC</code> are the MedDRA Preferred Term and System Organ Class it was coded to. A few AEs start before first dose (screening) or have a missing start date, both handled by the <code>TRTEMFL</code> rule.</p>';
+}
+
+// ===== ADaM tab =====
+var ADOM='ADSL';
+function renderADaM(){
+  var note='<div class="dnote"><b>ADaM</b> datasets are derived from SDTM and are <b>analysis-ready</b>: every value a table needs is already computed, and every derived value is traceable back to its SDTM source. The derivation rules below are the load-bearing ones, click into the <b>Traceability</b> tab to see them fire on a single value.</div>';
+  var rules='<div class="card"><div class="h">'+ic('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>')+'Key derivations</div><div class="b">'+
+    '<div class="kv"><span class="k mono">SAFFL</span><span class="v">Safety population flag = <b>Y</b> if the subject has &ge;1 EX record (placebo <code>EXDOSE=0</code> still counts; keys on the record, not the dose). Drives the denominator of every safety table.</span></div>'+
+    '<div class="kv"><span class="k mono">TRT01P / TRT01A</span><span class="v">Planned / actual treatment from <code>DM.ARM</code> / <code>DM.ACTARM</code>. No protocol deviations are simulated, so they match; both kept for fidelity. Demographics are summarized by planned, AEs by actual, per convention.</span></div>'+
+    '<div class="kv"><span class="k mono">TRTSDT</span><span class="v">Treatment start = <code>MIN(EX.EXSTDTC)</code>. The anchor for treatment-emergence.</span></div>'+
+    '<div class="kv"><span class="k mono">TRTEMFL</span><span class="v">Treatment-emergent flag = <b>Y</b> if <code>ASTDT &gt;= TRTSDT</code>. A missing <code>AESTDTC</code> yields <b>N</b> (never coerced to a pre-dose date); AEs that start before first dose are <b>N</b>.</span></div>'+
+    '<div class="kv" style="border-bottom:0"><span class="k mono">AGEGR1</span><span class="v">Age group from <code>ADSL.AGE</code>: <code>&lt;65</code> vs <code>&gt;=65</code>. AGE itself is carried from <code>DM.AGE</code> as collected.</span></div>'+
+  '</div></div>';
+  var sw='<div class="card" style="margin-bottom:0"><div class="h">'+ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>')+'ADaM dataset<span class="r"><span class="seg" id="adamSeg">'+
+    ['ADSL','ADAE'].map(function(d){return '<button data-adam="'+d+'" class="'+(d===ADOM?'on':'')+'">'+d+'</button>';}).join('')+'</span></span></div><div class="b">'+adamTable(ADOM)+'</div></div>';
+  return note+rules+sw;
+}
+function flag(v){return '<span class="stb '+(v==='Y'?'ok':'mut')+'">'+v+'</span>';}
+function adamTable(dom){
+  if(dom==='ADSL'){
+    var h='<tr><th>USUBJID</th><th>TRT01P</th><th class="num">AGE</th><th>AGEGR1</th><th>SEX</th><th>RACE</th><th>TRTSDT</th><th>SAFFL</th><th>ITTFL</th></tr>';
+    var rows=ADSL.map(function(s){return '<tr><td class="mono">'+s.USUBJID+'</td><td>'+s.TRT01P+'</td><td class="num">'+s.AGE+'</td><td class="mono">'+s.AGEGR1+'</td><td>'+s.SEX+'</td><td style="white-space:normal">'+s.RACE+'</td><td class="mono">'+(s.TRTSDT||'.')+'</td><td>'+flag(s.SAFFL)+'</td><td>'+flag(s.ITTFL)+'</td></tr>';}).join('');
+    return '<div class="tblwrap"><table class="tbl"><thead>'+h+'</thead><tbody>'+rows+'</tbody></table></div><p class="cap">One row per subject. The two <code>SAFFL=N</code> rows are the untreated subjects, so the safety population ('+SAF.length+') is smaller than ITT ('+N+').</p>';
+  }
+  var h2='<tr><th>USUBJID</th><th class="num">AESEQ</th><th>TRT01A</th><th>AEDECOD (PT)</th><th>AESOC</th><th>ASTDT</th><th>TRTSDT</th><th>TRTEMFL</th><th>SAFFL</th></tr>';
+  var r2=ADAE.map(function(r){var s=ADSLby[r.USUBJID];return '<tr><td class="mono">'+r.USUBJID+'</td><td class="num">'+r.AESEQ+'</td><td>'+r.TRT01A+'</td><td>'+r.AEDECOD+'</td><td style="white-space:normal">'+r.AESOC+'</td><td class="mono">'+(r.ASTDT||'<span style="color:var(--danger)">.</span>')+'</td><td class="mono">'+(s.TRTSDT||'.')+'</td><td>'+flag(r.TRTEMFL)+'</td><td>'+flag(r.SAFFL)+'</td></tr>';}).join('');
+  return '<div class="tblwrap"><table class="tbl"><thead>'+h2+'</thead><tbody>'+r2+'</tbody></table></div><p class="cap">One row per AE, with <code>ADSL</code> merged in. Compare <code>ASTDT</code> to <code>TRTSDT</code> to see why each <code>TRTEMFL</code> is Y or N; only <code>TRTEMFL=Y</code> &amp; <code>SAFFL=Y</code> rows reach Table 14.3.1.</p>';
+}
+
+// ===== TLF tab (static, formatted) =====
+function ageStats(pop){var ages=pop.map(function(s){return s.AGE;});return {n:pop.length,mean:mean(ages),sd:sd(ages),med:median(ages),min:Math.min.apply(null,ages),max:Math.max.apply(null,ages)};}
+function countBy(pop,fn,val){return pop.filter(function(s){return fn(s)===val;}).length;}
+function renderTLF(){
+  // Table 14.1.1
+  var st=safArm.map(ageStats);
+  function drow(label,cells,sub){return '<tr'+(sub?' class="pt"':'')+'><td'+(sub?'':' style="font-weight:600"')+'>'+label+'</td>'+cells.map(function(c){return '<td class="num">'+c+'</td>';}).join('')+'</tr>';}
+  var demo='<div class="card"><div class="h">'+ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>')+'Table 14.1.1 &nbsp; Demographics and Baseline Characteristics<span class="r">Safety population, by planned treatment</span></div><div class="b"><div class="tblwrap" style="max-height:none"><table class="tbl"><thead><tr><th>Characteristic</th>'+ARMS.map(function(a,i){return '<th class="num">'+a.name+'<div style="font-weight:400;color:var(--mut-fg)">N='+st[i].n+'</div></th>';}).join('')+'</tr></thead><tbody>'+
+    drow('Age (years)',['',''])+
+    drow('&nbsp;&nbsp;Mean (SD)',st.map(function(s){return fmt1(s.mean)+' ('+fmt2(s.sd)+')';}),true)+
+    drow('&nbsp;&nbsp;Median',st.map(function(s){return fmt1(s.med);}),true)+
+    drow('&nbsp;&nbsp;Min, Max',st.map(function(s){return s.min+', '+s.max;}),true)+
+    drow('Age group, n (%)',['',''])+
+    drow('&nbsp;&nbsp;&lt;65',safArm.map(function(p){var n=countBy(p,function(s){return s.AGEGR1;},'<65');return n+' ('+pct(n,p.length)+')';}),true)+
+    drow('&nbsp;&nbsp;&gt;=65',safArm.map(function(p){var n=countBy(p,function(s){return s.AGEGR1;},'>=65');return n+' ('+pct(n,p.length)+')';}),true)+
+    drow('Sex, n (%)',['',''])+
+    drow('&nbsp;&nbsp;Male',safArm.map(function(p){var n=countBy(p,function(s){return s.SEX;},'M');return n+' ('+pct(n,p.length)+')';}),true)+
+    drow('&nbsp;&nbsp;Female',safArm.map(function(p){var n=countBy(p,function(s){return s.SEX;},'F');return n+' ('+pct(n,p.length)+')';}),true)+
+    drow('Race, n (%)',['',''])+
+    RACES.map(function(rc){return drow('&nbsp;&nbsp;'+rc[0].charAt(0)+rc[0].slice(1).toLowerCase(),safArm.map(function(p){var n=countBy(p,function(s){return s.RACE;},rc[0]);return n+' ('+pct(n,p.length)+')';}),true);}).join('')+
+    '</tbody></table></div><p class="cap">By planned treatment (<code>TRT01P</code>), safety population. Percentages use each arm&rsquo;s N as the denominator. All cells computed from ADSL.</p></div></div>';
+  // Table 14.3.1
+  var den=safArmA.map(function(p){return p.length;});
+  var tr='';
+  tr+='<tr style="font-weight:700"><td>Subjects with &ge;1 TEAE</td>'+anyTEAE.map(function(set,i){return '<td class="num">'+set.length+' ('+pct(set.length,den[i])+')</td>';}).join('')+'</tr>';
+  TEAESOC.forEach(function(soc){
+    tr+='<tr class="soc"><td>'+soc.soc+'</td>'+soc.subj.map(function(s,i){return '<td class="num">'+s.length+' ('+pct(s.length,den[i])+')</td>';}).join('')+'</tr>';
+    soc.pts.forEach(function(p){
+      tr+='<tr class="pt"><td>'+p.pt+'</td>'+[0,1].map(function(i){var n=p.d.subj[i].length;return '<td class="num">'+n+' ('+pct(n,den[i])+')</td>';}).join('')+'</tr>';
+    });
+  });
+  var teaeT='<div class="card"><div class="h">'+ic('<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>')+'Table 14.3.1 &nbsp; Treatment-Emergent Adverse Events by SOC and PT<span class="r">Safety population, by actual treatment</span></div><div class="b"><div class="tblwrap"><table class="tbl"><thead><tr><th>System Organ Class / Preferred Term</th>'+ARMS.map(function(a,i){return '<th class="num">'+a.name+'<div style="font-weight:400;color:var(--mut-fg)">N='+den[i]+'</div></th>';}).join('')+'</tr></thead><tbody>'+tr+'</tbody></table></div><p class="cap">Treatment-emergent AEs (<code>TRTEMFL=Y</code>), by actual treatment (<code>TRT01A</code>). Counts are <b>distinct subjects</b> (a subject with two episodes of one PT counts once); SOCs and PTs are ordered by descending frequency on the active arm. Note the on-target signals: more hypotension, hyperkalaemia, dizziness and renal events on active.</p></div></div>';
+  // Listing
+  var ln=TEAE.slice(0,40).map(function(r){return '<tr><td class="mono">'+r.USUBJID+'</td><td>'+r.TRT01A+'</td><td style="white-space:normal">'+r.AESOC+'</td><td>'+r.AEDECOD+'</td><td class="mono">'+r.ASTDT+'</td><td>'+r.AESEV+'</td><td>'+r.AESER+'</td><td>'+r.AEREL+'</td></tr>';}).join('');
+  var listing='<div class="card" style="margin-bottom:0"><div class="h">'+ic('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>')+'Listing 16.2.7.1 &nbsp; Treatment-Emergent Adverse Events<span class="r">'+TEAE.length+' rows (first 40 shown)</span></div><div class="b"><div class="tblwrap" style="max-height:420px"><table class="tbl"><thead><tr><th>USUBJID</th><th>TRT01A</th><th>AESOC</th><th>AEDECOD</th><th>ASTDT</th><th>AESEV</th><th>AESER</th><th>AEREL</th></tr></thead><tbody>'+ln+'</tbody></table></div><p class="cap">One row per treatment-emergent AE (<code>SAFFL=Y &amp; TRTEMFL=Y</code>), the row-level backing for Table 14.3.1.</p></div></div>';
+  return demo+teaeT+listing;
+}
+
+// ===== Traceability tab =====
+// TRACE registry: cellId -> {label, scope:'adsl'|'adae', keys:[adamRowKey], deriv}
+var TRACE={}, TRACEN=0;
+function adslRowKey(u){return 'ADSL|'+u;}
+function adaeRowKey(u,seq){return 'ADAE|'+u+'|'+seq;}
+function reg(label,scope,keys,deriv){var id='c'+(TRACEN++);TRACE[id]={label:label,scope:scope,keys:keys,deriv:deriv};return id;}
+
+function renderTrace(){
+  TRACE={};TRACEN=0;
+  var intro='<div class="dnote"><b>Click any blue value</b> in the TLF panel (right). It lights up the ADaM rows that produced it (center) and the SDTM source records behind those (left), and prints the derivation. Click an ADaM row to trace one value on its own, or pick a subject to trace forward from the source.</div>';
+  var bar='<div class="trace-bar"><div class="crumb" id="crumb">No selection. Click a value in the TLF panel, or pick a subject to trace forward.</div>'+
+    '<span class="seg" style="border:0"><button class="on" id="clrBtn" style="border:1px solid var(--border);border-radius:8px">Clear</button></span></div>'+
+    '<div class="trace-deriv" id="deriv"><span class="muted">// derivation appears here</span></div>';
+  var panels='<div class="panels">'+
+    '<div class="panel"><div class="ph"><span class="pn">1</span>SDTM source'+
+      '<select id="subjSel"><option value="">trace a subject...</option>'+ADSL.map(function(s){return '<option value="'+s.USUBJID+'">'+s.USUBJID+(s.SAFFL==='N'?' (not treated)':'')+'</option>';}).join('')+'</select>'+
+      '</div><div class="pscroll" id="sdtmPanel">'+sdtmTracePanel()+'</div></div>'+
+    '<div class="panel"><div class="ph"><span class="pn">2</span>ADaM derived</div><div class="pscroll" id="adamPanel">'+adamTracePanel()+'</div></div>'+
+    '<div class="panel"><div class="ph"><span class="pn">3</span>TLF output</div><div class="pscroll" id="tlfPanel">'+tlfTracePanel()+'</div></div>'+
+    '</div>'+
+    '<div class="legend"><span><i style="background:hsl(168 76% 32%/.3)"></i> traced (forward from TLF)</span><span><i style="box-shadow:inset 0 0 0 2px var(--accent);background:#fff"></i> TLF cells a subject lands in (reverse)</span></div>';
+  return '<div class="card" style="margin-bottom:0"><div class="h">'+ic('<path d="M16 3h5v5M21 3l-7 7M3 16v5h5M3 21l7-7"/>')+'End-to-end traceability<span class="r">SDTM &rarr; ADaM &rarr; TLF, both directions</span></div><div class="b">'+intro+bar+panels+'</div></div>';
+}
+function sdtmTracePanel(){
+  // DM + EX + AE compactly, each row keyed
+  var dm=DM.map(function(d){return '<tr data-skey="'+dmKey(d.USUBJID)+'"><td class="mono">'+d.USUBJID+'</td><td>'+d.ARMCD+'</td><td class="num">'+d.AGE+'</td><td>'+d.SEX+'</td><td class="mono">'+(d.RFSTDTC||'.')+'</td></tr>';}).join('');
+  var ex=EX.map(function(e){return '<tr data-skey="'+exKey(e.USUBJID)+'"><td class="mono">'+e.USUBJID+'</td><td class="num">'+e.EXDOSE+'</td><td class="mono">'+e.EXSTDTC+'</td></tr>';}).join('');
+  var ae=AE.map(function(a){return '<tr data-skey="'+aeKey(a.USUBJID,a.AESEQ)+'"><td class="mono">'+a.USUBJID+'</td><td class="num">'+a.AESEQ+'</td><td>'+a.AEDECOD+'</td><td class="mono">'+(a.AESTDTC||'.')+'</td></tr>';}).join('');
+  return '<table class="tbl"><thead><tr><th colspan="5">DM</th></tr><tr><th>USUBJID</th><th>ARM</th><th class="num">AGE</th><th>SEX</th><th>RFSTDTC</th></tr></thead><tbody>'+dm+'</tbody></table>'+
+    '<table class="tbl"><thead><tr><th colspan="3">EX</th></tr><tr><th>USUBJID</th><th class="num">DOSE</th><th>EXSTDTC</th></tr></thead><tbody>'+ex+'</tbody></table>'+
+    '<table class="tbl"><thead><tr><th colspan="4">AE</th></tr><tr><th>USUBJID</th><th class="num">SEQ</th><th>PT</th><th>AESTDTC</th></tr></thead><tbody>'+ae+'</tbody></table>';
+}
+function adamTracePanel(){
+  var adsl=ADSL.map(function(s){return '<tr class="clk" data-akey="'+adslRowKey(s.USUBJID)+'" data-arow="adsl" data-u="'+s.USUBJID+'"><td class="mono">'+s.USUBJID+'</td><td>'+s.TRT01P+'</td><td class="num">'+s.AGE+'</td><td class="mono">'+s.AGEGR1+'</td><td>'+s.SEX+'</td><td>'+flag(s.SAFFL)+'</td></tr>';}).join('');
+  var adae=ADAE.map(function(r){return '<tr class="clk" data-akey="'+adaeRowKey(r.USUBJID,r.AESEQ)+'" data-arow="adae" data-u="'+r.USUBJID+'" data-seq="'+r.AESEQ+'"><td class="mono">'+r.USUBJID+'</td><td>'+r.AEDECOD+'</td><td class="mono">'+(r.ASTDT||'.')+'</td><td>'+flag(r.TRTEMFL)+'</td></tr>';}).join('');
+  return '<table class="tbl"><thead><tr><th colspan="6">ADSL</th></tr><tr><th>USUBJID</th><th>TRT01P</th><th class="num">AGE</th><th>AGEGR1</th><th>SEX</th><th>SAFFL</th></tr></thead><tbody>'+adsl+'</tbody></table>'+
+    '<table class="tbl"><thead><tr><th colspan="4">ADAE</th></tr><tr><th>USUBJID</th><th>PT</th><th>ASTDT</th><th>TEMFL</th></tr></thead><tbody>'+adae+'</tbody></table>';
+}
+function tlfTracePanel(){
+  // 14.1.1 (sex + age group rows are the clickable demo cells) and 14.3.1 (PT rows clickable)
+  var den=safArmA.map(function(p){return p.length;});
+  function cellSex(ai,val){var pop=safArm[ai];var keys=pop.filter(function(s){return s.SEX===val;}).map(function(s){return adslRowKey(s.USUBJID);});
+    var id=reg('14.1.1 Sex='+(val==='M'?'Male':'Female')+', '+ARMS[ai].name,'adsl',keys,"Count of ADSL rows with SAFFL=Y, TRT01PN="+ARMS[ai].pn+", SEX='"+val+"'  ->  n="+keys.length+" / N="+pop.length);
+    return '<td class="num val" data-cell="'+id+'">'+keys.length+'</td>';}
+  function cellAge(ai,val){var pop=safArm[ai];var keys=pop.filter(function(s){return s.AGEGR1===val;}).map(function(s){return adslRowKey(s.USUBJID);});
+    var id=reg('14.1.1 Age '+val+', '+ARMS[ai].name,'adsl',keys,"Count of ADSL rows with SAFFL=Y, TRT01PN="+ARMS[ai].pn+", AGEGR1='"+val+"'  ->  n="+keys.length+" / N="+pop.length);
+    return '<td class="num val" data-cell="'+id+'">'+keys.length+'</td>';}
+  var t1='<table class="tbl tlfmini"><thead><tr><th colspan="3">Table 14.1.1 Demographics (by TRT01P)</th></tr><tr><th>Characteristic</th><th class="num">'+ARMS[0].name+'</th><th class="num">'+ARMS[1].name+'</th></tr></thead><tbody>'+
+    '<tr><td>Age &lt;65</td>'+cellAge(0,'<65')+cellAge(1,'<65')+'</tr>'+
+    '<tr><td>Age &gt;=65</td>'+cellAge(0,'>=65')+cellAge(1,'>=65')+'</tr>'+
+    '<tr><td>Male</td>'+cellSex(0,'M')+cellSex(1,'M')+'</tr>'+
+    '<tr><td>Female</td>'+cellSex(0,'F')+cellSex(1,'F')+'</tr>'+
+    '</tbody></table>';
+  // 14.3.1 PT rows
+  var body='';
+  TEAESOC.forEach(function(soc){
+    body+='<tr class="soc"><td>'+soc.soc+'</td><td></td><td></td></tr>';
+    soc.pts.forEach(function(p){
+      var cells=[0,1].map(function(ai){
+        var rows=p.d.rows[ai]; // adae rows for this PT+arm
+        var keys=[]; rows.forEach(function(r){var k=adaeRowKey(r.USUBJID,r.AESEQ);if(keys.indexOf(k)<0)keys.push(k);});
+        var nsub=p.d.subj[ai].length;
+        var id=reg('14.3.1 '+p.pt+', '+ARMS[ai].name,'adae',keys,"Distinct subjects with ADAE rows: PT='"+p.pt+"', TRT01AN="+ARMS[ai].pn+", TRTEMFL=Y & SAFFL=Y  ->  "+nsub+" subject(s), "+keys.length+" event row(s) / N="+den[ai]);
+        return '<td class="num val pt" data-cell="'+id+'">'+nsub+'</td>';
+      }).join('');
+      body+='<tr class="pt"><td>'+p.pt+'</td>'+cells+'</tr>';
+    });
+  });
+  var t2='<table class="tbl tlfmini"><thead><tr><th colspan="3">Table 14.3.1 TEAE by SOC/PT (by TRT01A)</th></tr><tr><th>SOC / PT</th><th class="num">'+ARMS[0].name+'</th><th class="num">'+ARMS[1].name+'</th></tr></thead><tbody>'+body+'</tbody></table>';
+  return t1+t2;
+}
+
+// ===== trace interactions =====
+function clearTrace(){
+  document.querySelectorAll('#v-trace tr.hl').forEach(function(t){t.classList.remove('hl');});
+  document.querySelectorAll('#v-trace td.cellhit').forEach(function(t){t.classList.remove('cellhit');});
+  document.querySelectorAll('#v-trace td.ring').forEach(function(t){t.classList.remove('ring');});
+}
+function scrollFirst(panelSel,rowSel){var p=$(panelSel);if(!p)return;var r=p.querySelector(rowSel);if(r){p.scrollTop=Math.max(0,r.offsetTop-p.offsetTop-46);}}
+function setDeriv(html){$('#deriv').innerHTML=html;}
+function highlightAdam(keys){var first=null;keys.forEach(function(k){var r=$('#adamPanel tr[data-akey="'+CSS.escape(k)+'"]');if(r){r.classList.add('hl');if(!first)first=k;}});return first;}
+function highlightSdtm(skeys){var first=null;skeys.forEach(function(k){var r=$('#sdtmPanel tr[data-skey="'+CSS.escape(k)+'"]');if(r){r.classList.add('hl');if(!first)first=k;}});return first;}
+function adamSourceKeys(akey){
+  // map an ADaM row key to its SDTM source rows
+  var parts=akey.split('|');
+  if(parts[0]==='ADSL'){var u=parts[1];var s=ADSLby[u];var keys=[dmKey(u)];if(s._ex)keys.push(exKey(u));return keys;}
+  var u2=parts[1],seq=parts[2];var keys2=[aeKey(u2,seq)];var s2=ADSLby[u2];if(s2._ex)keys2.push(exKey(u2));return keys2;
+}
+function traceCell(id){
+  clearTrace();var t=TRACE[id];if(!t)return;
+  var cell=$('#tlfPanel td[data-cell="'+id+'"]');if(cell)cell.classList.add('cellhit');
+  var akeys=t.keys; highlightAdam(akeys);
+  var sk=[];akeys.forEach(function(k){adamSourceKeys(k).forEach(function(s){if(sk.indexOf(s)<0)sk.push(s);});});
+  highlightSdtm(sk);
+  if(akeys.length){scrollFirst('#adamPanel','tr[data-akey="'+CSS.escape(akeys[0])+'"]');}
+  if(sk.length){scrollFirst('#sdtmPanel','tr[data-skey="'+CSS.escape(sk[0])+'"]');}
+  $('#crumb').innerHTML='<b>'+t.label+'</b> &nbsp;&larr;&nbsp; '+akeys.length+' '+t.scope.toUpperCase()+' row'+(akeys.length===1?'':'s')+' &nbsp;&larr;&nbsp; '+sk.length+' SDTM record'+(sk.length===1?'':'s');
+  setDeriv('<span class="k">'+t.scope.toUpperCase()+':</span> '+t.deriv);
+}
+function traceAdamRow(tr){
+  clearTrace();var akey=tr.getAttribute('data-akey');tr.classList.add('hl');
+  var sk=adamSourceKeys(akey);highlightSdtm(sk);if(sk.length)scrollFirst('#sdtmPanel','tr[data-skey="'+CSS.escape(sk[0])+'"]');
+  var deriv,label;
+  if(tr.getAttribute('data-arow')==='adsl'){var s=ADSLby[tr.getAttribute('data-u')];deriv=s._prov.SAFFL.text+'  |  '+s._prov.AGEGR1.text;label='ADSL '+s.USUBJID;}
+  else{var u=tr.getAttribute('data-u'),seq=+tr.getAttribute('data-seq');var r=ADAE.filter(function(x){return x.USUBJID===u&&x.AESEQ===seq;})[0];deriv=r._prov.TRTEMFL.text;label='ADAE '+u+' #'+seq+' ('+r.AEDECOD+')';}
+  $('#crumb').innerHTML='<b>'+label+'</b> &nbsp;&larr;&nbsp; '+sk.length+' SDTM record'+(sk.length===1?'':'s');
+  setDeriv('<span class="k">DERIVATION:</span> '+deriv);
+}
+function traceSubject(u){
+  clearTrace();if(!u)return;
+  // forward: highlight subject's ADaM rows, SDTM rows, and ring TLF cells the subject lands in
+  var akeys=[adslRowKey(u)];ADAE.forEach(function(r){if(r.USUBJID===u)akeys.push(adaeRowKey(r.USUBJID,r.AESEQ));});
+  highlightAdam(akeys);
+  var sk=[dmKey(u)];var s=ADSLby[u];if(s._ex)sk.push(exKey(u));AE.forEach(function(a){if(a.USUBJID===u)sk.push(aeKey(u,a.AESEQ));});
+  highlightSdtm(sk);
+  var rings=0;
+  Object.keys(TRACE).forEach(function(id){var t=TRACE[id];var hit=t.keys.some(function(k){return k.indexOf('|'+u+'|')>=0||k==='ADSL|'+u;});
+    if(hit){var c=$('#tlfPanel td[data-cell="'+id+'"]');if(c){c.classList.add('ring');rings++;}}});
+  scrollFirst('#sdtmPanel','tr[data-skey="'+CSS.escape(dmKey(u))+'"]');scrollFirst('#adamPanel','tr[data-akey="'+CSS.escape(adslRowKey(u))+'"]');
+  $('#crumb').innerHTML='<b>'+u+'</b> (reverse) &nbsp;&rarr;&nbsp; '+akeys.length+' ADaM rows &nbsp;&rarr;&nbsp; <span class="a">'+rings+' TLF cells</span> this subject lands in';
+  setDeriv('<span class="k">REVERSE TRACE:</span> SDTM records for '+u+' flow into ADSL + '+(akeys.length-1)+' ADAE row(s), then into the ringed TLF cells. SAFFL='+s.SAFFL+(s.SAFFL==='N'?' so this subject is excluded from the safety tables (no ringed cells).':'.'));
+}
+
+// ===== mount =====
+$('#ctxSub').innerHTML='Study <b>'+STUDY+'</b><span class="dot"></span>'+INDICATION+'<span class="dot"></span>Sponsor <b>'+SPONSOR+'</b><span class="dot"></span><b>'+N+'</b> subjects<span class="dot"></span><b>'+ARMS.length+'</b> arms';
+var TABS=[
+  {id:'overview',label:'Overview',render:renderOverview},
+  {id:'sdtm',label:'SDTM source',render:renderSDTM},
+  {id:'adam',label:'ADaM derived',render:renderADaM},
+  {id:'tlf',label:'TLF outputs',render:renderTLF},
+  {id:'trace',label:'Traceability',render:renderTrace}
+];
+var tabsEl=$('#tabs');
+TABS.forEach(function(t,i){
+  var b=document.createElement('button'); b.className='tab'+(i===0?' active':''); b.setAttribute('data-view',t.id); b.innerHTML=t.label;
+  b.addEventListener('click',function(){ tabsEl.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');}); $('#v-'+t.id).classList.add('on'); });
+  tabsEl.appendChild(b); $('#v-'+t.id).innerHTML=t.render();
+});
+
+// SDTM domain switch
+$('#v-sdtm').addEventListener('click',function(e){var b=e.target.closest('[data-dom]');if(!b)return;SDOM=b.getAttribute('data-dom');$('#v-sdtm').innerHTML=renderSDTM();});
+// ADaM dataset switch
+$('#v-adam').addEventListener('click',function(e){var b=e.target.closest('[data-adam]');if(!b)return;ADOM=b.getAttribute('data-adam');$('#v-adam').innerHTML=renderADaM();});
+// Trace interactions
+$('#v-trace').addEventListener('click',function(e){
+  var cell=e.target.closest('td[data-cell]'); if(cell){traceCell(cell.getAttribute('data-cell'));return;}
+  var arow=e.target.closest('tr[data-akey]'); if(arow){traceAdamRow(arow);return;}
+  if(e.target.closest('#clrBtn')){clearTrace();$('#crumb').textContent='No selection. Click a value in the TLF panel, or pick a subject to trace forward.';setDeriv('<span class="muted">// derivation appears here</span>');}
+});
+$('#v-trace').addEventListener('change',function(e){if(e.target.id==='subjSel')traceSubject(e.target.value);});
+
+// URL params: ?tab= and ?still=
+var params=new URLSearchParams(location.search), wantTab=params.get('tab'), still=params.get('still');
+if(wantTab){var tb=document.querySelector('.tab[data-view="'+wantTab+'"]');if(tb)tb.click();}
+if(still==='1'){ // pre-select the traceability tab with a representative trace for the screenshot
+  var tb2=document.querySelector('.tab[data-view="trace"]'); if(tb2){tb2.click();
+    // trace the most frequent active-arm PT cell
+    var firstActivePt=document.querySelector('#tlfPanel td[data-cell]');
+    var target=null;Object.keys(TRACE).forEach(function(id){if(!target&&TRACE[id].scope==='adae'&&TRACE[id].keys.length>=3&&TRACE[id].label.indexOf(ARMS[1].name)>=0)target=id;});
+    if(target)traceCell(target); else if(firstActivePt)traceCell(firstActivePt.getAttribute('data-cell'));
+  }
+}
+</script>
+</body>
+</html>

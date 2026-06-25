@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, and `demos/pk-analysis.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, `demos/pk-analysis.html`, and `demos/biometrics-pipeline.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -125,6 +125,19 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   `lm`/`confint` against the JS engine revealed and fixed a dose-proportionality SE bug (the JS CI was missing a factor
   of n, so it was ~sqrt(n) too narrow); the two now agree exactly. The R figures are the one place a demo embeds
   pre-rendered images rather than computing in-browser.
+  `biometrics-pipeline.html` is the sixth from-scratch demo (no source app) - the clinical Biometrics
+  (statistical programming) SDTM -> ADaM -> TLF chain built from CDISC research: a deterministic seeded
+  generator emits SDTM **DM/EX/AE** for a 120-subject HFrEF trial (2 arms, 1:1), then derives **ADSL**
+  (`SAFFL` keyed on presence of an EX record, so placebo dose 0 stays in the safety population and 2
+  never-dosed subjects fall out) and **ADAE** (`TRTEMFL = ASTDT >= TRTSDT`; missing `AESTDTC` -> N) in the
+  browser with the derivation logic shown; those aggregate into **Table 14.1.1** (demographics by `TRT01P`),
+  **Table 14.3.1** (TEAE by SOC/PT, by `TRT01A`, distinct subjects, ordered by active-arm frequency, real
+  MedDRA SOC/PT) and **Listing 16.2.7.1**, every count computed not asserted (safety N = `SAFFL=Y` count;
+  "subjects with >=1 TEAE" = distinct `TRTEMFL=Y & SAFFL=Y` subjects; listing rows = those ADAE rows). The
+  centerpiece is a **three-panel click-traceability** view (SDTM | ADaM | TLF): click any output number to
+  light up the contributing ADaM rows then the SDTM source records, with the derivation printed, plus a
+  subject picker for the reverse direction. Takes `?tab=<view>` and `?still=1` (pre-selects a traced TEAE
+  cell for the screenshot).
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
