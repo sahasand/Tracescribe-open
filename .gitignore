@@ -8,3 +8,6 @@
 # Python cruft (bundled demos contain .py scripts)
 __pycache__/
 *.pyc
+
+# Unrelated project dropped in this dir; not part of the showcase
+gstack-main/
