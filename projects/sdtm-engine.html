@@ -36,6 +36,10 @@
     </div>
 
     <section class="detail-body">
+      <div class="proof-block">
+        <div class="ph">Run on a real study, not just demos</div>
+        <p>This demo uses synthetic data so you can run it freely. The same engine has been run end to end on a real cardiovascular study: raw EDC export to SDTM, 12 domains, 26,973 records, validated against the external CDISC CORE engine, with zero source-trace gaps. Every value carried a path back to its raw field. Where the source data had problems, a blank required field, a controlled-terminology extension, the engine reported them rather than filling them in. It does not fabricate a value to clear a check. That run is the proof the pipeline holds up outside a sandbox; the demo below shows how it works.</p>
+      </div>
       <h2>What it does</h2>
       <p>Building the CDISC SDTM datasets from a raw EDC export is the clinical deliverable most sponsors outsource. This engine does it from <b>one declarative YAML spec per domain</b>. The spec drives both the data build and the rendered mapping spec, so the data and its documentation cannot drift, and conformance is judged against bundled SDTMIG + CDISC controlled terminology rather than a vendor package. Distinct from the CDISC Submission Pipeline: this is the spec-driven mapping engine, traceable to the raw field, not double-programming reconciliation.</p>
       <h2>How it works</h2>
@@ -51,6 +55,14 @@
         <span class="badge">CDISC SDTM</span><span class="badge">SDTMIG 3.4</span>
         <span class="badge">Controlled terminology</span><span class="badge">Define-XML</span><span class="badge">Click-traceability</span>
       </div>
+
+      <h2>Why SDTM and ADaM are not the same problem</h2>
+      <p>SDTM is standardization. Raw data mapped into a published structure with fixed domains, variables, and controlled terminology. There is a correct answer the standard defines, which is why this layer can be built to a button: given the data and the spec, the output is deterministic, reproducible, and conformance-checkable.</p>
+      <p>ADaM is analysis. There is no published "correct" ADaM, because ADaM is constructed to serve a specific statistical analysis plan. What counts as baseline, how treatment-emergence is defined, which population, which windows, how missing visits are handled, these are judgment calls that come from the protocol and the SAP and differ for every study. That layer cannot be a button, and anyone who tells you it can has not built one.</p>
+      <p>So the two layers are built differently, and the showcase keeps them as separate demos. SDTM is push-button: this engine aims for clean, traceable, conformance-checkable output. ADaM is the job of the <a href="statistical-programming.html">Statistical Programming Pipeline</a> demo, which does the mechanical work but surfaces the judgment calls and traces every derivation, so a statistician makes and owns the decisions instead of a black box making them silently. The goal is not to remove the statistician. It is to make the work faster and the decisions auditable.</p>
+
+      <div class="bridge-note">Synthetic data here is a choice, not a limit: it lets you run the demo freely and inspect every derivation. The engine behind it has been validated on a real study against CDISC CORE.</div>
+
       <p style="font-size:14px;color:var(--muted-fg);margin-top:6px">A from-scratch demo built from a spec-driven SDTM engine. Synthetic seeded study and raw EDC; every value is computed in the browser with an in-page self-test that reconciles the build, file://-safe with no network calls. Takes <span class="mono">?tab=</span> (overview, build, conformance, trace, compare) and <span class="mono">?still=1</span>. No real subjects, no sponsor data.</p>
     </section>
 
