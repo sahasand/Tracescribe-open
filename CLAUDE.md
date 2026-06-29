@@ -74,7 +74,7 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   files only. It also bundles **`demos/clinical-intelligence.html`** from `~/Documents/clinical-intelligence`,
   the one live-tool exception (see below).
 - **Exception - `demos/icf.html`, `demos/ectd.html`, `demos/sites.html`, `demos/dm-dashboard.html`,
-  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, `demos/pk-analysis.html`, `demos/biometrics-pipeline.html`, and `demos/feasibility.html` are hand-authored**, not synced. Each is an in-repo,
+  `demos/data-reconciliation.html`, `demos/edc-capture.html`, `demos/safety-pv.html`, `demos/rtsm-irt.html`, `demos/medical-coding.html`, `demos/etmf.html`, `demos/pk-analysis.html`, `demos/biometrics-pipeline.html`, `demos/feasibility.html`, and `demos/sdtm-engine.html` are hand-authored**, not synced. Each is an in-repo,
   self-contained recreation of a feature from a large backend app that is *not* bundled: `icf.html` recreates ICF
   generation from **TraceScribe2**; `ectd.html` recreates eCTD packaging from **CSR Publishing** (`~/Documents/csr-publishing`);
   `sites.html` recreates site-activation tracking from **site-tracker** (`~/Documents/site-tracker`);
@@ -158,6 +158,23 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   preview on slider drag + debounced full Monte Carlo. Takes `?tab=<view>`, `?still=1` (a deliberately tight
   base scenario: LVEF<=35 killer + Amber/CONDITIONAL verdict), and deep-linkable scenario params (`?n=`,
   `?sites=`, `?rate=`, `?lpr=`, `?lvef=`, `?egfr=`, `?strat=`).
+  `sdtm-engine.html` is the eighth from-scratch demo and the **flagship** (a spotlight band at the top of
+  `index.html`, above the lifecycle flow, plus a phase-6 Analyze pill). It recreates a spec-driven SDTM build
+  engine from the real source tool **sdtm_engine** (`~/Documents/sdtm_engine`, a Python `sdtm` CLI: raw EDC +
+  one YAML spec per domain -> a CDISC SDTM package). A deterministic seeded generator emits the synthetic raw
+  EDC (DM/EX, plus a WIDE VS form), then a minimal in-browser interpreter of the engine's op vocabulary
+  (`const`/`copy`/`ct`/`dtc`/`derive`/`seq` + a `wide_to_long` builder) maps it to SDTM, recording the source
+  of every value. The hero is a three-panel **click-traceability** (raw EDC | YAML spec | SDTM): click a built
+  cell to light up the spec op and the raw field it came from, both directions. It honors the engine's
+  never-fabricate principle (a required var with no source is an honest `pending` blank; a not-collected
+  reading produces no row; a partial birth date yields a blank AGE). Other tabs: live SDTMIG+CT conformance, a
+  source-trace report (auto/review/todo tags), and an **automated-vs-manual** scorecard built on the
+  science-vs-scaffolding thesis (engine column computed from the build; manual column an illustrative
+  baseline). An in-page self-test reconciles the build (VS long rows = collected readings, every mapped cell
+  resolves to a source). Crucially, the real confidential study behind the source tool (MedTrace-002, sponsor
+  named, the real vendor-diff numbers, the "do not forward outside CCS" mark) is deliberately **excluded**:
+  this demo is fully synthetic with one generic "proven on a real multinational study" line, no sponsor, no
+  real figures. Takes `?tab=<view>` (overview/build/conformance/trace/compare) and `?still=1`.
   `sync-demos.sh` never touches them; all use real
   source data/structure and are `file://`-safe
   (no fetch). `dm-dashboard.html` and `data-reconciliation.html` are deterministic synthetic-data generators
