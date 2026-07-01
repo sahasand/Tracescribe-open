@@ -54,7 +54,8 @@ a{color:inherit;text-decoration:none}
 .btn-primary:hover{transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--fg);border-color:var(--border)}
 .btn-ghost:hover{background:var(--muted)}
-.btn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+/* one focus ring for every interactive element (links, buttons, cards, pills, journey nav) */
+a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 
 /* ===== Badges / status ===== */
 .badge-row{display:flex;flex-wrap:wrap;gap:8px}
@@ -151,7 +152,6 @@ a{color:inherit;text-decoration:none}
 .lc-pills{display:flex;flex-wrap:wrap;gap:10px}
 .lc-pill{display:inline-flex;align-items:center;font-weight:600;font-size:14px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--fg);transition:transform .18s,background .18s,color .18s,border-color .18s}
 .lc-pill:hover{transform:translateY(-2px);background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.lc-pill:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 
 .lc-etmf{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px;padding:20px 24px;border-radius:16px;background:var(--fg);color:var(--bg);transition:transform .25s}
 .lc-etmf:hover{transform:translateY(-2px)}

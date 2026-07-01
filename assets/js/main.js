@@ -112,8 +112,8 @@
         '</div>' +
         '<p class="journey-narr">' + FLAGSHIP.narr + '</p>' +
         '<div class="journey-ctrls">' +
-          '<a class="journey-btn prev" href="' + pageRel(b.href) + '"><span class="ar">&larr;</span> ' + b.title + '</a>' +
-          '<a class="journey-btn next" href="' + pageRel(a.href) + '">' + a.title + ' <span class="ar">&rarr;</span></a>' +
+          '<a class="journey-btn prev" href="' + pageRel(b.href) + '"><span class="ar" aria-hidden="true">&larr;</span> ' + b.title + '</a>' +
+          '<a class="journey-btn next" href="' + pageRel(a.href) + '">' + a.title + ' <span class="ar" aria-hidden="true">&rarr;</span></a>' +
         '</div>' +
       '</div>';
     bc.insertAdjacentElement("afterend", nav);
@@ -130,10 +130,10 @@
     var stop = JOURNEY[i], total = JOURNEY.length, n = i + 1;
     recordProgress(n);
     var prev = i > 0
-      ? '<a class="journey-btn prev" href="' + pageRel(JOURNEY[i - 1].href) + '"><span class="ar">&larr;</span> ' + JOURNEY[i - 1].title + '</a>'
+      ? '<a class="journey-btn prev" href="' + pageRel(JOURNEY[i - 1].href) + '"><span class="ar" aria-hidden="true">&larr;</span> ' + JOURNEY[i - 1].title + '</a>'
       : '<span class="journey-btn ghost">Trial start</span>';
     var next = i < total - 1
-      ? '<a class="journey-btn next" href="' + pageRel(JOURNEY[i + 1].href) + '">' + JOURNEY[i + 1].title + ' <span class="ar">&rarr;</span></a>'
+      ? '<a class="journey-btn next" href="' + pageRel(JOURNEY[i + 1].href) + '">' + JOURNEY[i + 1].title + ' <span class="ar" aria-hidden="true">&rarr;</span></a>'
       : '<a class="journey-btn next finish" href="../index.html#projects">Finish the trial &check;</a>';
     var chip = stop.showsSubjects ? ' <span class="journey-chip">shows subject-level records</span>' : '';
     var nav = document.createElement("nav");
@@ -169,7 +169,7 @@
       } catch (e) {}
       var cta = document.createElement("div");
       cta.className = "lc-journey-cta";
-      cta.innerHTML = '<a class="btn btn-primary" href="' + JOURNEY[0].href + '"><span class="ar">&#9654;</span> Start the trial journey</a>' + resume;
+      cta.innerHTML = '<a class="btn btn-primary" href="' + JOURNEY[0].href + '"><span class="ar" aria-hidden="true">&#9654;</span> Start the trial journey</a>' + resume;
       hero.appendChild(cta);
     }
     var seen = {};
