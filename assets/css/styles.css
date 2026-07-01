@@ -37,6 +37,7 @@
 /* ===== Base ===== */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+[id]{scroll-margin-top:76px} /* anchored jumps must clear the 64px sticky header */
 body{font-family:var(--font);font-weight:500;background:var(--bg);color:var(--fg);
   line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
 a{color:inherit;text-decoration:none}
