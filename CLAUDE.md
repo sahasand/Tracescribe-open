@@ -199,6 +199,9 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
   **new-tab launch**, and deliberately does **not** inline-embed it: the screenshot link uses `shot-launch`,
   not `shot-link`, so `main.js`'s `embedDemoIfOnline()` skips it. The `fetch()` lives only in the demo, which
   is why the file://-safety grep is scoped to `index.html`/`projects/`, never `demos/`.
+  `projects/statistical-programming.html` also uses `shot-launch` on both of its screenshot cards, on
+  purpose: they link to the two sub-pages (`biometrics-pipeline.html`, `cdisc.html`), not to demos, and
+  inline-embedding a detail page inside a detail page would be wrong. Do not "fix" either to `shot-link`.
 
 **Design system = `mydesign.md` (the "TraceScribe" system):** teal `#0D9488` primary, coral
 `#F97316` accent, Plus Jakarta Sans + JetBrains Mono (bundled locally in `assets/fonts/` for
