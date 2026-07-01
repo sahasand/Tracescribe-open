@@ -18,8 +18,9 @@
   --primary:hsl(168 76% 32%); --accent:hsl(25 95% 53%);
   /* text tier: same hues, deepened to >=4.5:1 on --bg for small text and on #fff-labelled fills */
   --primary-deep:hsl(168 76% 28%); --accent-deep:hsl(25 90% 38%);
+  --success:hsl(160 84% 39%); --success-deep:hsl(160 84% 26%);
   --border:hsl(220 13% 91%); --ring:hsl(168 76% 32%);
-  --radius:10px;
+  --radius:10px; --radius-sm:8px; --radius-lg:16px; --radius-xl:18px;
   --shadow-card:0 1px 3px 0 rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1);
   --shadow-hover:0 10px 15px -3px rgb(0 0 0/.1),0 4px 6px -4px rgb(0 0 0/.1);
   --shadow-glow:0 0 24px -6px hsl(168 76% 32%/.45);
@@ -38,7 +39,7 @@ a{color:inherit;text-decoration:none}
   background:hsl(0 0% 100%/.7);border-bottom:1px solid var(--border)}
 .site-header .container{display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.01em}
-.brand-mark{width:32px;height:32px;border-radius:8px;
+.brand-mark{width:32px;height:32px;border-radius:var(--radius-sm);
   background:linear-gradient(135deg,var(--primary),var(--accent))}
 
 /* ===== Typography helpers ===== */
@@ -46,7 +47,7 @@ a{color:inherit;text-decoration:none}
   letter-spacing:.18em;font-size:11px;color:var(--primary-deep)}
 /* ===== Buttons ===== */
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-weight:600;
-  font-size:14px;border-radius:8px;padding:10px 18px;cursor:pointer;border:1px solid transparent;
+  font-size:14px;border-radius:var(--radius-sm);padding:10px 18px;cursor:pointer;border:1px solid transparent;
   transition:transform .2s,box-shadow .2s,background .2s}
 .btn svg{width:16px;height:16px}
 .btn-lg{padding:13px 28px;font-size:15px}
@@ -62,7 +63,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 .badge{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;
   background:var(--muted);color:var(--muted-fg)}
 .status-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
-  padding:4px 11px;border-radius:999px;background:hsl(160 84% 39%/.12);color:hsl(160 84% 26%)}
+  padding:4px 11px;border-radius:999px;background:hsl(160 84% 39%/.12);color:var(--success-deep)} /* tint = --success @12% */
 .status-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 
 /* ===== Project detail ===== */
@@ -77,12 +78,12 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 .detail-body h2{font-size:1.25rem;font-weight:700;margin-top:12px}
 .detail-body ul{padding-left:20px;color:var(--muted-fg);display:grid;gap:6px}
 .detail-body a{color:var(--primary-deep);text-decoration:underline;text-underline-offset:3px}
-.proof-block{padding:20px 22px;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;background:linear-gradient(120deg,hsl(168 76% 32%/.07),transparent 70%)}
+.proof-block{padding:20px 22px;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:var(--radius);background:linear-gradient(120deg,hsl(168 76% 32%/.07),transparent 70%)}
 .proof-block .ph{font-size:1.12rem;font-weight:800;letter-spacing:-.01em;margin-bottom:8px}
 .proof-block p{color:var(--muted-fg);margin:0;font-size:.97rem;line-height:1.6}
-.bridge-note{padding:14px 16px;border-radius:10px;background:var(--muted);font-size:.92rem;line-height:1.55;color:var(--fg)}
+.bridge-note{padding:14px 16px;border-radius:var(--radius);background:var(--muted);font-size:.92rem;line-height:1.55;color:var(--fg)}
 .shot-strip{padding:8px 0 80px}
-.shot{display:block;width:100%;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-card)}
+.shot{display:block;width:100%;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-card)}
 .shot-link,.shot-launch{display:block;text-decoration:none}
 .shot-link .shot,.shot-launch .shot{transition:box-shadow .3s,transform .3s}
 .shot-link:hover .shot,.shot-launch:hover .shot{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
@@ -91,7 +92,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 .shot-link:hover .shot-caption,.shot-launch:hover .shot-caption{color:var(--primary-deep)}
 .shot-caption svg{width:14px;height:14px}
 /* Inline demo embed (used when served over http; see main.js embedDemoIfOnline) */
-.demo-embed{border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-card);background:var(--card)}
+.demo-embed{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);background:var(--card)}
 .demo-embed-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--border);background:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted-fg)}
 .demo-embed-bar a{color:var(--primary-deep);font-weight:600;text-decoration:none}
 .demo-embed-bar a:hover{text-decoration:underline}
@@ -124,7 +125,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 .lc-title .tl{color:var(--primary);background:linear-gradient(transparent 64%,hsl(25 95% 53%/.32) 64%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .lc-intro{margin-top:26px;max-width:48ch;font-size:clamp(1rem,2.2vw,1.2rem);line-height:1.5;color:var(--muted-fg)}
 /* flagship spotlight band (top of page, above the lifecycle flow) */
-.lc-flagship{position:relative;display:block;margin:4px 0 30px;padding:26px 26px 24px;border-radius:18px;border:1px solid var(--border);background:linear-gradient(135deg,hsl(168 76% 32%/.10),hsl(25 95% 53%/.05));overflow:hidden;box-shadow:var(--shadow-card);transition:transform .25s,box-shadow .25s}
+.lc-flagship{position:relative;display:block;margin:4px 0 30px;padding:26px 26px 24px;border-radius:var(--radius-xl);border:1px solid var(--border);background:linear-gradient(135deg,hsl(168 76% 32%/.10),hsl(25 95% 53%/.05));overflow:hidden;box-shadow:var(--shadow-card);transition:transform .25s,box-shadow .25s}
 @media(min-width:768px){.lc-flagship{padding:32px 36px 28px}}
 .lc-flagship:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .lc-flagship::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--primary),var(--accent))}
@@ -143,7 +144,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 @media(min-width:768px){.lc-stage:nth-child(even){margin-left:7%}}
 .lc-dot{position:absolute;left:-30px;top:11px;width:18px;height:18px;border-radius:50%;background:var(--primary);border:3px solid var(--bg)}
 @media(min-width:768px){.lc-dot{left:-48px}}
-.lc-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:var(--shadow-card);max-width:760px;transition:transform .25s,box-shadow .25s}
+.lc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-card);max-width:760px;transition:transform .25s,box-shadow .25s}
 .lc-card:hover{box-shadow:var(--shadow-hover)}
 .lc-head{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 .lc-num{flex:none;font-weight:800;font-size:clamp(44px,7vw,64px);line-height:.7;letter-spacing:-.04em;-webkit-text-stroke:2px var(--accent);color:transparent}
@@ -151,16 +152,17 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
 .lc-phase-desc{font-size:14px;color:var(--muted-fg);margin-top:4px}
 .lc-pills{display:flex;flex-wrap:wrap;gap:10px}
 .lc-pill{display:inline-flex;align-items:center;font-weight:600;font-size:14px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--fg);transition:transform .18s,background .18s,color .18s,border-color .18s}
+@media(max-width:767.98px){.lc-pill{padding:11px 16px}} /* 44px+ touch target */
 .lc-pill:hover{transform:translateY(-2px);background:var(--fg);color:var(--bg);border-color:var(--fg)}
 
-.lc-etmf{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px;padding:20px 24px;border-radius:16px;background:var(--fg);color:var(--bg);transition:transform .25s}
+.lc-etmf{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px;padding:20px 24px;border-radius:var(--radius-lg);background:var(--fg);color:var(--bg);transition:transform .25s}
 .lc-etmf:hover{transform:translateY(-2px)}
 .lc-etmf .inf{flex:none;font-size:38px;font-weight:800;line-height:.8;color:var(--accent)}
 .lc-etmf b{font-size:18px;font-weight:700;letter-spacing:-.01em}
 .lc-etmf .sub{font-size:14px;opacity:.72}
 .lc-etmf .go{margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
 /* closing band: the CRO / web-design capability, at the very bottom (a different category from the clinical tools) */
-.lc-cro{margin:26px 0 8px;padding:26px 26px 22px;border:1px solid var(--border);border-radius:18px;background:var(--muted)}
+.lc-cro{margin:26px 0 8px;padding:26px 26px 22px;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--muted)}
 @media(min-width:768px){.lc-cro{padding:30px 34px 26px}}
 .lc-cro .ey{display:block;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:10px}
 .lc-cro h2{font-weight:800;letter-spacing:-.02em;line-height:1.05;font-size:clamp(1.4rem,3.4vw,2rem)}
@@ -196,7 +198,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--ring);outline-offset:
   white-space:nowrap;vertical-align:middle}
 .journey-ctrls{display:flex;gap:8px;white-space:nowrap}
 .journey-btn{display:inline-block;font-family:var(--font);font-weight:600;font-size:13px;line-height:1.2;
-  padding:8px 12px;border-radius:8px;border:1px solid var(--border);color:var(--fg);background:var(--card);
+  padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);color:var(--fg);background:var(--card);
   min-width:0;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:background .2s,color .2s,filter .2s}
 .journey-btn .ar{opacity:.8}
 .journey-btn:hover{background:var(--muted);color:var(--primary-deep)}
