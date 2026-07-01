@@ -59,9 +59,12 @@ grep -rE 'fetch\(|XMLHttpRequest' index.html projects/
 **The site is a thin showcase shell around bundled, self-contained demos.**
 
 - `assets/css/styles.css` is the single source of truth for the design system; `assets/js/main.js`
-  is the only script (dark/light toggle persisted to `localStorage["cpbs-theme"]`, footer-year
-  stamp, and `.stagger` fade-in via IntersectionObserver). Pages opt into JS behavior with
-  `data-theme-toggle`, `data-year`, and the `.stagger` class - there is no other JS.
+  is the only script file (footer-year stamp, `.stagger` reveal via IntersectionObserver, the
+  inline demo embed, and the follow-the-trial journey: detail-page journey bar, flagship context
+  bar, homepage stop numbering, progress in `localStorage["cpbs-journey"]`). Pages opt into JS
+  behavior with `data-year` and the `.stagger` class. The one exception to "no other JS": a
+  one-line inline `<script>` in `index.html`'s head adds the `js` class to `<html>`, which gates
+  the `.stagger` hide so no-JS renders (crawlers, reader modes) still see the whole page.
 - `main.js` and the showcase pages must stay **`file://`-safe**: no `fetch()`, no module imports,
   no runtime network dependency. Project metadata is inlined directly in the HTML, not loaded.
 - `demos/` holds the live demos. Most are **bundled copies** of sibling projects' static
