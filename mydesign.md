@@ -53,7 +53,7 @@ Accent (Coral):     HSL(25, 95%, 53%)   →  #F97316
 
 /* Foregrounds */
 --foreground:           hsl(222, 47%, 11%);   /* Deep charcoal */
---muted-foreground:     hsl(220, 9%, 46%);    /* Medium gray */
+--muted-foreground:     hsl(220, 9%, 44%);    /* Medium gray (44% keeps 4.5:1 even on --muted) */
 --sidebar-foreground:   hsl(210, 40%, 98%);   /* Off-white */
 
 /* Interactive */
@@ -62,6 +62,12 @@ Accent (Coral):     HSL(25, 95%, 53%)   →  #F97316
 --accent:               hsl(25, 95%, 53%);    /* Coral */
 --accent-foreground:    hsl(0, 0%, 100%);     /* White */
 --secondary:            hsl(30, 15%, 94%);    /* Warm stone */
+
+/* Text tier: same hues, deepened for WCAG AA. Use for SMALL text in brand colors
+   (eyebrows, mono links, labels) and for fills that carry white text (primary CTAs).
+   Keep --primary/--accent for graphics, borders, large numerals, and tint backgrounds. */
+--primary-deep:         hsl(168, 76%, 28%);   /* >=4.5:1 on background, >=4.5:1 under white */
+--accent-deep:          hsl(25, 90%, 38%);    /* >=4.5:1 on background, >=4.5:1 under white */
 
 /* Borders */
 --border:               hsl(220, 13%, 91%);
