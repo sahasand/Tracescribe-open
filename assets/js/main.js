@@ -77,13 +77,56 @@
     try { var f = parseInt(localStorage.getItem(JKEY) || "0", 10) || 0; if (n > f) localStorage.setItem(JKEY, String(n)); } catch (e) {}
   }
 
+  // The flagship demo is deliberately OUTSIDE the numbered journey (the tour is HF-001's story;
+  // the spotlight band already carries the flagship). Its detail page still gets a journey-style
+  // bar so the sequence context does not vanish on the most-featured page, and its homepage pill
+  // is exempt from the pills-vs-JOURNEY drift warning.
+  var FLAGSHIP = {
+    href: "projects/sdtm-engine.html", phase: "Analyze", phaseNum: 6,
+    narr: "The flagship, off the numbered tour: HF-001's raw EDC becomes submission-ready SDTM here, inside the Analyze phase.",
+    before: "projects/safety-pv.html", after: "projects/statistical-programming.html"
+  };
+  function tailMatch(href) {
+    var p = location.pathname;
+    return p.length >= href.length && p.slice(-href.length) === href;
+  }
+  function journeyByHref(href) {
+    for (var i = 0; i < JOURNEY.length; i++) { if (JOURNEY[i].href === href) return JOURNEY[i]; }
+    return null;
+  }
+
+  // Flagship detail page: a journey-styled bar that places the page in the lifecycle (Phase 6)
+  // and offers the two tour stops that flank it, without being a numbered stop itself.
+  function buildFlagshipBar(bc) {
+    var b = journeyByHref(FLAGSHIP.before), a = journeyByHref(FLAGSHIP.after);
+    if (!b || !a) return;
+    var nav = document.createElement("nav");
+    nav.className = "journey-nav";
+    nav.setAttribute("aria-label", "Trial journey (flagship)");
+    nav.innerHTML =
+      '<div class="journey-track"><i style="width:100%"></i></div>' +
+      '<div class="journey-row">' +
+        '<div class="journey-meta">' +
+          '<span class="journey-step">Flagship</span>' +
+          '<span class="journey-phase">Phase ' + FLAGSHIP.phaseNum + ' of 7 &middot; ' + FLAGSHIP.phase + '</span>' +
+        '</div>' +
+        '<p class="journey-narr">' + FLAGSHIP.narr + '</p>' +
+        '<div class="journey-ctrls">' +
+          '<a class="journey-btn prev" href="' + pageRel(b.href) + '"><span class="ar">&larr;</span> ' + b.title + '</a>' +
+          '<a class="journey-btn next" href="' + pageRel(a.href) + '">' + a.title + ' <span class="ar">&rarr;</span></a>' +
+        '</div>' +
+      '</div>';
+    bc.insertAdjacentElement("afterend", nav);
+  }
+
   // Detail page: inject the journey nav strip after the breadcrumb. No-op on pages not in the
-  // journey (cro.html / etmf.html have a breadcrumb but are not stops, so journeyIndex is -1).
+  // journey (cro.html / etmf.html have a breadcrumb but are not stops, so journeyIndex is -1);
+  // the flagship page gets its own journey-styled bar instead.
   function buildDetailJourney() {
     var i = journeyIndex();
-    if (i < 0) return;
     var bc = document.querySelector(".breadcrumb");
     if (!bc) return;
+    if (i < 0) { if (tailMatch(FLAGSHIP.href)) buildFlagshipBar(bc); return; }
     var stop = JOURNEY[i], total = JOURNEY.length, n = i + 1;
     recordProgress(n);
     var prev = i > 0
@@ -141,7 +184,7 @@
         b.className = "lc-pill-stop";
         b.textContent = idx + 1;
         pill.insertBefore(b, pill.firstChild);
-      } else {
+      } else if (h !== FLAGSHIP.href) { // the flagship pill is deliberately unnumbered
         console.warn("[journey] homepage pill not in JOURNEY:", h);
       }
     });
